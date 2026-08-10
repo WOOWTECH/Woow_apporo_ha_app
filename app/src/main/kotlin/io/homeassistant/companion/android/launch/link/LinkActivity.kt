@@ -109,7 +109,7 @@ fun LinkActivityScreen() {
     HomeAssistantAppTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
-                imageVector = ImageVector.vectorResource(R.drawable.app_icon_launch),
+                painter = androidx.compose.ui.res.painterResource(R.drawable.app_icon_launch),
                 contentDescription = null,
                 modifier = Modifier
                     .size(112.dp)
