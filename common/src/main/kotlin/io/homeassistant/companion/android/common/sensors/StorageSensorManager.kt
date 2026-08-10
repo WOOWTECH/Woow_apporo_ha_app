@@ -59,7 +59,7 @@ class StorageSensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.woowtech.io/docs/core/sensors#storage-sensor"
+        return "https://aiot.apporo.io/docs/core/sensors#storage-sensor"
     }
     override val name: Int
         get() = commonR.string.sensor_name_storage

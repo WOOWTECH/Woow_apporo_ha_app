@@ -35,6 +35,6 @@ class GesturesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        addHelpMenuProvider("https://aiot.woowtech.io/docs/integrations/gestures")
+        addHelpMenuProvider("https://aiot.apporo.io/docs/integrations/gestures")
     }
 }

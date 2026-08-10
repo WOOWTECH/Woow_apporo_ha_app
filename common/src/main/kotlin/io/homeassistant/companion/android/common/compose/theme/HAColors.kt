@@ -37,44 +37,44 @@ private object HAColors {
     val White = Color(0xFFFFFFFF)
     val Transparent = Color(0x00FFFFFF)
 
-    // Primary - woowtech Brand Blue (#6183FC) based scale
-    val Primary05 = Color(0xFF0D164D)
-    val Primary10 = Color(0xFF172570)
-    val Primary20 = Color(0xFF283B93)
-    val Primary30 = Color(0xFF3A52B6)
-    val Primary40 = Color(0xFF4D6AD9)
-    val Primary50 = Color(0xFF6183FC)  // woowtech Brand Blue
-    val Primary60 = Color(0xFF879FFC)
-    val Primary70 = Color(0xFFA5B7FF)
-    val Primary80 = Color(0xFFC3CFFF)
-    val Primary90 = Color(0xFFE1E7FF)
-    val Primary95 = Color(0xFFF0F3FF)
+    // Primary - Apporo Home brand color (#8B6B24) based scale
+    val Primary05 = Color(0xFF413419)
+    val Primary10 = Color(0xFF5F4E28)
+    val Primary20 = Color(0xFF7E6A3D)
+    val Primary30 = Color(0xFF9E8652)
+    val Primary40 = Color(0xFFBEA368)
+    val Primary50 = Color(0xFF8B6B24)  // Apporo Home Brand Color
+    val Primary60 = Color(0xFFE5CF9E)
+    val Primary70 = Color(0xFFEEDCB6)
+    val Primary80 = Color(0xFFF3E8CF)
+    val Primary90 = Color(0xFFF9F3E7)
+    val Primary95 = Color(0xFFFCF9F3)
 
-    // Blue - woowtech Brand Blue (#6183FC) based scale (same as Primary)
-    val Blue05 = Color(0xFF0D164D)
-    val Blue10 = Color(0xFF172570)
-    val Blue20 = Color(0xFF283B93)
-    val Blue30 = Color(0xFF3A52B6)
-    val Blue40 = Color(0xFF4D6AD9)
-    val Blue50 = Color(0xFF6183FC)  // woowtech Brand Blue
-    val Blue60 = Color(0xFF879FFC)
-    val Blue70 = Color(0xFFA5B7FF)
-    val Blue80 = Color(0xFFC3CFFF)
-    val Blue90 = Color(0xFFE1E7FF)
-    val Blue95 = Color(0xFFF0F3FF)
+    // Blue - Apporo Home brand color (#8B6B24) based scale (same as Primary)
+    val Blue05 = Color(0xFF413419)
+    val Blue10 = Color(0xFF5F4E28)
+    val Blue20 = Color(0xFF7E6A3D)
+    val Blue30 = Color(0xFF9E8652)
+    val Blue40 = Color(0xFFBEA368)
+    val Blue50 = Color(0xFF8B6B24)  // Apporo Home Brand Color
+    val Blue60 = Color(0xFFE5CF9E)
+    val Blue70 = Color(0xFFEEDCB6)
+    val Blue80 = Color(0xFFF3E8CF)
+    val Blue90 = Color(0xFFF9F3E7)
+    val Blue95 = Color(0xFFFCF9F3)
 
-    // Brand - woowtech Brand Blue (#6183FC) based scale (mirrors Primary)
-    val Brand05 = Color(0xFF0D164D)
-    val Brand10 = Color(0xFF172570)
-    val Brand20 = Color(0xFF283B93)
-    val Brand30 = Color(0xFF3A52B6)
-    val Brand40 = Color(0xFF4D6AD9)
-    val Brand50 = Color(0xFF6183FC)  // woowtech Brand Blue
-    val Brand60 = Color(0xFF879FFC)
-    val Brand70 = Color(0xFFA5B7FF)
-    val Brand80 = Color(0xFFC3CFFF)
-    val Brand90 = Color(0xFFE1E7FF)
-    val Brand95 = Color(0xFFF0F3FF)
+    // Brand - Apporo Home brand color (#8B6B24) based scale (mirrors Primary)
+    val Brand05 = Color(0xFF413419)
+    val Brand10 = Color(0xFF5F4E28)
+    val Brand20 = Color(0xFF7E6A3D)
+    val Brand30 = Color(0xFF9E8652)
+    val Brand40 = Color(0xFFBEA368)
+    val Brand50 = Color(0xFF8B6B24)  // Apporo Home Brand Color
+    val Brand60 = Color(0xFFE5CF9E)
+    val Brand70 = Color(0xFFEEDCB6)
+    val Brand80 = Color(0xFFF3E8CF)
+    val Brand90 = Color(0xFFF9F3E7)
+    val Brand95 = Color(0xFFFCF9F3)
 
     // Cyan
     val Cyan05 = Color(0xFF00151B)
@@ -195,14 +195,14 @@ private object HAColors {
 }
 
 /**
- * woowtech Brand Colors - VI System compliant
- * Primary Brand Blue: #6183FC
+ * Apporo Brand Colors - VI System compliant
+ * Primary Brand Blue: #8B6B24
  * Text Primary: #212121
  * Text Secondary: #646262
  * Background: #FFFFFF
  */
 object HABrandColors {
-    val Blue = Color(0xFF6183FC)  // woowtech Brand Blue
+    val Blue = Color(0xFF8B6B24)  // Apporo Home Brand Color
     val Background = Color(0xFFFFFFFF)  // VI System background
     val TextPrimary = Color(0xFF212121)  // VI System text primary
     val TextSecondary = Color(0xFF646262)  // VI System text secondary

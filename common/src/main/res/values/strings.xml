@@ -35,7 +35,7 @@
     <string name="allow">Allow</string>
     <string name="always_show_first_view_on_app_start">Always show first view when opening app</string>
     <string name="always_show_first_view_on_app_start_summary">The first view of the default dashboard is shown as soon as the app is opened</string>
-    <string name="app_name">woowtech Home</string>
+    <string name="app_name">Apporo Home</string>
     <string name="app_version_info">App version info</string>
     <string name="application_version">Application version</string>
     <string name="attempting_authentication">Authenticating…</string>
@@ -534,9 +534,9 @@
     <string name="prioritize_internal_on_expanded">Use internal connection URL (use this if you typically turn location access off)</string>
     <string name="prioritize_internal_off">Use Home Assistant URL (recommended)</string>
     <string name="privacy_policy">Privacy policy</string>
-    <string name="privacy_url">https://aiot.woowtech.io/privacy</string>
+    <string name="privacy_url">https://aiot.apporo.io/privacy</string>
     <string name="open_source_credits">Based on Home Assistant Companion App (Apache 2.0 License)</string>
-    <string name="woowtech_company">woowtech Smart Home Solutions</string>
+    <string name="apporo_company">Apporo Home</string>
     <string name="qrcode_processing_tag_error">Error while processing QR code tag</string>
     <string name="quick_settings">Quick settings</string>
     <string name="rate_limit_summary">Rate limit data</string>
@@ -1356,13 +1356,13 @@
     <string name="connection_security_level_default_summary">Only connect to the server when we are sure that connection is encrypted or you are at home</string>
     <string name="connection_security_most_secure">Most secure: Allow this app to know when you\'re home</string>
     <string name="connection_security_less_secure">Less secure: Do not allow this app to know when you\'re home</string>
-    <string name="home_assistant_branding_icon_content_description">woowtech branding icon</string>
+    <string name="home_assistant_branding_icon_content_description">Apporo branding icon</string>
     <string name="loading_content_description">Loading</string>
     <string name="searching_home_network">Searching on\nhome network</string>
     <string name="server_discovery_no_server_info">Check that your Home\u00A0Assistant server is powered on and you\'re connected to the same network. You can enter the address manually if you know it.</string>
     <string name="server_discovery_connect">Connect</string>
-    <string name="welcome_home_assistant_title">woowtech\nHome</string>
-    <string name="welcome_details">Access your smart home server on the go.\n\nwoowtech Home puts local control and privacy first. Powered by Home\u00A0Assistant open source home automation.</string>
+    <string name="welcome_home_assistant_title">Apporo\nHome</string>
+    <string name="welcome_details">Access your smart home server on the go.\n\nApporo Home puts local control and privacy first. Powered by Home\u00A0Assistant open source home automation.</string>
     <string name="welcome_connect_to_ha">Connect to my smart home server</string>
     <string name="welcome_learn_more">Learn more</string>
     <string name="name_your_device_title">How would you like to name this device?</string>

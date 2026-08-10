@@ -146,7 +146,7 @@ class AudioSensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.woowtech.io/docs/core/sensors#audio-sensors"
+        return "https://aiot.apporo.io/docs/core/sensors#audio-sensors"
     }
 
     override val name: Int

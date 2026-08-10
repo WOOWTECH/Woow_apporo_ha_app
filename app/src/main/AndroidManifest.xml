@@ -324,7 +324,7 @@
             android:permission="android.permission.BIND_CONTROLS"
             android:exported="true"
             android:resizeableActivity="true"
-            android:taskAffinity="io.homeassistant.companion.android.controls"
+            android:taskAffinity="${applicationId}.controls"
             android:enabled="false" />
 
         <receiver
@@ -360,7 +360,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="aiot.woowtech.io"
+                    android:host="aiot.apporo.io"
                     android:pathPrefix="/redirect/"/>
             </intent-filter>
 
@@ -371,7 +371,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="aiot.woowtech.io"
+                    android:host="aiot.apporo.io"
                     android:pathPrefix="/invite/"/>
             </intent-filter>
 
@@ -381,7 +381,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="homeassistant"
+                    android:scheme="apporohome"
                     android:host="invite" />
             </intent-filter>
 
@@ -393,7 +393,7 @@
 
                 <data
                     android:host="navigate"
-                    android:scheme="homeassistant" />
+                    android:scheme="apporohome" />
             </intent-filter>
         </activity>
 
@@ -409,7 +409,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="homeassistant"
+                    android:scheme="apporohome"
                     android:host="wear-phone-signin" />
             </intent-filter>
         </activity>
@@ -467,7 +467,7 @@
             android:name=".nfc.TagReaderActivity"
             android:label="@string/tag_reader_title"
             android:exported="true">
-            <tools:validation testUrl="https://aiot.woowtech.io/tag/123e4567-e89b-12d3-a456-426614174000" />
+            <tools:validation testUrl="https://aiot.apporo.io/tag/123e4567-e89b-12d3-a456-426614174000" />
 
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
@@ -475,7 +475,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="aiot.woowtech.io"
+                    android:host="aiot.apporo.io"
                     android:pathPrefix="/tag/" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
@@ -485,7 +485,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="aiot.woowtech.io"
+                    android:host="aiot.apporo.io"
                     android:pathPrefix="/tag/" />
             </intent-filter>
         </activity>
@@ -513,7 +513,7 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask"
-            android:taskAffinity="io.homeassistant.companion.android.assist"
+            android:taskAffinity="${applicationId}.assist"
             android:autoRemoveFromRecents="true"
             android:showWhenLocked="true"
             android:theme="@style/Theme.HomeAssistant.Assist">

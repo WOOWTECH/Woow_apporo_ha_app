@@ -74,7 +74,7 @@ class ConnectionViewModelTest {
             assertTrue(isLoadingFlow.awaitItem())
             assertEquals(null, urlFlow.awaitItem())
 
-            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=homeassistant://auth-callback"
+            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=apporohome://auth-callback"
             advanceUntilIdle()
 
             assertEquals(expectedAuthUrl, urlFlow.awaitItem())
@@ -99,7 +99,7 @@ class ConnectionViewModelTest {
 
             assertEquals(null, urlFlow.awaitItem())
 
-            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=homeassistant://auth-callback"
+            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=apporohome://auth-callback"
             advanceUntilIdle()
 
             assertEquals(expectedAuthUrl, urlFlow.awaitItem())
@@ -132,7 +132,7 @@ class ConnectionViewModelTest {
     @ValueSource(booleans = [true, false])
     fun `Given auth callback uri with code when shouldRedirect then emits Authenticated event with mTLS status and returns true`(requireMTLS: Boolean) = runTest {
         val authCode = "test_auth_code"
-        val stringUri = mockAuthCodeUri(scheme = "homeassistant", host = "auth-callback", authCode = authCode)
+        val stringUri = mockAuthCodeUri(scheme = "apporohome", host = "auth-callback", authCode = authCode)
 
         val viewModel = ConnectionViewModel("http://homeassistant.local:8123", keyChainRepository, connectivityCheckRepository)
 
@@ -161,7 +161,7 @@ class ConnectionViewModelTest {
 
     @Test
     fun `Given auth callback uri without code when shouldRedirect then no event and returns false`() = runTest {
-        val stringUri = mockAuthCodeUri(scheme = "homeassistant", host = "auth-callback", authCode = null)
+        val stringUri = mockAuthCodeUri(scheme = "apporohome", host = "auth-callback", authCode = null)
 
         val viewModel = ConnectionViewModel("http://homeassistant.local:8123", keyChainRepository, connectivityCheckRepository)
 
@@ -267,7 +267,7 @@ class ConnectionViewModelTest {
 
             val request = mockk<WebResourceRequest> {
                 every { url } returns mockk<Uri> {
-                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=homeassistant://auth-callback"
+                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=apporohome://auth-callback"
                 }
             }
 
@@ -339,7 +339,7 @@ class ConnectionViewModelTest {
 
             val request = mockk<WebResourceRequest> {
                 every { url } returns mockk<Uri> {
-                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=https://aiot.woowtech.io/android&redirect_uri=homeassistant://auth-callback"
+                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=https://aiot.apporo.io/android&redirect_uri=apporohome://auth-callback"
                 }
             }
 

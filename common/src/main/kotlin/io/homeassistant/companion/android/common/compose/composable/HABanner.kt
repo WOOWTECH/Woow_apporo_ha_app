@@ -43,7 +43,7 @@ fun HABanner(modifier: Modifier = Modifier, content: @Composable RowScope.() -> 
             .background(
                 color = LocalHAColorScheme.current.colorFillNeutralNormalResting,
                 shape = RoundedCornerShape(
-                    HARadius.X2L,  // 20dp - woowtech VI compliant
+                    HARadius.X2L,  // 20dp - Apporo VI compliant
                 ),
             )
             .padding(HADimens.SPACE4),
@@ -66,11 +66,11 @@ fun HAHint(text: String, modifier: Modifier = Modifier, onClose: (() -> Unit)? =
     HABanner(modifier = modifier) {
         Image(
             // Use painterResource instead of vector resource for API < 24
-            painter = painterResource(R.drawable.ic_woowtech_logo),
+            painter = painterResource(R.drawable.ic_apporo_logo),
             colorFilter = ColorFilter.tint(HABrandColors.Blue),
             contentDescription = null,
             modifier = Modifier.align(Alignment.Top)
-                // We want to align the close button with woowtech icon
+                // We want to align the close button with Apporo icon
                 .padding(vertical = HADimens.SPACE2),
         )
         Text(

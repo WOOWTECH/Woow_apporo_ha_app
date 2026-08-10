@@ -29,7 +29,7 @@ class ManageWidgetsSettingsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        addHelpMenuProvider("https://aiot.woowtech.io/docs/integrations/android-widgets")
+        addHelpMenuProvider("https://aiot.apporo.io/docs/integrations/android-widgets")
     }
 
     override fun onResume() {

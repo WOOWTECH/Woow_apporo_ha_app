@@ -22,7 +22,7 @@ class DNDSensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.woowtech.io/docs/core/sensors#do-not-disturb-sensor"
+        return "https://aiot.apporo.io/docs/core/sensors#do-not-disturb-sensor"
     }
 
     override val name: Int

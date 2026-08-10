@@ -167,7 +167,7 @@ class SettingsWearActivity :
 
     private fun getAuthIntentUrl(): String? {
         return intent.data?.let {
-            if (it.scheme == "homeassistant" && it.host == "wear-phone-signin") {
+            if (it.scheme == "apporohome" && it.host == "wear-phone-signin") {
                 // Return empty string if phone sign in was used to open this, indicating no instance selected
                 it.getQueryParameter("url") ?: ""
             } else {

@@ -35,7 +35,7 @@
     <string name="allow">允許</string>
     <string name="always_show_first_view_on_app_start">開啟應用程式時總是顯示第一個視圖</string>
     <string name="always_show_first_view_on_app_start_summary">開啟應用程式時立即顯示預設儀表板的第一個視圖</string>
-    <string name="app_name">woowtech Home</string>
+    <string name="app_name">Apporo Home</string>
     <string name="app_version_info">應用程式版本資訊</string>
     <string name="application_version">應用程式版本</string>
     <string name="attempting_authentication">正在驗證…</string>
@@ -529,9 +529,9 @@
     <string name="prioritize_internal_on_expanded">使用內部連線 URL（如果您通常關閉位置存取，請使用此選項）</string>
     <string name="prioritize_internal_off">使用 Home Assistant 網址（建議）</string>
     <string name="privacy_policy">隱私權政策</string>
-    <string name="privacy_url">https://aiot.woowtech.io/privacy</string>
+    <string name="privacy_url">https://aiot.apporo.io/privacy</string>
     <string name="open_source_credits">基於 Home Assistant Companion App（Apache 2.0 授權）</string>
-    <string name="woowtech_company">woowtech 智慧家庭解決方案</string>
+    <string name="apporo_company">Apporo 智慧家庭解決方案</string>
     <string name="qrcode_processing_tag_error">處理 QR 碼標籤時發生錯誤</string>
     <string name="quick_settings">快速設定</string>
     <string name="rate_limit_summary">速率限制資料</string>
@@ -1351,13 +1351,13 @@
     <string name="connection_security_level_default_summary">僅在我們確定連線已加密或您在家時連線至伺服器</string>
     <string name="connection_security_most_secure">最安全：允許此應用程式知道您何時在家</string>
     <string name="connection_security_less_secure">較不安全：不允許此應用程式知道您何時在家</string>
-    <string name="home_assistant_branding_icon_content_description">woowtech 品牌圖示</string>
+    <string name="home_assistant_branding_icon_content_description">Apporo 品牌圖示</string>
     <string name="loading_content_description">正在載入</string>
     <string name="searching_home_network">正在家用網路上\n搜尋</string>
     <string name="server_discovery_no_server_info">請確認您的 Home\u00A0Assistant 伺服器已開機且您已連線至相同的網路。如果您知道位址，可以手動輸入。</string>
     <string name="server_discovery_connect">連線</string>
-    <string name="welcome_home_assistant_title">woowtech\nHome</string>
-    <string name="welcome_details">隨時隨地存取您的智慧家庭伺服器。\n\nwoowtech Home 以本地控制和隱私為優先。由 Home\u00A0Assistant 開源家庭自動化技術提供支援。</string>
+    <string name="welcome_home_assistant_title">Apporo\nHome</string>
+    <string name="welcome_details">隨時隨地存取您的智慧家庭伺服器。\n\nApporo Home 以本地控制和隱私為優先。由 Home\u00A0Assistant 開源家庭自動化技術提供支援。</string>
     <string name="welcome_connect_to_ha">連線至我的智慧家庭伺服器</string>
     <string name="welcome_learn_more">了解更多</string>
     <string name="name_your_device_title">您想如何命名此裝置？</string>

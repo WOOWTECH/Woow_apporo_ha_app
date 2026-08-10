@@ -10,6 +10,6 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="io.homeassistant.companion.android.developer.DevPlaygroundActivity"
-            android:targetPackage="io.homeassistant.companion.android.debug" />
+            android:targetPackage="com.apporo.home.debug" />
     </shortcut>
 </shortcuts>

@@ -11,10 +11,10 @@ private const val REDIRECT_URL_PATH = "/redirect/"
 private const val INVITE_URL_PATH = "/invite/"
 private const val NAVIGATE_URL_PATH = "/navigate/"
 
-private const val MY_BASE_DOMAIN = "aiot.woowtech.io"
+private const val MY_BASE_DOMAIN = "aiot.apporo.io"
 private const val BASE_MY_REDIRECT_URL = "https://$MY_BASE_DOMAIN$REDIRECT_URL_PATH"
 
-private const val DEEP_LINK_SCHEME = "homeassistant"
+private const val DEEP_LINK_SCHEME = "apporohome"
 
 private const val INTERNAL_MY_REDIRECT_PREFIX = "_my_redirect/"
 
@@ -45,11 +45,11 @@ sealed interface LinkDestination {
 }
 
 /**
- * Handles universal links from `https://aiot.woowtech.io` and some of the deep links from `homeassistant://`
+ * Handles universal links from `https://aiot.apporo.io` and some of the deep links from `apporohome://`
  */
 interface LinkHandler {
     /**
-     * Processes the given [uri] from `https://aiot.woowtech.io` or `homeassistant://` and determines the
+     * Processes the given [uri] from `https://aiot.apporo.io` or `apporohome://` and determines the
      * intended navigation destination within the application.
      *
      * @param uri The universal link to handle.
@@ -116,11 +116,11 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
      * Attempts to extract the target Home Assistant instance URL from the fragment part of the provided URI.
      *
      * The expected invitation link format is:
-     * Universal Link: `https://aiot.woowtech.io/invite#url=http://homeassistant.local:8123`
-     * Deep Link: `homeassistant://invite/#url=http://homeassistant.local:8123`
+     * Universal Link: `https://aiot.apporo.io/invite#url=http://homeassistant.local:8123`
+     * Deep Link: `apporohome://invite/#url=http://homeassistant.local:8123`
      *
      * The target URL is embedded in the fragment for security reasons,
-     * preventing it from being sent to `aiot.woowtech.io`. This function extracts the
+     * preventing it from being sent to `aiot.apporo.io`. This function extracts the
      * `url` parameter from the fragment.
      *
      * @param uri The URI to process containing the invitation link.
@@ -143,7 +143,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
     }
 
     /**
-     * Handles redirect links from `https://aiot.woowtech.io/redirect/...`.
+     * Handles redirect links from `https://aiot.apporo.io/redirect/...`.
      *
      * Transforms the universal link into an internal path format and adds the mobile parameter.
      * Requires a registered server to proceed.
@@ -164,7 +164,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
 
         val path = uri.buildUpon()
             // We strip the last / to handle old links created before https://github.com/home-assistant/frontend/pull/25841.
-            // A trailing slash is always added by Netlify that is used to host https://aiot.woowtech.io/, but
+            // A trailing slash is always added by Netlify that is used to host https://aiot.apporo.io/, but
             // the frontend did not support having a trailing slash before https://github.com/home-assistant/frontend/pull/25841.
             // For backward compatibility, we remove the trailing slash here.
             .path(uri.path?.removeSuffix("/"))
@@ -176,7 +176,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
     }
 
     /**
-     * Handles navigate deep links from `homeassistant://navigate/...`.
+     * Handles navigate deep links from `apporohome://navigate/...`.
      *
      * Supports server selection via the `server` query parameter:
      * - No parameter or `server=default`: Uses the default server

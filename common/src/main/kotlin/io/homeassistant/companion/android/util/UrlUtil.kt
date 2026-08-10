@@ -51,11 +51,11 @@ object UrlUtil {
      * @param input The URL string to resolve. Supported formats:
      *   - Absolute URL (http://... or https://...)
      *   - Relative path to be resolved against base
-     *   - Deep link URL with homeassistant://navigate/ prefix
+     *   - Deep link URL with apporohome://navigate/ prefix
      * @return The resolved URL, the base URL if input is invalid, or null if resolution fails
      */
     fun handle(base: URL?, input: String): URL? {
-        val normalizedInput = input.removePrefix("homeassistant://navigate/")
+        val normalizedInput = input.removePrefix("apporohome://navigate/")
 
         val uri = try {
             URI(normalizedInput)

@@ -10,9 +10,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * woowtech VI System Glassmorphism utilities.
+ * Apporo VI System Glassmorphism utilities.
  *
- * Provides frosted glass effects compliant with the woowtech Visual Identity System.
+ * Provides frosted glass effects compliant with the Apporo Visual Identity System.
  * - Light theme: White glass at 50% or 70% opacity
  * - Dark theme: Black glass at 30% opacity
  * - Blur radius: 20dp
@@ -38,7 +38,7 @@ object HAGlassmorphism {
 /**
  * Applies a glassmorphism effect to this composable.
  *
- * Uses the woowtech VI System glassmorphism specifications:
+ * Uses the Apporo VI System glassmorphism specifications:
  * - Light mode: White at 50% or 70% opacity
  * - Dark mode: Black at 30% opacity
  * - Blur radius: 20dp (requires API 31+)

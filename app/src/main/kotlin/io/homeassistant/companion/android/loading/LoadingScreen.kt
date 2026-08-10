@@ -28,7 +28,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_woowtech_branding),
+            painter = painterResource(R.drawable.ic_apporo_branding),
             contentDescription = null,
             modifier = Modifier.size(ICON_SIZE),
         )

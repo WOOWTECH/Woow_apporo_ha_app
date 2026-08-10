@@ -134,7 +134,7 @@ internal class NameYourDeviceNavigationTest : BaseOnboardingNavigationTest() {
             )
         }
         testNavigation(hasLocationTracking = false) {
-            navController.navigateToNameYourDevice("https://aiot.woowtech.io", "code")
+            navController.navigateToNameYourDevice("https://aiot.apporo.io", "code")
             assertTrue(navController.currentBackStackEntry?.destination?.hasRoute<NameYourDeviceRoute>() == true)
 
             onNodeWithText(stringResource(commonR.string.name_your_device_save))

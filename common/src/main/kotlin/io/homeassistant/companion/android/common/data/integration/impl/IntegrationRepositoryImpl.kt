@@ -79,8 +79,8 @@ class IntegrationRepositoryImpl @AssistedInject constructor(
 ) : IntegrationRepository {
 
     companion object {
-        private const val APP_ID = "io.homeassistant.companion.android"
-        private const val APP_NAME = "Home Assistant"
+        private const val APP_ID = "com.apporo.home"
+        private const val APP_NAME = "Apporo Home"
         private const val OS_NAME = "Android"
 
         // Note: _not_ server-specific

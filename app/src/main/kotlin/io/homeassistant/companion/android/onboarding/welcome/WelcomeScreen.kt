@@ -57,7 +57,7 @@ internal fun WelcomeScreen(
         Spacer(modifier = Modifier.weight(positionPercentage))
 
         Image(
-            painter = painterResource(R.drawable.ic_woowtech_branding),
+            painter = painterResource(R.drawable.ic_apporo_branding),
             contentDescription = stringResource(commonR.string.home_assistant_branding_icon_content_description),
             modifier = Modifier.size(ICON_SIZE),
         )

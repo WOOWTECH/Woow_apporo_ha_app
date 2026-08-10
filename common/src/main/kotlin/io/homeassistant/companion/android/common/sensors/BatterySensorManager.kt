@@ -129,7 +129,7 @@ class BatterySensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.woowtech.io/docs/core/sensors#battery-sensors"
+        return "https://aiot.apporo.io/docs/core/sensors#battery-sensors"
     }
 
     override val name: Int

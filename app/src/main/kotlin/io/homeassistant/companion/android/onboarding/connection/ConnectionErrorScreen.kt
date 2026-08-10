@@ -64,8 +64,8 @@ private val MaxContentWidth = MaxButtonWidth
 @VisibleForTesting
 internal const val URL_INFO_TAG = "url_info"
 
-private const val URL_DOCUMENTATION = "https://aiot.woowtech.io/docs/troubleshooting/faqs/"
-private const val URL_COMMUNITY_FORUM = "https://aiot.woowtech.io/c/mobile-apps/android-companion/42"
+private const val URL_DOCUMENTATION = "https://aiot.apporo.io/docs/troubleshooting/faqs/"
+private const val URL_COMMUNITY_FORUM = "https://aiot.apporo.io/c/mobile-apps/android-companion/42"
 private const val URL_GITHUB_ISSUES = "https://github.com/home-assistant/android/issues"
 private const val URL_DISCORD = "https://discord.com/channels/330944238910963714/1284965926336335993"
 

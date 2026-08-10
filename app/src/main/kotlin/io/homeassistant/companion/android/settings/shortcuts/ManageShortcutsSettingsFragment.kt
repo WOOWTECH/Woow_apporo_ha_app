@@ -55,7 +55,7 @@ class ManageShortcutsSettingsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        addHelpMenuProvider("https://aiot.woowtech.io/docs/integrations/android-shortcuts")
+        addHelpMenuProvider("https://aiot.apporo.io/docs/integrations/android-shortcuts")
     }
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)

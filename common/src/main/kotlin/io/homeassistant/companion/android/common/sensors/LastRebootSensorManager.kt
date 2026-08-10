@@ -34,7 +34,7 @@ class LastRebootSensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.woowtech.io/docs/core/sensors#last-reboot-sensor"
+        return "https://aiot.apporo.io/docs/core/sensors#last-reboot-sensor"
     }
     override val name: Int
         get() = commonR.string.sensor_name_last_reboot

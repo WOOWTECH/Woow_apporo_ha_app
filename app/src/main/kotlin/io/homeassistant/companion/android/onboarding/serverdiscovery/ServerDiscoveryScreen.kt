@@ -292,7 +292,7 @@ private fun ServerItemContent(server: ServerDiscovered, onConnectClick: (URL) ->
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_woowtech_branding),
+            painter = painterResource(R.drawable.ic_apporo_branding),
             contentDescription = null,
             modifier = Modifier
                 .size(ICON_SIZE)
@@ -380,7 +380,7 @@ private fun AnimatedIcon() {
                 .rotate(rotation),
         )
         Image(
-            painter = painterResource(R.drawable.ic_woowtech_branding),
+            painter = painterResource(R.drawable.ic_apporo_branding),
             contentDescription = null,
             modifier = Modifier
                 .size(80.dp)

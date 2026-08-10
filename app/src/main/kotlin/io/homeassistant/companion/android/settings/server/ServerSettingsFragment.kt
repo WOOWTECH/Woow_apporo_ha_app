@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import timber.log.Timber
 
-private const val BASE_INVITE_URL = "https://aiot.woowtech.io/invite/#"
+private const val BASE_INVITE_URL = "https://aiot.apporo.io/invite/#"
 
 @AndroidEntryPoint
 class ServerSettingsFragment :

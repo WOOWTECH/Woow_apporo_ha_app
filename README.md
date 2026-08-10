@@ -1,111 +1,58 @@
-# woowtech Home
+# Apporo Home
 
-[繁體中文](README.zh-TW.md)
-
-The official woowtech Home Android companion app for smart home control.
-
-## Download
-
-[![Download APK v1.7.0](https://img.shields.io/badge/Download-APK_v1.7.0-green?logo=android)](https://github.com/WOOWTECH/woow_ha_app/raw/releases/woowtech-home-v1.7.0-debug.apk)
-
-**Version:** 1.7.0 | **Updated:** 2026-01-31
+Apporo Home is the official Android smart home control app.
 
 ## Overview
 
-woowtech Home is a mobile companion app that connects to your woowtech smart home server at `https://aiot.woowtech.io`. It provides local control and privacy-first smart home automation powered by Home Assistant open source technology.
+Apporo Home connects to your smart home server at `https://aiot.apporo.io`.
+It provides local control and privacy-first home automation, built on Home Assistant open source technology.
 
 ## Features
 
-- **Remote Access**: Control your smart home from anywhere
-- **Local Control**: Direct connection to your home server when on the same network
-- **Sensors**: Background sensor collection for automation triggers
-- **Notifications**: Push notifications for alerts and automations
-- **Widgets**: Home screen widgets for quick device control
-- **Wear OS**: Support for Wear OS smartwatches
-- **Android Auto**: Integration with Android Auto for in-car control
+- **Remote access** — control your smart home from anywhere
+- **Local control** — connect directly to the home server on the same network
+- **Sensors** — background sensor collection for automation triggers
+- **Notifications** — push notifications for alerts and automations
+- **Widgets** — home screen widgets for quick device control
+- **Wear OS** — smartwatch support
+- **Android Auto** — in-car control
 
-## Branding
+## Brand
 
 | Property | Value |
-|----------|-------|
-| Primary Color | #6183FC (woowtech Brand Blue) |
-| App Name | woowtech Home |
-| Package ID | com.woowtech.home |
-| Server URL | https://aiot.woowtech.io |
+|---|---|
+| Primary color | #8B6B24 |
+| App name | Apporo Home |
+| Package ID | com.apporo.home |
+| Server URL | https://aiot.apporo.io |
+| URL scheme | apporohome:// |
 
-## Building
+## Build
 
-### Requirements
-
-- JDK 17+
-- Android SDK
-- Gradle
-
-### Debug Build
+Requirements: JDK 17+, Android SDK, Gradle.
 
 ```bash
-./gradlew assembleFullDebug
+./gradlew assembleFullDebug     # debug
+./gradlew assembleFullRelease   # release
 ```
 
-### Release Build
+Output: `app/build/outputs/apk/full/debug/app-full-debug.apk`
+
+## Rebranding
+
+This branch was generated from `main` with:
 
 ```bash
-./gradlew assembleFullRelease
+git checkout -b brand/apporo main
+bash tools/brand/rebrand.sh tools/brand/apporo.conf
 ```
 
-## APK Location
-
-After building, the APK can be found at:
-```
-app/build/outputs/apk/full/debug/app-full-debug.apk
-```
-
-## Server Configuration
-
-The app connects to:
-- **Server URL**: https://aiot.woowtech.io
-- **OAuth Client ID**: https://aiot.woowtech.io/android
-
-## Architecture
-
-| Component | Technology |
-|-----------|------------|
-| Language | Kotlin |
-| UI Framework | Jetpack Compose |
-| Dependency Injection | Hilt |
-| Networking | Retrofit + OkHttp WebSocket |
-| Database | Room |
-| Serialization | Kotlinx.serialization |
-
-## Modules
-
-| Module | Description |
-|--------|-------------|
-| `:app` | Main mobile application |
-| `:wear` | Wear OS application |
-| `:automotive` | Android Automotive version |
-| `:common` | Shared code across all apps |
-
-## Code Quality
-
-```bash
-# Format code
-./gradlew ktlintFormat
-
-# Check code style
-./gradlew ktlintCheck
-
-# Run tests
-./gradlew test
-
-# Run linter
-./gradlew lint
-```
+See `docs/brand/WHITE_LABEL_SOP.md`.
 
 ## License
 
-Based on Home Assistant Companion for Android - Open Source Home Automation.
+Based on Home Assistant Companion for Android (Apache 2.0).
 
 ---
 
-**woowtech** - Smart Home Solutions
+**Apporo Home**

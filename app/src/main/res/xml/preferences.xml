@@ -211,10 +211,10 @@
             android:key="docs"
             android:icon="@drawable/ic_question"
             android:title="@string/documentation"
-            android:summary="https://aiot.woowtech.io"
+            android:summary="https://aiot.apporo.io"
             app:enableCopying="true">
             <intent android:action="android.intent.action.VIEW"
-                android:data="https://aiot.woowtech.io" />
+                android:data="https://aiot.apporo.io" />
         </Preference>
         <Preference
             android:key="developer"
@@ -238,7 +238,7 @@
             android:key="changelog_github"
             android:title="@string/changelog"
             android:icon="@drawable/ic_github"
-            android:summary="https://aiot.woowtech.io/"
+            android:summary="https://aiot.apporo.io/"
             app:enableCopying="true" />
         <Preference
             android:key="version"

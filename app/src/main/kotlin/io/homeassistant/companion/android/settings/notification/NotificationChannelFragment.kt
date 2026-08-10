@@ -33,7 +33,7 @@ class NotificationChannelFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         addHelpMenuProvider(
-            "https://aiot.woowtech.io/docs/notifications/notifications-basic#notification-channels",
+            "https://aiot.apporo.io/docs/notifications/notifications-basic#notification-channels",
         )
     }
 

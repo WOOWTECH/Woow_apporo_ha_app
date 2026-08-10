@@ -94,7 +94,7 @@ class SensorSettingsFragment : Fragment() {
                         it.intent =
                             Intent(
                                 ACTION_VIEW,
-                                "https://aiot.woowtech.io/docs/core/sensors#android-sensors".toUri(),
+                                "https://aiot.apporo.io/docs/core/sensors#android-sensors".toUri(),
                             )
                     }
                 }

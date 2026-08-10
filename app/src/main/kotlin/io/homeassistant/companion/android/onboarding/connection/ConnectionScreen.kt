@@ -107,7 +107,7 @@ private fun ErrorPlaceholder() {
         contentAlignment = Alignment.Center,
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_woowtech_branding),
+            painter = painterResource(R.drawable.ic_apporo_branding),
             contentDescription = null,
             modifier = Modifier.size(ICON_SIZE),
         )
@@ -119,7 +119,7 @@ private fun ErrorPlaceholder() {
 private fun ConnectionScreenPreview() {
     HAThemeForPreview {
         ConnectionScreen(
-            url = "https://aiot.woowtech.io",
+            url = "https://aiot.apporo.io",
             isLoading = false,
             isError = false,
             webViewClient = WebViewClient(),

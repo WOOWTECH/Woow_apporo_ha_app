@@ -2,13 +2,13 @@
 
 ## 概述
 
-為 woowtech Home Android 應用程式新增繁體中文 (zh-TW) 語言支援，讓使用者可以在 App 設定中選擇繁體中文作為顯示語言。
+為 Apporo Home Android 應用程式新增繁體中文 (zh-TW) 語言支援，讓使用者可以在 App 設定中選擇繁體中文作為顯示語言。
 
 ## 目標
 
 - 讓台灣及其他繁體中文使用者能以母語使用 App
 - 提升使用者體驗和 App 的可及性
-- 擴大 woowtech Home 的目標市場
+- 擴大 Apporo Home 的目標市場
 
 ## 功能範圍
 
