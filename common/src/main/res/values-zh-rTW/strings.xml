@@ -318,7 +318,7 @@
     <string name="input_booleans">輸入布林值</string>
     <string name="input_buttons">輸入按鈕</string>
     <string name="input_cloud">使用 Apporo SmartHome Cloud</string>
-    <string name="input_url_hint">https://example.duckdns.org:8123</string>
+    <string name="input_url_hint">https://&lt;ipaddress&gt;</string>
     <string name="input_url">Apporo SmartHome 網址</string>
     <string name="install">安裝</string>
     <string name="install_app">在 Wear 裝置上安裝應用程式</string>

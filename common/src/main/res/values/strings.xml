@@ -320,7 +320,7 @@
     <string name="input_booleans">Input booleans</string>
     <string name="input_buttons">Input buttons</string>
     <string name="input_cloud">Use Apporo SmartHome Cloud</string>
-    <string name="input_url_hint">https://example.duckdns.org:8123</string>
+    <string name="input_url_hint">https://&lt;ipaddress&gt;</string>
     <string name="input_url">Apporo SmartHome URL</string>
     <string name="install">Install</string>
     <string name="install_app">Install app on Wear device</string>
