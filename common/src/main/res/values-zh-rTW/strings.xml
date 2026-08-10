@@ -1029,7 +1029,7 @@
     <string name="widget_text_color_white">白色</string>
     <string name="widget_update_error">無法更新小工具。</string>
     <string name="widgets">小工具</string>
-    <string name="companion_app">Companion 應用程式</string>
+    <string name="companion_app">Apporo SmartHome</string>
     <string name="basic_sensor_name_last_used_app">上次使用的應用程式</string>
     <string name="sensor_description_last_used_app">裝置上上次使用的應用程式的應用程式名稱或套件名稱</string>
     <string name="sensor_name_last_app">上次使用的應用程式</string>
