@@ -383,10 +383,9 @@ private fun AnimatedIcon() {
             painter = painterResource(R.drawable.ic_apporo_branding),
             contentDescription = null,
             modifier = Modifier
-                .size(80.dp)
+                .size(120.dp)
                 .scale(pulse)
-                .align(Alignment.Center)
-                .clip(CircleShape),
+                .align(Alignment.Center),
         )
     }
 }
