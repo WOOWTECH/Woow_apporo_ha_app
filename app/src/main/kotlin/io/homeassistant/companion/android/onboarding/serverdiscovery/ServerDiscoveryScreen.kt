@@ -385,7 +385,10 @@ private fun AnimatedIcon() {
             painter = painterResource(R.drawable.ic_apporo_branding),
             contentDescription = null,
             modifier = Modifier
-                .size(120.dp)
+                // Base shrunk from 120 → 88 so brand image (which includes the
+                // "apporo" wordmark) stays inside the 220dp dots ring's inner-
+                // clear zone (~radius 68dp) both statically and at max pulse.
+                .size(88.dp)
                 .scale(pulse)
                 .align(Alignment.Center),
         )
