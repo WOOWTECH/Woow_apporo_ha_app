@@ -24,7 +24,7 @@ val threadPolicyIgnoredViolationRules = listOf(
     IgnoreSamsungSpegDiskRead,
     IgnoreAndroidAutoServiceConnectionDiskRead,
     IgnoreAndroidAutoRendererServiceDiskRead,
-    IgnoreMiuiFontSettingsDiskRead,
+    IgnoreMiuiFontDiskRead,
     IgnoreMiuiTurboSchedMonitorDiskRead,
     IgnoreChromiumKeyStoreDiskWrite,
     IgnoreAppCompatPersistLocalesDiskReadWrite,
@@ -246,17 +246,24 @@ private data object IgnoreAndroidAutoRendererServiceDiskRead : IgnoreViolationRu
 }
 
 /**
- * Ignore a [DiskReadViolation] in MIUI's FontSettings component.
- * This occurs when MIUI ROM checks for custom theme fonts during Activity creation
- * and is beyond application control.
+ * Ignore a [DiskReadViolation] raised from MIUI's system font package (`miui.util.font.*`).
+ *
+ * MIUI reads font files from disk on the main thread from more than one class in this package:
+ * `FontSettings` checks for custom theme fonts during Activity creation, and `MultiLangHelper`
+ * probes multi-language font info during the first Compose text draw. The latter runs inside a
+ * static initializer, so it fires once per process on every cold start and FailFast-crashes MIUI
+ * debug builds (see https://github.com/WOOWTECH/woow_ha_app/issues/4). Because the frame that
+ * declares the read varies between these sibling classes, the match is kept broad on the
+ * `miui.util.font.` package prefix, all of which is MIUI system font code beyond application
+ * control.
  */
-private data object IgnoreMiuiFontSettingsDiskRead : IgnoreViolationRule {
+private data object IgnoreMiuiFontDiskRead : IgnoreViolationRule {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun shouldIgnore(violation: Violation): Boolean {
         if (violation !is DiskReadViolation) return false
 
         return violation.stackTrace.any {
-            it.className == "miui.util.font.FontSettings"
+            it.className.startsWith("miui.util.font.")
         }
     }
 }
