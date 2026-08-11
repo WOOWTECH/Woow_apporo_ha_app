@@ -364,7 +364,9 @@ private fun AnimatedIcon() {
         )
         val pulse by rememberInfiniteTransition(label = "icon_pulse").animateFloat(
             initialValue = 1f,
-            targetValue = 1.15f,
+            // Max scale kept small so the square's rounded corners stay inside the
+            // dots ring's inner-clear zone (~radius 68dp in the 220dp viewport).
+            targetValue = 1.05f,
             animationSpec = infiniteRepeatable(
                 animation = tween(durationMillis = 800, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse,
