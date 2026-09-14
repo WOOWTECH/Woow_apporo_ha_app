@@ -43,7 +43,7 @@ private object HAColors {
     val Primary20 = Color(0xFF7E6A3D)
     val Primary30 = Color(0xFF9E8652)
     val Primary40 = Color(0xFFBEA368)
-    val Primary50 = Color(0xFF8B6B24)  // Apporo Home Brand Color
+    val Primary50 = Color(0xFF8B6B24) // Apporo Home Brand Color
     val Primary60 = Color(0xFFE5CF9E)
     val Primary70 = Color(0xFFEEDCB6)
     val Primary80 = Color(0xFFF3E8CF)
@@ -56,7 +56,7 @@ private object HAColors {
     val Blue20 = Color(0xFF7E6A3D)
     val Blue30 = Color(0xFF9E8652)
     val Blue40 = Color(0xFFBEA368)
-    val Blue50 = Color(0xFF8B6B24)  // Apporo Home Brand Color
+    val Blue50 = Color(0xFF8B6B24) // Apporo Home Brand Color
     val Blue60 = Color(0xFFE5CF9E)
     val Blue70 = Color(0xFFEEDCB6)
     val Blue80 = Color(0xFFF3E8CF)
@@ -69,7 +69,7 @@ private object HAColors {
     val Brand20 = Color(0xFF7E6A3D)
     val Brand30 = Color(0xFF9E8652)
     val Brand40 = Color(0xFFBEA368)
-    val Brand50 = Color(0xFF8B6B24)  // Apporo Home Brand Color
+    val Brand50 = Color(0xFF8B6B24) // Apporo Home Brand Color
     val Brand60 = Color(0xFFE5CF9E)
     val Brand70 = Color(0xFFEEDCB6)
     val Brand80 = Color(0xFFF3E8CF)
@@ -202,10 +202,10 @@ private object HAColors {
  * Background: #FFFFFF
  */
 object HABrandColors {
-    val Blue = Color(0xFF8B6B24)  // Apporo Home Brand Color
-    val Background = Color(0xFFFFFFFF)  // VI System background
-    val TextPrimary = Color(0xFF212121)  // VI System text primary
-    val TextSecondary = Color(0xFF646262)  // VI System text secondary
+    val Blue = Color(0xFF8B6B24) // Apporo Home Brand Color
+    val Background = Color(0xFFFFFFFF) // VI System background
+    val TextPrimary = Color(0xFF212121) // VI System text primary
+    val TextSecondary = Color(0xFF646262) // VI System text secondary
 }
 
 @Immutable
