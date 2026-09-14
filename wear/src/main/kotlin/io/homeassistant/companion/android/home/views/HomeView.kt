@@ -531,16 +531,24 @@ fun LoadHomePage(mainViewModel: MainViewModel) {
             ) { backStackEntry ->
                 val sensorManagerId =
                     backStackEntry.arguments?.getString(ARG_SCREEN_SENSOR_MANAGER_ID)
-                val sensorManager = getSensorManagers().first { sensorManager ->
+                val sensorManager = getSensorManagers().firstOrNull { sensorManager ->
                     sensorManager.id() == sensorManagerId
                 }
-                mainViewModel.updateAllSensors(sensorManager)
-                SensorManagerUi(
-                    allSensors = mainViewModel.sensors.value,
-                    allAvailSensors = mainViewModel.availableSensors,
-                    sensorManager = sensorManager,
-                ) { sensorId, isEnabled ->
-                    mainViewModel.enableDisableSensor(sensorManager, sensorId, isEnabled)
+                if (sensorManager == null) {
+                    // A deep link saved by an older release can name a sensor manager that this
+                    // build no longer ships. Fall back to the list instead of throwing.
+                    SensorsView(onClickSensorManager = {
+                        swipeDismissableNavController.navigate("$SCREEN_SINGLE_SENSOR_MANAGER/${it.id()}")
+                    })
+                } else {
+                    mainViewModel.updateAllSensors(sensorManager)
+                    SensorManagerUi(
+                        allSensors = mainViewModel.sensors.value,
+                        allAvailSensors = mainViewModel.availableSensors,
+                        sensorManager = sensorManager,
+                    ) { sensorId, isEnabled ->
+                        mainViewModel.enableDisableSensor(sensorManager, sensorId, isEnabled)
+                    }
                 }
             }
         }

@@ -21,8 +21,13 @@ data class SensorSetting(
     val sensorId: String,
     @ColumnInfo(name = "name")
     val name: String,
+    /**
+     * Immutable on purpose: the settings list is drawn straight from the instances this entity is
+     * stored in, so changing a value in place makes the updated instance compare equal to the one
+     * already on screen and Compose skips the recomposition. Use [copy] to produce a new value.
+     */
     @ColumnInfo(name = "value")
-    var value: String,
+    val value: String,
     /** Indicates the data type of the `value`. */
     @ColumnInfo(name = "value_type")
     val valueType: SensorSettingType,
