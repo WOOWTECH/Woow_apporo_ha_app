@@ -19,12 +19,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.homeassistant.companion.android.R
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.data.servers.ServerManager
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.settings.developer.location.views.LocationTrackingView
 import io.homeassistant.companion.android.util.compose.HomeAssistantAppTheme
 import javax.inject.Inject
 
-private const val FAQ_LINK =
-    "https://aiot.apporo.io/docs/troubleshooting/faqs#device-tracker-is-not-updating-in-android-app"
+private const val FAQ_LINK = AppSupportLinks.LOCATION_TROUBLESHOOTING
 
 @AndroidEntryPoint
 class LocationTrackingFragment : Fragment() {

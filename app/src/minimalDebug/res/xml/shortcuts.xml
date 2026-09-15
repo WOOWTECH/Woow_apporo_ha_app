@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    minimalDebug copy of app/src/debug/res/xml/shortcuts.xml.
+
+    android:targetPackage must be the full applicationId of the installed build, and a resource
+    file cannot read the Gradle applicationId, so the value is written out per variant. The minimal
+    flavor adds the ".minimal" suffix (AndroidFullMinimalFlavorConventionPlugin) on top of the
+    ".debug" suffix of the debug build type (AndroidApplicationConventionPlugin), giving
+    "com.apporo.aiot.minimal.debug". The variant source set "minimalDebug" outranks the build type
+    source set "debug", so this file replaces that one for minimalDebug only; fullDebug keeps
+    app/src/debug/res/xml/shortcuts.xml.
+
+    Keep the two files in sync: any change to the shortcut below must be made in both.
+-->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources, UnusedAttribute">
+    <shortcut
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher_dev_playground"
+        android:roundIcon="@mipmap/ic_launcher_dev_playground_round"
+        android:shortcutId="dev"
+        android:shortcutShortLabel="@string/dev_playground_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="io.homeassistant.companion.android.developer.DevPlaygroundActivity"
+            android:targetPackage="com.apporo.aiot.minimal.debug" />
+    </shortcut>
+</shortcuts>

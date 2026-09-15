@@ -11,11 +11,24 @@ import retrofit2.http.Url
 interface AuthenticationService {
 
     companion object {
-        // This page is not published yet. Before the app is submitted for review, confirm that this
-        // address is readable without signing in and that it serves the OAuth client metadata,
-        // including a `rel="redirect_uri"` link pointing at the app's auth callback deep link.
-        // Home Assistant refuses the authorize request when this address cannot be fetched.
-        const val CLIENT_ID = "https://aiot.apporo.ai/android"
+        // OAuth client_id. Home Assistant fetches this address from the server side during the
+        // authorize request and reads the `rel="redirect_uri"` link tags out of it; the login only
+        // succeeds when the app's callback appears there verbatim. An address that does not resolve
+        // therefore breaks sign-in outright, and the hard-coded allow list in Home Assistant's
+        // indieauth module covers the official client ids only, never a fork's.
+        //
+        // This deliberately points at the GitHub Pages copy of `docs/android/index.html`, which is
+        // live and anonymously readable today, rather than at the brand domain. `aiot.apporo.ai`
+        // has no DNS record yet, so pointing at it would make every sign-in fail.
+        //
+        // Migration condition — switch to "https://aiot.apporo.ai/android" only once all of these
+        // hold: the host resolves, it serves the same `rel="redirect_uri"` link tags as
+        // docs/android/index.html, and it is readable anonymously (no auth, no interstitial) from
+        // outside our network. Verify with a plain `curl` from an unrelated machine first.
+        //
+        // Note that GitHub Pages publishes from the default branch, so a change to the redirect
+        // scheme in docs/android/index.html only takes effect after it is merged to `main`.
+        const val CLIENT_ID = "https://woowtech.github.io/Woow_apporo_ha_app/android"
         const val GRANT_TYPE_CODE = "authorization_code"
         const val GRANT_TYPE_REFRESH = "refresh_token"
         const val REVOKE_ACTION = "revoke"

@@ -24,6 +24,29 @@ object AppSupportLinks {
     /** Connecting the app to a home server, including local and remote addresses. */
     const val CONNECTION = "$HELP_CENTER_BASE_URL/connection"
 
+    /**
+     * The security levels a connection can be held to, and what the app refuses to do at each one.
+     *
+     * Explains why a plain text server is blocked unless the user is on the home network, which is
+     * the question the onboarding and the block screen send the reader here to answer.
+     */
+    const val CONNECTION_SECURITY_LEVEL = "$CONNECTION/security-level"
+
+    /**
+     * Setting up a client certificate so the server can authenticate the app with mutual TLS.
+     *
+     * Reached from the watch onboarding, which cannot present a certificate of its own and has to
+     * explain why the phone finished the pairing instead.
+     */
+    const val CONNECTION_CLIENT_CERTIFICATE = "$CONNECTION/client-certificate"
+
+    /**
+     * Naming the Wi-Fi networks that count as home so the app uses the internal address on them.
+     *
+     * Includes what to do when the app keeps choosing the external address on the home network.
+     */
+    const val HOME_NETWORK = "$CONNECTION/home-network"
+
     /** How to reach support and what information to include when reporting a problem. */
     const val SUPPORT = "$HELP_CENTER_BASE_URL/support"
 
@@ -36,8 +59,24 @@ object AppSupportLinks {
     /** Advanced notification options such as actions, channels and persistent notifications. */
     const val NOTIFICATIONS_ADVANCED = "$HELP_CENTER_BASE_URL/notifications/advanced"
 
+    /**
+     * The section of [NOTIFICATIONS_ADVANCED] about channels.
+     *
+     * Channels are where the user changes the sound, vibration and importance of one kind of
+     * notification without silencing the rest, which is what the channel settings screen links to.
+     */
+    const val NOTIFICATION_CHANNELS = "$NOTIFICATIONS_ADVANCED#notification-channels"
+
     /** The sensors the app reports and how to enable or configure each one. */
     const val SENSORS = "$HELP_CENTER_BASE_URL/sensors"
+
+    /**
+     * Why location updates stop arriving and how to get the device tracker updating again.
+     *
+     * Covers the battery optimisation and background permission settings that silently stop
+     * location reporting, which is the most common reason a tracker goes stale.
+     */
+    const val LOCATION_TROUBLESHOOTING = "$HELP_CENTER_BASE_URL/troubleshooting/location"
 
     /** Adding and configuring home screen widgets. */
     const val WIDGETS = "$HELP_CENTER_BASE_URL/widgets"
@@ -45,8 +84,28 @@ object AppSupportLinks {
     /** Creating app shortcuts and assistant shortcuts for frequently used actions. */
     const val SHORTCUTS = "$HELP_CENTER_BASE_URL/shortcuts"
 
+    /** Exposing entities as Android device controls in the power menu and on the lock screen. */
+    const val DEVICE_CONTROLS = "$HELP_CENTER_BASE_URL/device-controls"
+
+    /** Adding entities to the Quick Settings panel as tiles. */
+    const val QUICK_SETTINGS_TILES = "$HELP_CENTER_BASE_URL/quick-settings-tiles"
+
+    /** Running an action by swiping on the app, and which gestures can be assigned. */
+    const val GESTURES = "$HELP_CENTER_BASE_URL/gestures"
+
+    /** The app on the car screen: which entities it can show and how to choose the favourites. */
+    const val ANDROID_AUTO = "$HELP_CENTER_BASE_URL/android-auto"
+
     /** Reading and writing NFC tags to trigger actions. */
     const val NFC = "$HELP_CENTER_BASE_URL/nfc"
+
+    /**
+     * The address format written onto a tag, and how the app is opened by scanning one.
+     *
+     * The same links work from any app that opens web addresses, so this page also covers sharing
+     * a tag address outside of NFC.
+     */
+    const val NFC_UNIVERSAL_LINKS = "$NFC/universal-links"
 
     /** Why the app asks for camera and microphone access and how that access is used. */
     const val CAMERA_MICROPHONE = "$HELP_CENTER_BASE_URL/camera-and-microphone"
@@ -54,8 +113,11 @@ object AppSupportLinks {
     /** The app running on a Meta Quest headset, including the sensors that are exclusive to it. */
     const val META_QUEST = "$HELP_CENTER_BASE_URL/meta-quest"
 
+    /** The watch app: pairing it with the phone, and the settings, tiles and favourites it offers. */
+    const val WEAR_OS = "$HELP_CENTER_BASE_URL/wear-os"
+
     /** The sensors reported by the watch app, which are a different set from the phone sensors. */
-    const val WEAR_OS_SENSORS = "$HELP_CENTER_BASE_URL/wear-os/sensors"
+    const val WEAR_OS_SENSORS = "$WEAR_OS/sensors"
 
     /** The watch sensors that read from Wear OS Health Services, such as heart rate and calories. */
     const val WEAR_OS_HEALTH_SERVICES = "$WEAR_OS_SENSORS#health-services"
@@ -189,6 +251,12 @@ object AppSupportLinks {
 
         /** The accent colour Android derives from the wallpaper on Android 12 and newer. */
         const val DYNAMIC_COLOR = "$PAGE_URL#dynamic-color-sensor"
+
+        /**
+         * Where the device is: background updates, zone entry and exit, and the single accurate
+         * reading the server can ask for on demand.
+         */
+        const val LOCATION = "$PAGE_URL#location-sensors"
 
         /** The address the current location resolves to. */
         const val GEOCODED_LOCATION = "$PAGE_URL#geocoded-location-sensor"

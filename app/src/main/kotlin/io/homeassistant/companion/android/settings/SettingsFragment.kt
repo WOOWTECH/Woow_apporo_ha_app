@@ -51,7 +51,6 @@ import io.homeassistant.companion.android.settings.vehicle.ManageAndroidAutoSett
 import io.homeassistant.companion.android.settings.wear.SettingsWearActivity
 import io.homeassistant.companion.android.settings.wear.SettingsWearDetection
 import io.homeassistant.companion.android.settings.widgets.ManageWidgetsSettingsFragment
-import io.homeassistant.companion.android.util.BRAND_HOST
 import io.homeassistant.companion.android.util.QuestUtil
 import io.homeassistant.companion.android.util.applyBottomSafeDrawingInsets
 import io.homeassistant.companion.android.webview.WebViewActivity
@@ -324,12 +323,6 @@ class SettingsFragment(private val presenter: SettingsPresenter, private val lan
             }
         }
 
-        findPreference<Preference>("changelog_github")?.let {
-            val link = "https://$BRAND_HOST/"
-            it.summary = link
-            it.intent = Intent(Intent.ACTION_VIEW, link.toUri())
-        }
-
         findPreference<Preference>("changelog_prompt")?.setOnPreferenceClickListener {
             lifecycleScope.launch {
                 presenter.showChangeLog(requireContext())
@@ -363,8 +356,16 @@ class SettingsFragment(private val presenter: SettingsPresenter, private val lan
         }
 
         findPreference<Preference>("privacy")?.let {
-            it.summary = "https://$BRAND_HOST/privacy/"
-            it.intent = Intent(Intent.ACTION_VIEW, it.summary.toString().toUri())
+            // The privacy policy lives on the public brand site, not on BRAND_HOST: BRAND_HOST is
+            // the technical host used by deep links, the invite flow and the asset links file,
+            // while the policy is a page a store reviewer and any user must be able to read.
+            // R.string.privacy_url is the single source for that address — preferences.xml already
+            // shows it as the summary and every other screen that opens the policy reads the same
+            // string — so the intent is built from it too. A second address hardcoded here would
+            // ship two different privacy policy links in one app.
+            val privacyUrl = getString(commonR.string.privacy_url)
+            it.summary = privacyUrl
+            it.intent = Intent(Intent.ACTION_VIEW, privacyUrl.toUri())
         }
 
         findPreference<Preference>("developer")?.setOnPreferenceClickListener {

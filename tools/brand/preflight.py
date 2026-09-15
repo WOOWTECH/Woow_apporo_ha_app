@@ -46,12 +46,44 @@ JAVA_KEYWORDS = {
     "object", "val", "var", "when",
 }
 
-# 這些值屬於上游 woowtech，出現在品牌設定檔裡代表沒改到
-UPSTREAM = {
-    "APPLICATION_ID": "com.woowtech.home",
-    "BRAND_HOST": "aiot.woowtech.io",
-    "PRIMARY_COLOR": "#6183FC",
-    "BRAND_ID": "woowtech",
+# 已經被佔用的身分值 → 佔用它的 BRAND_ID。
+#
+# 這張表擋兩種事故，它們的症狀一樣（兩個 App 撞同一個身分），成因不同：
+#   * 從上游 woowtech 複製設定檔卻忘了改 → 值還是 com.woowtech.home 之類
+#   * 從某個已上線品牌複製設定檔卻忘了改 → 值是別人的，後裝的 App 會蓋掉先裝的
+#
+# 值的擁有者自己當然可以填自己的值，所以比對時用 BRAND_ID 放行。
+# 退役的舊值（例如 apporo 換裝前的 com.apporo.home）一樣列進來：它們不該被別的
+# 品牌撿去用，Play Store 也不接受重複的 package。
+TAKEN: dict[str, dict[str, str]] = {
+    "APPLICATION_ID": {
+        "com.woowtech.home": "woowtech",
+        "com.apporo.home": "apporo",  # 退役：2026-09 改為 com.apporo.aiot
+        "com.apporo.aiot": "apporo",
+        "com.simon.home": "simon",
+    },
+    "BRAND_HOST": {
+        "aiot.woowtech.io": "woowtech",
+        "aiot.apporo.io": "apporo",  # 退役：2026-09 改為 aiot.apporo.ai
+        "aiot.apporo.ai": "apporo",
+        "aiot.simon.io": "simon",
+    },
+    "PRIMARY_COLOR": {
+        "#6183fc": "woowtech",
+        "#8b6b24": "apporo",
+        "#0060a6": "simon",
+    },
+    "URL_SCHEME": {
+        "apporohome": "apporo",  # 退役：2026-09 改為 apporoaiot
+        "apporoaiot": "apporo",
+        "simonhome": "simon",
+    },
+    # BRAND_ID 自己不放 woowtech —— 那一項用下面的獨立檢查擋，因為「擁有者放行」
+    # 的規則對 BRAND_ID 欄位是自我指涉的，會把沒改到的 woowtech 也一起放行。
+    "BRAND_ID": {
+        "apporo": "apporo",
+        "simon": "simon",
+    },
 }
 
 errors: list[str] = []
@@ -165,9 +197,15 @@ def check_one(path: str, cfg: dict[str, str]) -> None:
         warn(name, f"LOGO_SRC='{logo}' 目前不存在。若尚未取得素材，"
                    f"換裝時會退回佔位圖（腳本不會中斷）。")
 
-    for key, upstream_value in UPSTREAM.items():
-        if cfg.get(key, "").lower() == upstream_value.lower():
-            err(name, f"{key} 還是上游 woowtech 的值（{upstream_value}），沒有改成品牌值。")
+    if bid == "woowtech":
+        err(name, "BRAND_ID 還是上游的 woowtech，沒有改成品牌值。")
+
+    for key, owners in TAKEN.items():
+        value = cfg.get(key, "")
+        owner = owners.get(value.lower())
+        if owner and owner != bid:
+            err(name, f"{key}='{value}' 已經是 {owner} 的身分值，不能給 '{bid or '(未填)'}' 用。"
+                      f"兩個品牌共用同一個值，後裝的 App 會蓋掉先裝的。")
 
     if cfg.get("OAUTH_CLIENT_ID"):
         warn(name, f"OAUTH_CLIENT_ID 已設為 {cfg['OAUTH_CLIENT_ID']}。"
@@ -204,11 +242,12 @@ def check_cross(configs: list[tuple[str, dict[str, str]]]) -> None:
                 msg = f"{field}='{value}' 同時出現在 {', '.join(owners)} —— {label}"
                 (warn if field == "BRAND_HOST" else err)("cross", msg)
 
-    # 也要跟已上線的 woowtech Home 比對
+    # 也要跟上游、以及已經上線的品牌比對
     for path, cfg in configs:
         if not cfg.get("URL_SCHEME"):
             warn(os.path.basename(path),
-                 "未設 URL_SCHEME，會與已上線的 woowtech Home 共用 homeassistant://。")
+                 "未設 URL_SCHEME，會沿用上游的 homeassistant://，"
+                 "與官方 Home Assistant App 及任何同樣沒改的品牌相撞。")
 
 
 def verify_repo(path: str, cfg: dict[str, str]) -> None:
@@ -243,14 +282,20 @@ def verify_repo(path: str, cfg: dict[str, str]) -> None:
             err(name, f"{label} 不是品牌值 —— 在 {filename} 找不到 `{needle}`。"
                       f"合併上游時可能被蓋回去了。")
 
-    # 殘留的上游關鍵字
+    # 殘留的上游關鍵字。
+    # woowtech.github.io 是 WOOWTECH org 的 GitHub Pages 網域，OAuth client_id 頁就掛在
+    # 那裡（見 docs/android/index.html）—— 那是刻意保留的，不是換裝沒換乾淨，要濾掉。
     try:
         res = subprocess.run(
-            ["git", "grep", "-l", "-i", "-e", "woowtech", "-e", "aiot.woowtech.io",
-             "--", ":!tools/brand", ":!docs/brand", ":!*lint-baseline.xml"],
+            ["git", "grep", "-n", "-i", "-e", "woowtech", "-e", "aiot.woowtech.io",
+             "--", ":!tools/brand", ":!docs/brand", ":!docs/plans", ":!*lint-baseline.xml"],
             capture_output=True, text=True, timeout=60,
         )
-        files = [x for x in res.stdout.split() if x]
+        files = sorted({
+            line.split(":", 1)[0]
+            for line in res.stdout.splitlines()
+            if line and "woowtech.github.io" not in line.lower()
+        })
         if files:
             warn(name, f"仍有 {len(files)} 個檔案含 woowtech 關鍵字："
                        f"{', '.join(files[:5])}{' …' if len(files) > 5 else ''}")

@@ -21,11 +21,12 @@ import androidx.navigation.navArgument
 import com.mikepenz.iconics.compose.Image
 import com.mikepenz.iconics.typeface.library.community.material.CommunityMaterial
 import io.homeassistant.companion.android.common.R as commonR
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.settings.wear.SettingsWearViewModel
 import io.homeassistant.companion.android.util.compose.HomeAssistantAppTheme
 import io.homeassistant.companion.android.util.safeTopWindowInsets
 
-const val WEAR_DOCS_LINK = "https://aiot.apporo.io/docs/wear-os/"
+const val WEAR_DOCS_LINK = AppSupportLinks.WEAR_OS
 
 @Composable
 fun LoadSettingsHomeView(

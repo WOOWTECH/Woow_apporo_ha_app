@@ -1,3 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dev Playground launcher shortcut for the debug build.
+
+    android:targetPackage must be the full applicationId of the installed build, and a resource
+    file cannot read the Gradle applicationId, so the value is written out per variant. This file
+    covers the full flavor, which adds no flavor suffix, so the debug build type suffix ".debug"
+    alone gives "com.apporo.aiot.debug". The minimal flavor adds ".minimal" as well and therefore
+    has its own copy at app/src/minimalDebug/res/xml/shortcuts.xml; without it the shortcut pointed
+    at a package that is not installed and tapping it did nothing.
+
+    Keep the two files in sync: any change to the shortcut below must be made in both. A new
+    product flavor with an applicationIdSuffix needs a third copy in its own "<flavor>Debug"
+    source set, otherwise it falls back to this file and the shortcut is dead again.
+-->
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="UnusedResources, UnusedAttribute">

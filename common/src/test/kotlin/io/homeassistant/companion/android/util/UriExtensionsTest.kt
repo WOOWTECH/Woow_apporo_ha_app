@@ -83,7 +83,7 @@ class UriExtensionsTest {
 
     @Test
     fun `Given address on an unexpected host when calling splitNfcTagId then returns null`() {
-        assertNotATagAddress("https://aiot.apporo.io/tag/$TAG_IDENTIFIER")
+        assertNotATagAddress("https://aiot.apporo.example/tag/$TAG_IDENTIFIER")
         assertNotATagAddress("https://aiot.apporo.ai.example.com/tag/$TAG_IDENTIFIER")
         assertNotATagAddress("https://example.com/tag/$TAG_IDENTIFIER")
         assertNotATagAddress("https://home-assistant.io/tag/$TAG_IDENTIFIER")

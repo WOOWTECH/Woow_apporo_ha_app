@@ -2,7 +2,11 @@
 
 **先讀 [ios-handoff.md](./ios-handoff.md)** 了解決策繼承後再照本文開工。
 
-**目標**：從 upstream `home-assistant/iOS` 生出 `Apporo SmartHome` / `Simon SmartHome` iOS App，能在 iPhone 實機執行、連上 `https://woowtech-ha.woowtech.io` 或品牌自己的 HA server。
+> **2026-09-14**：apporo 的身分已變更（`Apporo aiot` / `com.apporo.aiot` / `apporoaiot://` /
+> `aiot.apporo.ai`），本文已就地更新，沿革見 [`fork-divergence.md`](./fork-divergence.md)。
+> simon 的值沒有變動。`aiot.apporo.ai` 目前**沒有 DNS 紀錄**，站台尚未架設。
+
+**目標**：從 upstream `home-assistant/iOS` 生出 `Apporo aiot` / `Simon SmartHome` iOS App，能在 iPhone 實機執行、連上 `https://woowtech-ha.woowtech.io` 或品牌自己的 HA server。
 
 ---
 
@@ -85,7 +89,7 @@ Xcode 開起來後：
 
 ```bash
 # 建立 GitHub repo（如果還沒建）
-gh repo create WOOWTECH/Woow_apporo_ha_ios --public --description "Apporo SmartHome iOS App"
+gh repo create WOOWTECH/Woow_apporo_ha_ios --public --description "Apporo aiot iOS App"
 
 # 從 woow_ha_ios 種入完整歷史
 cd ~/Desktop
@@ -117,8 +121,8 @@ git push origin --tags
 
 ```
 // Configurations/apporo.xcconfig
-PRODUCT_BUNDLE_IDENTIFIER = com.apporo.home
-PRODUCT_NAME = Apporo SmartHome
+PRODUCT_BUNDLE_IDENTIFIER = com.apporo.aiot
+PRODUCT_NAME = Apporo aiot
 DEVELOPMENT_TEAM = <apporo Apple Developer Team ID>
 CODE_SIGN_STYLE = Manual
 CODE_SIGN_IDENTITY = iPhone Distribution
@@ -199,8 +203,8 @@ grep -rn "\.blue\|homeAssistantBlue\|colorPrimary" Sources/ | head
 find Sources -name "Localizable.strings" -exec grep -l "Home Assistant" {} \;
 
 # 全部替換為品牌名（apporo 為例）
-find Sources -name "Localizable.strings" -exec sed -i '' 's|Home Assistant Companion|Apporo SmartHome|g' {} \;
-find Sources -name "Localizable.strings" -exec sed -i '' 's|Home Assistant|Apporo SmartHome|g' {} \;
+find Sources -name "Localizable.strings" -exec sed -i '' 's|Home Assistant Companion|Apporo aiot|g' {} \;
+find Sources -name "Localizable.strings" -exec sed -i '' 's|Home Assistant|Apporo aiot|g' {} \;
 
 # ⚠ macOS sed 要 -i '' 空字串，不是 Linux 的 -i
 ```
@@ -208,7 +212,7 @@ find Sources -name "Localizable.strings" -exec sed -i '' 's|Home Assistant|Appor
 **慎重**：不要動 `homeassistant://` scheme、integration 名稱、程式 log。
 
 也要改 `Info.plist`：
-- `CFBundleDisplayName` → `Apporo SmartHome`
+- `CFBundleDisplayName` → `Apporo aiot`
 
 ### 6.3 URL Scheme
 
@@ -219,10 +223,10 @@ find Sources -name "Localizable.strings" -exec sed -i '' 's|Home Assistant|Appor
 <array>
     <dict>
         <key>CFBundleURLName</key>
-        <string>com.apporo.home.auth</string>
+        <string>com.apporo.aiot.auth</string>
         <key>CFBundleURLSchemes</key>
         <array>
-            <string>apporohome</string>
+            <string>apporoaiot</string>
         </array>
     </dict>
 </array>
@@ -234,7 +238,7 @@ find Sources -name "Localizable.strings" -exec sed -i '' 's|Home Assistant|Appor
 grep -rn "homeassistant://" Sources/
 ```
 
-找到就改成 `apporohome://` / `simonhome://`。
+找到就改成 `apporoaiot://` / `simonhome://`。
 
 ### 6.4 OAuth CLIENT_ID
 
@@ -244,15 +248,24 @@ grep -rn "homeassistant://" Sources/
 grep -rn "home-assistant.io/android\|home-assistant.io/iOS\|redirect_uri" Sources/
 ```
 
-改成 iOS 版的 GitHub Pages URL（或跟 Android 共用）：
+直接跟 Android 共用同一頁（建議）：
 ```swift
 static let clientID = "https://woowtech.github.io/Woow_apporo_ha_app/android"
 ```
 
-若走 iOS 專屬 client_id 頁，先在 `Woow_apporo_ha_app` repo 加 `docs/ios/index.html`：
+⚠ **不要**把它指向 `https://aiot.apporo.ai/...`。HA 是從伺服器端去抓 client_id 這個網址、
+讀裡面的 `rel="redirect_uri"` 來比對 App 送出的 callback；那個網域現在沒有 DNS 紀錄，
+指過去等於把登入整個關掉。Android 版就是因為這樣退回 GitHub Pages 的。
+
+如果 iOS 用的 scheme 跟 Android 不同，**不需要另開一頁** —— 同一頁可以宣告多個
+`rel="redirect_uri"`（已查證 HA 的 `indieauth.py`：所有 link tag 都會被收集，比對是完全相等），
+在 `docs/android/index.html` 加一行就好：
 ```html
-<link rel="redirect_uri" href="apporohome://auth-callback">
+<link rel="redirect_uri" href="apporoaiot://auth-callback">
+<link rel="redirect_uri" href="apporoaiot-dev://auth-callback">
+<!-- 需要的話再加 iOS 專用的那個 -->
 ```
+那頁由 GitHub Pages 從**預設分支**發布，所以改完必須合進 `main` 才會生效。
 
 ---
 
@@ -262,7 +275,7 @@ Xcode 上方 scheme + destination 選 `iPhone 15 Simulator`，**⌘R**。
 
 **預期**：
 - 模擬器開機，看到品牌 splash（apporo 白底鳥形 / simon 藍底 SmnI）
-- Onboarding 頁面出現「Apporo SmartHome」或「Simon SmartHome」字樣
+- Onboarding 頁面出現「Apporo aiot」或「Simon SmartHome」字樣
 - URL 輸入框輸入 `https://woowtech-ha.woowtech.io` → 連線 → OAuth 授權頁 →（若 client_id 設對）→ Dashboard
 
 **若卡在 OAuth "Invalid redirect URI"**：跟 Android alpha1→alpha2 一樣，client_id 頁沒宣告品牌 scheme。回第 6.4 檢查。
@@ -275,7 +288,7 @@ Xcode 上方 scheme + destination 選 `iPhone 15 Simulator`，**⌘R**。
 
 1. Xcode → Settings → Accounts → 加你的 Apple ID
 2. Signing & Capabilities → Team 選你的 Personal Team
-3. Bundle ID 加尾綴避免 conflict：`com.apporo.home.<你的姓氏>`
+3. Bundle ID 加尾綴避免 conflict：`com.apporo.aiot.<你的姓氏>`
 4. iPhone 用 USB 接 Mac，Xcode 上方 destination 選你的實機
 5. **⌘R** → 手機會跳「不受信任的開發者」→ 設定 → 一般 → 裝置管理 → 信任
 6. App 開起來測試
@@ -285,7 +298,7 @@ Xcode 上方 scheme + destination 選 `iPhone 15 Simulator`，**⌘R**。
 拿到品牌方 Team ID + provisioning profile 後：
 
 1. Xcode → Signing & Capabilities → Team 換成品牌方 Team
-2. Bundle ID 用 `com.apporo.home`（或跟品牌方確定的）
+2. Bundle ID 用 `com.apporo.aiot`（或跟品牌方確定的）
 3. 建 App Store Connect 上的 App record（先做這步 provisioning profile 才生成）
 4. Product → Archive → Distribute App → TestFlight
 
@@ -329,7 +342,7 @@ Xcode 上方 scheme + destination 選 `iPhone 15 Simulator`，**⌘R**。
 
 **準備物**（比 Play Store 麻煩）：
 - Bundle ID 已到 App Store Connect 註冊
-- App 名稱在 App Store 全球唯一（App Store Connect 上輸入 `Apporo SmartHome` 確認可用）
+- App 名稱在 App Store 全球唯一（App Store Connect 上輸入 `Apporo aiot` 確認可用）
 - 至少 3 張 screenshot（iPhone 6.7"、iPad 12.9" 各一組）
 - 隱私政策 URL（HA 官方隱私政策不能直接用，要品牌方自己重寫）
 - 應用程式圖示 1024×1024（無 alpha）

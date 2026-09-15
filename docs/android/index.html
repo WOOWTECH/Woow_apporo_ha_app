@@ -1,13 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Apporo SmartHome</title>
-  <link rel="redirect_uri" href="apporohome://auth-callback">
+  <title>Apporo aiot — Android OAuth client</title>
+
+  <!--
+    This page is the OAuth `client_id` for the Apporo aiot Android app. It is served by
+    GitHub Pages at https://woowtech.github.io/Woow_apporo_ha_app/android and referenced by
+    AuthenticationService.CLIENT_ID.
+
+    Why it has to exist and stay readable without signing in:
+    Home Assistant implements IndieAuth (homeassistant/components/auth/indieauth.py).
+    `verify_redirect_uri()` first accepts a redirect_uri whose scheme and host match the
+    client_id; ours is a private-use scheme, so that never matches. It then checks a short
+    hard-coded allow list that only covers the *official* client ids
+    (`https://home-assistant.io/android` and `.../iOS`) — a fork's client_id is never on it.
+    Everything else falls through to `fetch_redirect_uris()`, which GETs this page from the
+    Home Assistant server (5 s timeout, first ~10 kB) and collects every
+    `<link rel="redirect_uri">` href. Login succeeds only on an exact string match.
+
+    Consequences to keep in mind before editing:
+      * A client_id URL that does not resolve or does not serve this markup = every login
+        fails with "invalid redirect uri". Point CLIENT_ID at an address that is live *now*,
+        not one that is planned.
+      * GitHub Pages publishes from the default branch, so an edit here only reaches the
+        live page after it is merged to `main`. A feature branch that changes the app's URL
+        scheme therefore cannot log in until this file is on `main`.
+      * Multiple link tags are supported: LinkTagParser appends every match into a list and
+        the comparison is `redirect_uri in redirect_uris`. Extra entries are inert.
+
+    Not declared here on purpose:
+      * https://wear.googleapis.com/3p_auth/com.apporo.aiot — the Wear OS phone sign-in
+        redirect. Wear is out of scope for the first release; add this link tag at the same
+        time Wear is turned back on.
+  -->
+
+  <link rel="redirect_uri" href="apporoaiot://auth-callback">
+  <link rel="redirect_uri" href="apporoaiot-dev://auth-callback">
 </head>
 <body>
-  <h1>Apporo SmartHome</h1>
-  <p>Android companion app OAuth client_id endpoint.</p>
-  <p>Redirect URI: <code>apporohome://auth-callback</code></p>
+  <h1>Apporo aiot</h1>
+  <p>OAuth <code>client_id</code> endpoint for the Apporo aiot Android companion app.</p>
+  <ul>
+    <li>Release build (<code>com.apporo.aiot</code>): <code>apporoaiot://auth-callback</code></li>
+    <li>Debug build (<code>com.apporo.aiot.debug</code>): <code>apporoaiot-dev://auth-callback</code></li>
+  </ul>
+  <p>
+    The app intercepts the callback inside its own sign-in web view, so these schemes need no
+    <code>auth-callback</code> intent filter in the manifests.
+  </p>
 </body>
 </html>
