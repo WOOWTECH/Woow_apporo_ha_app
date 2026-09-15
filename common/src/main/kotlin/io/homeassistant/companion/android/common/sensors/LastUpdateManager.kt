@@ -2,6 +2,7 @@ package io.homeassistant.companion.android.common.sensors
 
 import android.content.Context
 import io.homeassistant.companion.android.common.R as commonR
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.database.sensor.SensorSetting
 import io.homeassistant.companion.android.database.sensor.SensorSettingType
 import timber.log.Timber
@@ -23,7 +24,7 @@ class LastUpdateManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/core/sensors#last-update-trigger-sensor"
+        return AppSupportLinks.Sensors.LAST_UPDATE_TRIGGER
     }
     override val name: Int
         get() = commonR.string.sensor_name_last_update

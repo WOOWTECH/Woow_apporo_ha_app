@@ -16,6 +16,7 @@ import android.os.Build
 import androidx.core.content.getSystemService
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.sensors.SensorManager
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.common.util.STATE_UNKNOWN
 import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineScope
@@ -49,7 +50,7 @@ class HeartRateSensorManager :
     private val ioScope: CoroutineScope = CoroutineScope(Dispatchers.IO + Job())
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/wear-os/sensors"
+        return AppSupportLinks.WEAR_OS_SENSORS
     }
 
     override val name: Int

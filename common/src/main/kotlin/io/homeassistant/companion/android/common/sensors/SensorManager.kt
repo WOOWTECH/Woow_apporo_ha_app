@@ -15,6 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.data.servers.ServerManager
 import io.homeassistant.companion.android.common.util.AnySerializer
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.common.util.kotlinJsonMapper
 import io.homeassistant.companion.android.database.sensor.Attribute
 import io.homeassistant.companion.android.database.sensor.SensorDao
@@ -70,7 +71,7 @@ interface SensorManager {
      * URL to a documentation page that describes this sensor
      */
     fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/core/sensors"
+        return AppSupportLinks.SENSORS
     }
 
     /**

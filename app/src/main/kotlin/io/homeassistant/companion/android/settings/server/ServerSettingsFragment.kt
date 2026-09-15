@@ -36,6 +36,7 @@ import io.homeassistant.companion.android.settings.SettingsActivity
 import io.homeassistant.companion.android.settings.ssid.SsidFragment
 import io.homeassistant.companion.android.settings.url.ExternalUrlFragment
 import io.homeassistant.companion.android.settings.websocket.WebsocketSettingFragment
+import io.homeassistant.companion.android.util.BRAND_HOST
 import io.homeassistant.companion.android.util.QuestUtil
 import io.homeassistant.companion.android.util.applyBottomSafeDrawingInsets
 import io.homeassistant.companion.android.webview.WebViewActivity
@@ -45,7 +46,7 @@ import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import timber.log.Timber
 
-private const val BASE_INVITE_URL = "https://aiot.apporo.io/invite/#"
+private const val BASE_INVITE_URL = "https://$BRAND_HOST/invite/#"
 
 @AndroidEntryPoint
 class ServerSettingsFragment :

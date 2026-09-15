@@ -19,6 +19,7 @@ import androidx.health.services.client.data.UserActivityInfo
 import androidx.health.services.client.data.UserActivityState
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.sensors.SensorManager
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.common.util.STATE_UNKNOWN
 import java.time.Instant
 import kotlinx.coroutines.CoroutineScope
@@ -105,7 +106,7 @@ class HealthServicesSensorManager : SensorManager {
     private val areHealthServicesSensorApisAvailable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/wear-os/sensors#health-services"
+        return AppSupportLinks.WEAR_OS_HEALTH_SERVICES
     }
 
     override val name: Int

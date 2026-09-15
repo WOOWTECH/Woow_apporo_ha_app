@@ -51,6 +51,7 @@ import io.homeassistant.companion.android.settings.vehicle.ManageAndroidAutoSett
 import io.homeassistant.companion.android.settings.wear.SettingsWearActivity
 import io.homeassistant.companion.android.settings.wear.SettingsWearDetection
 import io.homeassistant.companion.android.settings.widgets.ManageWidgetsSettingsFragment
+import io.homeassistant.companion.android.util.BRAND_HOST
 import io.homeassistant.companion.android.util.QuestUtil
 import io.homeassistant.companion.android.util.applyBottomSafeDrawingInsets
 import io.homeassistant.companion.android.webview.WebViewActivity
@@ -324,7 +325,7 @@ class SettingsFragment(private val presenter: SettingsPresenter, private val lan
         }
 
         findPreference<Preference>("changelog_github")?.let {
-            val link = "https://aiot.apporo.io/"
+            val link = "https://$BRAND_HOST/"
             it.summary = link
             it.intent = Intent(Intent.ACTION_VIEW, link.toUri())
         }
@@ -362,7 +363,7 @@ class SettingsFragment(private val presenter: SettingsPresenter, private val lan
         }
 
         findPreference<Preference>("privacy")?.let {
-            it.summary = "https://aiot.apporo.io/privacy/"
+            it.summary = "https://$BRAND_HOST/privacy/"
             it.intent = Intent(Intent.ACTION_VIEW, it.summary.toString().toUri())
         }
 

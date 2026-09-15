@@ -16,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.sensors.SensorManager
 import io.homeassistant.companion.android.common.sensors.SensorReceiverBase
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.common.util.STATE_UNKNOWN
 import io.homeassistant.companion.android.common.util.isAutomotive
 import java.util.concurrent.TimeUnit
@@ -200,7 +201,7 @@ class ActivitySensorManager :
     }
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/core/sensors#activity-sensors"
+        return AppSupportLinks.Sensors.ACTIVITY
     }
 
     override val name: Int
