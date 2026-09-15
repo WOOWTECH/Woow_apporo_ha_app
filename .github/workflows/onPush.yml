@@ -52,11 +52,20 @@ jobs:
           tag-name: ${{ steps.rel_number.outputs.version }}
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: ./.github/actions/download-translations
-        name: Download Translations
-        with:
-          lokalise-project: ${{ secrets.LOKALISE_PROJECT }}
-          lokalise-token: ${{ secrets.LOKALISE_TOKEN }}
+      # Download Translations 已移除（首版）。三個理由,任一個都足夠:
+      #
+      # 1. 它會讓這個 job 直接掛掉。密鑰未設定時 `jq -r '.bundle_url'` 會印出 "null",
+      #    接著 `curl null` 以退出碼 6 失敗;composite action 跑在 `bash -eo pipefail`
+      #    之下,所以整個 job 在 gradle 還沒開始前就結束。
+      # 2. 它會覆蓋語系清單。那支腳本把產生的 locales_config.xml 寫到
+      #    app/src/main/res/xml/ 與 wear/src/main/res/xml/,但本 repo 的檔案在
+      #    common/src/main/res/xml/。app 模組的資源優先序高於 common,所以產生出來的
+      #    那份會蓋掉我們刻意維持的「en + zh-TW」兩語系設定。
+      # 3. 上游的翻譯裡 app_name 是 "Home Assistant"。多拉進來的語系會讓 App 在那些
+      #    語言下顯示上游品牌名 —— 那是商標問題,不是體驗瑕疵。
+      #
+      # 要恢復多語系時,要先有自己的 Lokalise 專案(不是上游的),並且先修好上面第 2 點
+      # 的路徑問題,否則語系清單仍會被蓋掉。決策紀錄見 RELEASE-CHECKLIST 6-2。
 
       - name: Build Release
         env:
@@ -161,11 +170,20 @@ jobs:
           tag-name: ${{ steps.rel_number.outputs.version }}
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: ./.github/actions/download-translations
-        name: Download Translations
-        with:
-          lokalise-project: ${{ secrets.LOKALISE_PROJECT }}
-          lokalise-token: ${{ secrets.LOKALISE_TOKEN }}
+      # Download Translations 已移除（首版）。三個理由,任一個都足夠:
+      #
+      # 1. 它會讓這個 job 直接掛掉。密鑰未設定時 `jq -r '.bundle_url'` 會印出 "null",
+      #    接著 `curl null` 以退出碼 6 失敗;composite action 跑在 `bash -eo pipefail`
+      #    之下,所以整個 job 在 gradle 還沒開始前就結束。
+      # 2. 它會覆蓋語系清單。那支腳本把產生的 locales_config.xml 寫到
+      #    app/src/main/res/xml/ 與 wear/src/main/res/xml/,但本 repo 的檔案在
+      #    common/src/main/res/xml/。app 模組的資源優先序高於 common,所以產生出來的
+      #    那份會蓋掉我們刻意維持的「en + zh-TW」兩語系設定。
+      # 3. 上游的翻譯裡 app_name 是 "Home Assistant"。多拉進來的語系會讓 App 在那些
+      #    語言下顯示上游品牌名 —— 那是商標問題,不是體驗瑕疵。
+      #
+      # 要恢復多語系時,要先有自己的 Lokalise 專案(不是上游的),並且先修好上面第 2 點
+      # 的路徑問題,否則語系清單仍會被蓋掉。決策紀錄見 RELEASE-CHECKLIST 6-2。
 
       - name: Build Release
         env:
