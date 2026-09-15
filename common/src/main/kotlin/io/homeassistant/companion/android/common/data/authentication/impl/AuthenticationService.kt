@@ -17,18 +17,19 @@ interface AuthenticationService {
         // therefore breaks sign-in outright, and the hard-coded allow list in Home Assistant's
         // indieauth module covers the official client ids only, never a fork's.
         //
-        // This deliberately points at the GitHub Pages copy of `docs/android/index.html`, which is
-        // live and anonymously readable today, rather than at the brand domain. `aiot.apporo.ai`
-        // has no DNS record yet, so pointing at it would make every sign-in fail.
+        // Home Assistant shows this URL verbatim to the user on the authorization screen, so it
+        // has to be a brand domain — a github.io URL reads as someone else's site. The page lives
+        // on the customer's Odoo website (`website.page` /android, primary qweb view
+        // `apporo_aiot.oauth_android`), which is the same arrangement woowtech aiot uses.
         //
-        // Migration condition — switch to "https://aiot.apporo.ai/android" only once all of these
-        // hold: the host resolves, it serves the same `rel="redirect_uri"` link tags as
-        // docs/android/index.html, and it is readable anonymously (no auth, no interstitial) from
-        // outside our network. Verify with a plain `curl` from an unrelated machine first.
+        // HA fetches this URL anonymously and parses `<link rel="redirect_uri">` out of it
+        // (`indieauth.fetch_redirect_uris`), so the page must stay anonymously readable and must
+        // keep declaring BOTH schemes: `apporoaiot://auth-callback` (release) and
+        // `apporoaiot-dev://auth-callback` (debug). Drop either one and that build cannot log in.
         //
-        // Note that GitHub Pages publishes from the default branch, so a change to the redirect
-        // scheme in docs/android/index.html only takes effect after it is merged to `main`.
-        const val CLIENT_ID = "https://woowtech.github.io/Woow_apporo_ha_app/android"
+        // Scheme changes therefore need the Odoo page edited too — it is not in this repo.
+        // Verify with a plain `curl https://www.apporo.ai/android` from outside our network.
+        const val CLIENT_ID = "https://www.apporo.ai/android"
         const val GRANT_TYPE_CODE = "authorization_code"
         const val GRANT_TYPE_REFRESH = "refresh_token"
         const val REVOKE_ACTION = "revoke"
