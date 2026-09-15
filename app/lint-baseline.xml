@@ -1819,28 +1819,6 @@
     <issue
         id="ComposeModifierMissing"
         message="This @Composable function emits content but doesn&apos;t have a modifier parameter.See https://slackhq.github.io/compose-lints/rules/#when-should-i-expose-modifier-parameters for more information."
-        errorLine1="fun MatterCommissioningView("
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/full/kotlin/io/homeassistant/companion/android/matter/views/MatterCommissioningView.kt"
-            line="50"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="ComposeModifierMissing"
-        message="This @Composable function emits content but doesn&apos;t have a modifier parameter.See https://slackhq.github.io/compose-lints/rules/#when-should-i-expose-modifier-parameters for more information."
-        errorLine1="fun MatterCommissioningViewHeader() {"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/full/kotlin/io/homeassistant/companion/android/matter/views/MatterCommissioningView.kt"
-            line="211"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="ComposeModifierMissing"
-        message="This @Composable function emits content but doesn&apos;t have a modifier parameter.See https://slackhq.github.io/compose-lints/rules/#when-should-i-expose-modifier-parameters for more information."
         errorLine1="fun MdcAlertDialog("
         errorLine2="    ~~~~~~~~~~~~~~">
         <location
@@ -2468,17 +2446,6 @@
     <issue
         id="ComposePreviewPublic"
         message="Composables annotated with @Preview that are used only for previewing the UI should not be public.See https://slackhq.github.io/compose-lints/rules/#preview-composables-should-not-be-public for more information."
-        errorLine1="@Preview"
-        errorLine2="^">
-        <location
-            file="src/full/kotlin/io/homeassistant/companion/android/matter/views/MatterCommissioningView.kt"
-            line="232"
-            column="1"/>
-    </issue>
-
-    <issue
-        id="ComposePreviewPublic"
-        message="Composables annotated with @Preview that are used only for previewing the UI should not be public.See https://slackhq.github.io/compose-lints/rules/#preview-composables-should-not-be-public for more information."
         errorLine1="@Preview(showSystemUi = true)"
         errorLine2="^">
         <location
@@ -2793,17 +2760,6 @@
             file="src/main/kotlin/io/homeassistant/companion/android/settings/controls/views/ManageControlsView.kt"
             line="76"
             column="18"/>
-    </issue>
-
-    <issue
-        id="ComposeUnstableCollections"
-        message="The Compose Compiler cannot infer the stability of a parameter if a List&lt;Server> is used in it, even if the item type is stable.&#xA;You should use Kotlinx Immutable Collections instead: `servers: ImmutableList&lt;Server>` or create an `@Immutable` wrapper for this class: `@Immutable data class ServersList(val items: List&lt;Server>)`&#xA;See https://slackhq.github.io/compose-lints/rules/#avoid-using-unstable-collections for more information."
-        errorLine1="    servers: List&lt;Server>,"
-        errorLine2="             ~~~~~~~~~~~~">
-        <location
-            file="src/full/kotlin/io/homeassistant/companion/android/matter/views/MatterCommissioningView.kt"
-            line="53"
-            column="14"/>
     </issue>
 
     <issue
