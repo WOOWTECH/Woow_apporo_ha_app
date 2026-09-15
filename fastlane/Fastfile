@@ -1,25 +1,32 @@
 default_platform(:android)
 
+# Store listing ownership
+# ------------------------
+# The Play store listing (title, descriptions, icon, feature graphic, screenshots) is
+# maintained in the Play Console, NOT by these lanes. Every lane below sets
+# skip_upload_metadata / skip_upload_images / skip_upload_screenshots so a deploy can
+# never overwrite a listing that a human curated.
+#
+# `upload_store_listing` is the one opt-in escape hatch, and it is never wired into CI.
+#
+# Release notes are the exception: deploy_internal uploads them, because a release's
+# notes travel with the release as it is promoted internal -> beta -> production. The
+# promote lanes therefore skip them, so the notes written at internal are the notes
+# production ships.
+#
+# supply picks the release-notes file per locale in this order:
+#   fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt   (per-release)
+#   fastlane/metadata/android/<locale>/changelogs/default.txt         (fallback)
+# CI does not currently emit a <versionCode>.txt, so default.txt is what ships. Keep it
+# accurate, or teach the release workflow to write <versionCode>.txt before this lane runs.
+
 platform :android do
   desc "Deploy internal tracks to Google Play"
   lane :deploy_internal do
     supply(
       track: 'internal',
       aab: 'app/build/outputs/bundle/fullRelease/app-full-release.aab',
-      skip_upload_metadata: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
-    )
-    supply(
-      track: 'wear:internal',
-      aab: 'wear/build/outputs/bundle/release/wear-release.aab',
-      skip_upload_metadata: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
-    )
-    supply(
-      track: 'automotive:internal',
-      aab: 'automotive/build/outputs/bundle/fullRelease/automotive-full-release.aab',
+      skip_upload_changelogs: false, # release notes are set here and carry through to production
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
@@ -31,23 +38,7 @@ platform :android do
     supply(
       track: 'internal',
       track_promote_to: 'beta',
-      skip_upload_changelogs: true,
-      skip_upload_metadata: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
-    )
-    supply(
-      track: 'wear:internal',
-      track_promote_to: 'wear:beta',
-      skip_upload_changelogs: true,
-      skip_upload_metadata: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
-    )
-    supply(
-      track: 'automotive:internal',
-      track_promote_to: 'automotive:beta',
-      skip_upload_changelogs: true,
+      skip_upload_changelogs: true, # keep the notes the release already carries
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
@@ -59,24 +50,23 @@ platform :android do
     supply(
       track: 'beta',
       track_promote_to: 'production',
-      skip_upload_changelogs: true,
+      skip_upload_changelogs: true, # production never rewrites notes or the store listing
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
     )
+  end
+
+  desc "Manually push the store listing text from fastlane/metadata to Google Play (run by hand, never from CI)"
+  lane :upload_store_listing do
+    # Text only. Images stay skipped until fastlane/metadata/android/en-US/images holds a
+    # real Apporo feature graphic and real device screenshots; uploading a half-filled
+    # images directory would clear the assets already in the Play Console.
     supply(
-      track: 'wear:beta',
-      track_promote_to: 'wear:production',
+      skip_upload_aab: true,
+      skip_upload_apk: true,
       skip_upload_changelogs: true,
-      skip_upload_metadata: true,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
-    )
-    supply(
-      track: 'automotive:beta',
-      track_promote_to: 'automotive:production',
-      skip_upload_changelogs: true,
-      skip_upload_metadata: true,
+      skip_upload_metadata: false,
       skip_upload_images: true,
       skip_upload_screenshots: true,
     )
@@ -89,7 +79,8 @@ platform :android do
         client_secret: ENV["AMAZON_APPSTORE_CLIENT_SECRET"],
         app_id: ENV["AMAZON_APPSTORE_APP_ID"],
         apk_path: "app/build/outputs/apk/minimal/release/app-minimal-release.apk",
-        upload_apk: true,
+        # Same directory as the Play lanes, so the same default.txt caveat applies:
+        # without a <versionCode>.txt this uploads default.txt verbatim.
         changelogs_path:  "fastlane/metadata/android/en-US/changelogs/",
         upload_changelogs: true,
         submit_for_review: false
