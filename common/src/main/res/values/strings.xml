@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="aa_launch_native">Native mode</string>
     <string name="aa_driving_optimized_change">Use Apporo aiot in drive mode?</string>
     <string name="aa_navigation">Navigation</string>
@@ -539,6 +539,17 @@
     <string name="apporo_company">APPORO UNION INC.</string>
     <string name="qrcode_processing_tag_error">Error while processing QR code tag</string>
     <string name="quick_settings">Quick settings</string>
+    <!--
+      Sent by our push relay when a device first crosses its daily notification quota.
+      The relay references these two by name (body_loc_key / title_loc_key), so renaming
+      either one here silently breaks the localisation - the notification then falls back to
+      the relay's built-in English text.
+
+      No Kotlin code reads them, which is why lint has to be told they are used: Android
+      resolves them at delivery time from the name in the FCM payload, not through R.
+    -->
+    <string name="rate_limit_notification_title" tools:ignore="UnusedResources">Notifications rate limited</string>
+    <string name="rate_limit_notification_body" tools:ignore="UnusedResources">You have sent more than %1$s notifications today. New notifications will arrive again after midnight UTC.</string>
     <string name="rate_limit_summary">Rate limit data</string>
     <string name="rate_limit_title">Notification rate limit</string>
     <string name="refresh_external">Refresh external URL</string>

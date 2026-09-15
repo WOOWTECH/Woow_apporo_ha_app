@@ -534,6 +534,8 @@
     <string name="apporo_company">APPORO UNION INC.</string>
     <string name="qrcode_processing_tag_error">處理 QR 碼標籤時發生錯誤</string>
     <string name="quick_settings">快速設定</string>
+    <string name="rate_limit_notification_title">通知已達每日上限</string>
+    <string name="rate_limit_notification_body">您今天已送出超過 %1$s 則通知。要等到世界標準時間午夜之後，才會再收到新的通知。</string>
     <string name="rate_limit_summary">速率限制資料</string>
     <string name="rate_limit_title">通知速率限制</string>
     <string name="refresh_external">重新整理外部 URL</string>
