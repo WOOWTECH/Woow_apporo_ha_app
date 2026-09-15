@@ -65,8 +65,10 @@ jobs:
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        # Wear OS and Android Automotive are excluded from the first release, so they are not part
+        # of the Gradle build (see settings.gradle.kts). Adding their tasks back here would fail.
         run: |
-          ./gradlew :common:assemble :app:assembleRelease :wear:assembleRelease :automotive:assembleRelease
+          ./gradlew :common:assemble :app:assembleRelease
 
       - name: Archive Build
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -94,9 +96,6 @@ jobs:
             ./app/build/outputs/apk/full/release/app-full-release.apk
             ./app/build/outputs/apk/minimal/release/app-minimal-release.apk
             ./app/build/outputs/version_code.txt
-            ./wear/build/outputs/apk/release/wear-release.apk
-            ./automotive/build/outputs/apk/full/release/automotive-full-release.apk
-            ./automotive/build/outputs/apk/minimal/release/automotive-minimal-release.apk
             ./strings.zip
             ./app/src/main/res/xml/locales_config.xml
 
@@ -175,8 +174,10 @@ jobs:
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        # Only the phone bundle is published for the first release. `fastlane deploy_internal` must
+        # not reference wear/ or automotive/ AAB paths, because they are no longer built here.
         run: |
-          ./gradlew :common:assemble :app:bundleFullRelease :wear:bundleRelease :automotive:bundleFullRelease
+          ./gradlew :common:assemble :app:bundleFullRelease
 
       - name: Archive Build
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
