@@ -119,7 +119,7 @@ private fun ErrorPlaceholder() {
 private fun ConnectionScreenPreview() {
     HAThemeForPreview {
         ConnectionScreen(
-            url = "https://aiot.apporo.io",
+            url = "https://aiot.apporo.ai",
             isLoading = false,
             isError = false,
             webViewClient = WebViewClient(),

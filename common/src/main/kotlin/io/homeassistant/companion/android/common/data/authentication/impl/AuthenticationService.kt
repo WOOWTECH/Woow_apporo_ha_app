@@ -11,7 +11,11 @@ import retrofit2.http.Url
 interface AuthenticationService {
 
     companion object {
-        const val CLIENT_ID = "https://woowtech.github.io/Woow_apporo_ha_app/android"
+        // This page is not published yet. Before the app is submitted for review, confirm that this
+        // address is readable without signing in and that it serves the OAuth client metadata,
+        // including a `rel="redirect_uri"` link pointing at the app's auth callback deep link.
+        // Home Assistant refuses the authorize request when this address cannot be fetched.
+        const val CLIENT_ID = "https://aiot.apporo.ai/android"
         const val GRANT_TYPE_CODE = "authorization_code"
         const val GRANT_TYPE_REFRESH = "refresh_token"
         const val REVOKE_ACTION = "revoke"

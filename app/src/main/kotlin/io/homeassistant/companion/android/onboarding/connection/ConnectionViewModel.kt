@@ -23,6 +23,7 @@ import io.homeassistant.companion.android.common.data.connectivity.ConnectivityC
 import io.homeassistant.companion.android.common.data.keychain.KeyChainRepository
 import io.homeassistant.companion.android.common.data.keychain.NamedKeyChain
 import io.homeassistant.companion.android.onboarding.connection.navigation.ConnectionRoute
+import io.homeassistant.companion.android.util.DEEP_LINK_SCHEME
 import io.homeassistant.companion.android.util.TLSWebViewClient
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -97,7 +98,7 @@ internal sealed interface ConnectionNavigationEvent {
     data class OpenExternalLink(val url: Uri) : ConnectionNavigationEvent
 }
 
-private const val AUTH_CALLBACK_SCHEME = "apporohome"
+private const val AUTH_CALLBACK_SCHEME = DEEP_LINK_SCHEME
 private const val AUTH_CALLBACK_HOST = "auth-callback"
 private const val AUTH_CALLBACK = "$AUTH_CALLBACK_SCHEME://$AUTH_CALLBACK_HOST"
 

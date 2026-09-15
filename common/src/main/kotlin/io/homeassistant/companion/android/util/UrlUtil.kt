@@ -14,6 +14,47 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import timber.log.Timber
 
+/**
+ * Host that serves the branded web content of the app: universal links, the NFC tag addresses and
+ * the help centre.
+ *
+ * Every branded address in the app is built from this single value so that a future change of
+ * domain is a one line change instead of a repository wide search.
+ */
+const val BRAND_HOST = "aiot.apporo.ai"
+
+/**
+ * URL scheme the app registers for its own deep links, for example `apporoaiot://navigate/lovelace`.
+ *
+ * This value has to stay in step with the `intent-filter` entries declared in the Android manifests.
+ * The debug build is installed next to the release build under a different application id, so the
+ * two are meant to claim different schemes. Expressing that split needs a generated `BuildConfig`
+ * field; until such a field exists this constant is the only place the scheme is spelled out.
+ */
+const val DEEP_LINK_SCHEME = "apporoaiot"
+
+/** Prefix the frontend puts in front of an in-app navigation target. */
+private const val NAVIGATE_DEEP_LINK_PREFIX = "$DEEP_LINK_SCHEME://navigate/"
+
+private const val HTTPS_SCHEME = "https"
+
+/** Single path segment that precedes the identifier in an NFC tag address. */
+private const val NFC_TAG_PATH_SEGMENT = "tag"
+
+/** An accepted NFC tag address has exactly the two segments `tag` and the identifier. */
+private const val TAG_PATH_SEGMENT_COUNT = 2
+private const val TAG_PREFIX_SEGMENT_INDEX = 0
+private const val TAG_IDENTIFIER_SEGMENT_INDEX = 1
+
+/** Host of tags written by the upstream Home Assistant app, which users may already be carrying. */
+private const val LEGACY_NFC_TAG_HOST = "www.home-assistant.io"
+
+/**
+ * Hosts accepted when reading an NFC tag: the host this app writes, plus the legacy host so that
+ * tags provisioned before the app was rebranded keep working.
+ */
+private val NFC_TAG_HOSTS = listOf(BRAND_HOST, LEGACY_NFC_TAG_HOST)
+
 object UrlUtil {
     fun formattedUrlString(url: String): String {
         return if (url == "") {
@@ -51,11 +92,12 @@ object UrlUtil {
      * @param input The URL string to resolve. Supported formats:
      *   - Absolute URL (http://... or https://...)
      *   - Relative path to be resolved against base
-     *   - Deep link URL with apporohome://navigate/ prefix
+     *   - Deep link URL with the [NAVIGATE_DEEP_LINK_PREFIX] prefix, for example
+     *     `apporoaiot://navigate/lovelace/default`
      * @return The resolved URL, the base URL if input is invalid, or null if resolution fails
      */
     fun handle(base: URL?, input: String): URL? {
-        val normalizedInput = input.removePrefix("apporohome://navigate/")
+        val normalizedInput = input.removePrefix(NAVIGATE_DEEP_LINK_PREFIX)
 
         val uri = try {
             URI(normalizedInput)
@@ -113,12 +155,65 @@ object UrlUtil {
             userInfo == other.userInfo
     }
 
-    fun splitNfcTagId(it: Uri?): String? {
-        val matches =
-            Regex("^https?://www\\.home-assistant\\.io/tag/(.*)").find(
-                it.toString(),
-            )
-        return matches?.groups?.get(1)?.value
+    /**
+     * Reads the tag identifier out of the address stored on an NFC tag.
+     *
+     * Only an exact `https://<accepted host>/tag/<identifier>` address is accepted. A tag is a piece
+     * of hardware that anybody can hand to the user, so the address it carries is untrusted input:
+     * anything that merely looks similar, such as a plain HTTP address, a look-alike host, an extra
+     * port or user information, a query string, a fragment or additional path segments, is rejected
+     * instead of being scanned.
+     *
+     * @param uri The address read from the tag, or `null` when the tag carried no address.
+     * @return The tag identifier, or `null` when [uri] is not an accepted tag address.
+     */
+    fun splitNfcTagId(uri: Uri?): String? {
+        if (uri == null || !uri.isAcceptedNfcTagUri()) {
+            return null
+        }
+        return uri.pathSegments[TAG_IDENTIFIER_SEGMENT_INDEX]
+    }
+
+    /**
+     * Builds the address written to a newly provisioned NFC tag.
+     *
+     * @param identifier The tag identifier to embed in the address.
+     * @return The `https://<brand host>/tag/<identifier>` address to store on the tag.
+     * @throws IllegalArgumentException when [identifier] is blank or carries a path separator or a
+     *         control character, which would produce an address that [splitNfcTagId] refuses to read
+     *         back.
+     */
+    fun buildNfcTagUri(identifier: String): Uri {
+        require(identifier.isAcceptedNfcTagIdentifier()) { "NFC tag identifier is not usable in an address" }
+
+        return Uri.Builder()
+            .scheme(HTTPS_SCHEME)
+            .authority(BRAND_HOST)
+            .appendPath(NFC_TAG_PATH_SEGMENT)
+            .appendPath(identifier)
+            .build()
+    }
+
+    private fun Uri.isAcceptedNfcTagUri(): Boolean {
+        val hasAcceptedOrigin = scheme.equals(HTTPS_SCHEME, ignoreCase = true) &&
+            NFC_TAG_HOSTS.any { host.equals(it, ignoreCase = true) } &&
+            port == -1 &&
+            userInfo == null
+        val carriesNoExtraData = query == null && fragment == null
+
+        return hasAcceptedOrigin && carriesNoExtraData && hasExactTagPath()
+    }
+
+    private fun Uri.hasExactTagPath(): Boolean {
+        val segments = pathSegments
+
+        return segments.size == TAG_PATH_SEGMENT_COUNT &&
+            segments[TAG_PREFIX_SEGMENT_INDEX] == NFC_TAG_PATH_SEGMENT &&
+            segments[TAG_IDENTIFIER_SEGMENT_INDEX].isAcceptedNfcTagIdentifier()
+    }
+
+    private fun String.isAcceptedNfcTagIdentifier(): Boolean {
+        return isNotBlank() && '/' !in this && none { character -> character.isISOControl() }
     }
 }
 

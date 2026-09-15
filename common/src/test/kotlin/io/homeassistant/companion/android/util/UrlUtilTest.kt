@@ -66,7 +66,7 @@ class UrlUtilTest {
 
     @Test
     fun `Given input with homeassistant navigate prefix and absolute URL when calling handle then treats as relative path without taking care of second host and protocol`() {
-        val input = "apporohome://navigate/https://example2.com/path/subpath"
+        val input = "apporoaiot://navigate/https://example2.com/path/subpath"
 
         val result = UrlUtil.handle(baseUrl, input)
 
@@ -76,7 +76,7 @@ class UrlUtilTest {
 
     @Test
     fun `Given input with homeassistant navigate prefix and relative path when calling handle then returns resolved URL`() {
-        val input = "apporohome://navigate/lovelace/default"
+        val input = "apporoaiot://navigate/lovelace/default"
 
         val result = UrlUtil.handle(baseUrl, input)
 
@@ -169,7 +169,7 @@ class UrlUtilTest {
     @Test
     fun `Given URL with public domain resolving to public IP when checking isPubliclyAccessible then returns true`() = runTest {
         // Using a well-known public domain that should resolve to public IPs
-        val url = URL("https://aiot.apporo.io")
+        val url = URL("https://www.apporo.ai")
         assertTrue(url.isPubliclyAccessible())
     }
 

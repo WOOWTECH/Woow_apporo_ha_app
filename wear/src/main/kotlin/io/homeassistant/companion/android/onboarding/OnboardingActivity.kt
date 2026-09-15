@@ -24,11 +24,15 @@ import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.database.server.TemporaryServer
 import io.homeassistant.companion.android.onboarding.integration.MobileAppIntegrationActivity
 import io.homeassistant.companion.android.onboarding.phoneinstall.PhoneInstallActivity
+import io.homeassistant.companion.android.util.DEEP_LINK_SCHEME
 import io.homeassistant.companion.android.util.LoadingView
 import javax.inject.Inject
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.launch
 import timber.log.Timber
+
+/** Deep link host the phone app listens on to continue the sign in started on the watch. */
+private const val WEAR_PHONE_SIGN_IN_HOST = "wear-phone-signin"
 
 @AndroidEntryPoint
 @SuppressLint("VisibleForTests") // https://issuetracker.google.com/issues/239451111
@@ -117,7 +121,8 @@ class OnboardingActivity :
         lifecycleScope.launch {
             showLoading()
             try {
-                val url = "apporohome://wear-phone-signin${if (instance != null) "?url=${instance.url}" else ""}"
+                val instanceParameter = instance?.let { "?url=${it.url}" }.orEmpty()
+                val url = "$DEEP_LINK_SCHEME://$WEAR_PHONE_SIGN_IN_HOST$instanceParameter"
                 remoteActivityHelper.startRemoteActivity(
                     Intent(Intent.ACTION_VIEW).apply {
                         addCategory(Intent.CATEGORY_DEFAULT)

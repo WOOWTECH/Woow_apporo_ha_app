@@ -22,6 +22,7 @@ import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.settings.wear.SettingsWearViewModel.Companion.CAPABILITY_WEAR_APP
 import io.homeassistant.companion.android.settings.wear.views.SettingsWearMainView
 import io.homeassistant.companion.android.settings.wear.views.SettingsWearOnboardingView
+import io.homeassistant.companion.android.util.DEEP_LINK_SCHEME
 import io.homeassistant.companion.android.util.compose.HomeAssistantAppTheme
 import io.homeassistant.companion.android.util.enableEdgeToEdgeCompat
 import kotlinx.coroutines.CancellationException
@@ -167,7 +168,7 @@ class SettingsWearActivity :
 
     private fun getAuthIntentUrl(): String? {
         return intent.data?.let {
-            if (it.scheme == "apporohome" && it.host == "wear-phone-signin") {
+            if (it.scheme == DEEP_LINK_SCHEME && it.host == "wear-phone-signin") {
                 // Return empty string if phone sign in was used to open this, indicating no instance selected
                 it.getQueryParameter("url") ?: ""
             } else {
