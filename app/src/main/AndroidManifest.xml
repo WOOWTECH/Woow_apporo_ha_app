@@ -385,6 +385,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <!-- 邀請資訊放在 #fragment,所以 /invite 與 /invite/ 兩種都要收:
+                     iOS 的 BrandedUniversalLink 兩種都接受,只宣告 pathPrefix 會讓
+                     https://www.apporo.ai/invite#... 掉回瀏覽器,兩平台行為不一致。 -->
+                <data
+                    android:scheme="https"
+                    android:host="www.apporo.ai"
+                    android:path="/invite"/>
                 <data
                     android:scheme="https"
                     android:host="www.apporo.ai"

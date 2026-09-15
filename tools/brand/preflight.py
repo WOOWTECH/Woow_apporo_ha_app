@@ -65,7 +65,8 @@ TAKEN: dict[str, dict[str, str]] = {
     "BRAND_HOST": {
         "aiot.woowtech.io": "woowtech",
         "aiot.apporo.io": "apporo",  # 退役：2026-09 改為 aiot.apporo.ai
-        "aiot.apporo.ai": "apporo",
+        "aiot.apporo.ai": "apporo",  # 退役：Cloudflare 上無 origin，整台 404
+        "www.apporo.ai": "apporo",
         "aiot.simon.io": "simon",
     },
     "PRIMARY_COLOR": {

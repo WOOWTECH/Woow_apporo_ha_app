@@ -331,7 +331,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="aiot.apporo.ai"
+                    android:host="www.apporo.ai"
                     android:pathPrefix="/redirect/"/>
             </intent-filter>
 
@@ -340,9 +340,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <!-- 與 app/src/main 同步:/invite 與 /invite/ 兩種都要收(邀請資訊在 #fragment)。 -->
                 <data
                     android:scheme="https"
-                    android:host="aiot.apporo.ai"
+                    android:host="www.apporo.ai"
+                    android:path="/invite"/>
+                <data
+                    android:scheme="https"
+                    android:host="www.apporo.ai"
                     android:pathPrefix="/invite/"/>
             </intent-filter>
 
@@ -413,7 +418,7 @@
             android:name=".nfc.TagReaderActivity"
             android:label="@string/tag_reader_title"
             android:exported="true">
-            <tools:validation testUrl="https://aiot.apporo.ai/tag/123e4567-e89b-12d3-a456-426614174000" />
+            <tools:validation testUrl="https://www.apporo.ai/tag/123e4567-e89b-12d3-a456-426614174000" />
 
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
@@ -421,7 +426,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
-                    android:host="aiot.apporo.ai"
+                    android:host="www.apporo.ai"
                     android:pathPrefix="/tag/" />
             </intent-filter>
             <!--
@@ -446,7 +451,7 @@
 
                 <data
                     android:scheme="https"
-                    android:host="aiot.apporo.ai"
+                    android:host="www.apporo.ai"
                     android:pathPrefix="/tag/" />
             </intent-filter>
         </activity>
