@@ -16,7 +16,7 @@ env:
 
 jobs:
   app_build:
-    name: Github, Firebase, and Sentry Release
+    name: Github and Firebase Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -73,7 +73,6 @@ jobs:
           KEYSTORE_ALIAS: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS }}
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         # Wear OS and Android Automotive are excluded from the first release, so they are not part
         # of the Gradle build (see settings.gradle.kts). Adding their tasks back here would fail.
         run: |
@@ -114,7 +113,6 @@ jobs:
           KEYSTORE_ALIAS: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS }}
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: ./gradlew appDistributionUploadFullRelease
 
       - name: Prepare Amazon Listing
@@ -191,7 +189,6 @@ jobs:
           KEYSTORE_ALIAS: ${{ secrets.UPLOAD_KEYSTORE_ALIAS }}
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         # Only the phone bundle is published for the first release. `fastlane deploy_internal` must
         # not reference wear/ or automotive/ AAB paths, because they are no longer built here.
         run: |
