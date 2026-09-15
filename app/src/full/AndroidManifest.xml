@@ -16,9 +16,6 @@
 
     <application
         android:name="io.homeassistant.companion.android.HomeAssistantApplication" >
-        <meta-data android:name="io.sentry.auto-init" android:value="false" />
-        <meta-data android:name="io.sentry.release" android:value="${sentryRelease}" />
-        <meta-data android:name="io.sentry.dsn" android:value="${sentryDsn}" />
 
         <receiver android:name=".location.HighAccuracyLocationReceiver"
             android:enabled="true"

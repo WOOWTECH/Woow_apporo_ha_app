@@ -187,8 +187,6 @@
     <string name="controls_setting_dashboard_setting">Enter the dashboard path you want to use. When left empty, the default dashboard will be used.</string>
     <string name="controls_structure_enabled">Split multiple servers into individual pages within device controls</string>
     <string name="covers">Covers</string>
-    <string name="crash_reporting_summary">Help the developers fix bugs and crashes by leaving this enabled. If the application crashes this will automatically generate and send a report. If you notice a crash also create an issue on GitHub!</string>
-    <string name="crash_reporting">Crash reporting</string>
     <string name="create_template">Create template</string>
     <string name="database_event_failure">Unable to send migration failure event to Apporo aiot</string>
     <string name="database_migration_failed">Database migration failed, all sensor and widget data has been reset. Please re-enable your sensors and recreate your widgets.</string>

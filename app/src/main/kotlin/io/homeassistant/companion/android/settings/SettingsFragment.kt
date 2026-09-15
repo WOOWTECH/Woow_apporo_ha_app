@@ -309,9 +309,6 @@ class SettingsFragment(private val presenter: SettingsPresenter, private val lan
                 }
             }
         }
-        findPreference<SwitchPreference>("crash_reporting")?.let {
-            it.isVisible = BuildConfig.FLAVOR == "full"
-        }
 
         lifecycleScope.launch {
             findPreference<Preference>("wear_settings")?.let {

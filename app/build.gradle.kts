@@ -11,8 +11,6 @@ android {
     useLibrary("android.car")
 
     defaultConfig {
-        manifestPlaceholders["sentryRelease"] = "$applicationId@$versionName"
-        manifestPlaceholders["sentryDsn"] = System.getenv("SENTRY_DSN") ?: ""
 
         bundle {
             language {

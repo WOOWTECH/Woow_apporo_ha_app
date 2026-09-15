@@ -187,8 +187,6 @@
     <string name="controls_setting_dashboard_setting">輸入您想使用的儀表板路徑。如果留空，將使用預設儀表板。</string>
     <string name="controls_structure_enabled">在裝置控制中將多個伺服器分成獨立頁面</string>
     <string name="covers">窗簾</string>
-    <string name="crash_reporting_summary">保持啟用此選項以幫助開發人員修復錯誤和當機。如果應用程式當機，將自動產生並傳送報告。如果您發現當機，也請在 GitHub 上建立 Issue！</string>
-    <string name="crash_reporting">當機回報</string>
     <string name="create_template">建立範本</string>
     <string name="database_event_failure">無法將遷移失敗事件傳送至 Apporo aiot</string>
     <string name="database_migration_failed">資料庫遷移失敗，所有感測器和小工具資料已重設。請重新啟用您的感測器並重新建立您的小工具。</string>
