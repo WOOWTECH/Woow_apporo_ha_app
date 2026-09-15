@@ -245,6 +245,9 @@ class NameYourDeviceViewModelTest {
             appVersionProvider,
             messagingTokenProvider,
             defaultName = DEFAULT_DEVICE_NAME,
+            // The real check resolves the host over DNS; home.example.com does not resolve, so
+            // leaving it in made this assertion depend on the machine's network.
+            isUrlPubliclyAccessible = { true },
         )
 
         val testServerId = 1

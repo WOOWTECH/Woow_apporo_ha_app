@@ -99,7 +99,9 @@ class NameYourDeviceNavigationTest {
         sharedFlow.emit(NameYourDeviceNavigationEvent.Error(commonR.string.webview_error))
 
         assertEquals(
-            "There was an error loading Home Assistant, please review the connection settings and try again. We will attempt to try another provided URL when you select Refresh.",
+            // Read from the resource rather than pasted in: the copy says "Apporo aiot" now,
+            // and a literal here goes stale silently every time the brand wording is touched.
+            composeTestRule.activity.getString(commonR.string.webview_error),
             errorMessage,
         )
         assertTrue(backPressed)

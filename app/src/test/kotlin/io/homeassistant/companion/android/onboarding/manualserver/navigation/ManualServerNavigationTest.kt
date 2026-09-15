@@ -51,7 +51,8 @@ internal class ManualServerNavigationTest : BaseOnboardingNavigationTest() {
             onNodeWithContentDescription(stringResource(commonR.string.get_help)).performClick()
             coVerify { any<NavController>().navigateToUri(URL_GETTING_STARTED_DOCUMENTATION, any()) }
 
-            onNodeWithText("http://homeassistant.local:8123").performTextInput("http://ha.local")
+            // Placeholder text, de-branded during white-labelling (was homeassistant.local).
+            onNodeWithText("https://<ipaddress>").performTextInput("http://ha.local")
 
             onNodeWithText(stringResource(commonR.string.connect))
                 .performScrollTo()

@@ -21,6 +21,7 @@ import io.homeassistant.companion.android.common.data.connectivity.ConnectivityC
 import io.homeassistant.companion.android.common.data.keychain.KeyChainRepository
 import io.homeassistant.companion.android.testing.unit.ConsoleLogExtension
 import io.homeassistant.companion.android.testing.unit.MainDispatcherJUnit5Extension
+import io.homeassistant.companion.android.util.DEEP_LINK_SCHEME
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -74,7 +75,7 @@ class ConnectionViewModelTest {
             assertTrue(isLoadingFlow.awaitItem())
             assertEquals(null, urlFlow.awaitItem())
 
-            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=apporoaiot://auth-callback"
+            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=$DEEP_LINK_SCHEME://auth-callback"
             advanceUntilIdle()
 
             assertEquals(expectedAuthUrl, urlFlow.awaitItem())
@@ -99,7 +100,7 @@ class ConnectionViewModelTest {
 
             assertEquals(null, urlFlow.awaitItem())
 
-            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=apporoaiot://auth-callback"
+            val expectedAuthUrl = "$baseUrl/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=$DEEP_LINK_SCHEME://auth-callback"
             advanceUntilIdle()
 
             assertEquals(expectedAuthUrl, urlFlow.awaitItem())
@@ -132,7 +133,7 @@ class ConnectionViewModelTest {
     @ValueSource(booleans = [true, false])
     fun `Given auth callback uri with code when shouldRedirect then emits Authenticated event with mTLS status and returns true`(requireMTLS: Boolean) = runTest {
         val authCode = "test_auth_code"
-        val stringUri = mockAuthCodeUri(scheme = "apporoaiot", host = "auth-callback", authCode = authCode)
+        val stringUri = mockAuthCodeUri(scheme = DEEP_LINK_SCHEME, host = "auth-callback", authCode = authCode)
 
         val viewModel = ConnectionViewModel("http://homeassistant.local:8123", keyChainRepository, connectivityCheckRepository)
 
@@ -161,7 +162,7 @@ class ConnectionViewModelTest {
 
     @Test
     fun `Given auth callback uri without code when shouldRedirect then no event and returns false`() = runTest {
-        val stringUri = mockAuthCodeUri(scheme = "apporoaiot", host = "auth-callback", authCode = null)
+        val stringUri = mockAuthCodeUri(scheme = DEEP_LINK_SCHEME, host = "auth-callback", authCode = null)
 
         val viewModel = ConnectionViewModel("http://homeassistant.local:8123", keyChainRepository, connectivityCheckRepository)
 
@@ -267,7 +268,7 @@ class ConnectionViewModelTest {
 
             val request = mockk<WebResourceRequest> {
                 every { url } returns mockk<Uri> {
-                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=apporoaiot://auth-callback"
+                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=$DEEP_LINK_SCHEME://auth-callback"
                 }
             }
 
@@ -339,7 +340,7 @@ class ConnectionViewModelTest {
 
             val request = mockk<WebResourceRequest> {
                 every { url } returns mockk<Uri> {
-                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=apporoaiot://auth-callback"
+                    every { this@mockk.toString() } returns "http://homeassistant.local:8123/auth/authorize?response_type=code&client_id=${AuthenticationService.CLIENT_ID}&redirect_uri=$DEEP_LINK_SCHEME://auth-callback"
                 }
             }
 

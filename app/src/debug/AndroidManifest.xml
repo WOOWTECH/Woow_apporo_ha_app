@@ -1,0 +1,56 @@
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+    Debug-only component declarations.
+
+    This file deliberately does NOT declare deep-link intent-filters. An earlier version did,
+    and that was wrong: a source set manifest can only ADD an intent-filter, never rewrite the
+    one in the main manifest, so the debug build answered both `apporoaiot://` and
+    `apporoaiot-dev://` and still raised a disambiguation dialog next to a release build.
+    The scheme now comes from the `deepLinkScheme` manifest placeholder, fed by
+    `apporoDeepLinkScheme` in gradle.properties, so the main manifest already carries the
+    right scheme for each build type. Do not re-add filters here.
+
+    What does belong here is everything that only exists in the debug source set: the
+    developer tools, the debug shortcuts, and the activity the Compose tests host their
+    content in.
+    -->
+    <application tools:ignore="MissingApplicationIcon">
+
+        <!-- Debug-only shortcuts list (app/src/debug/res/xml/shortcuts.xml). -->
+        <activity android:name=".launch.LaunchActivity">
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+
+        <activity android:name=".developer.DevPlaygroundActivity"
+            android:exported="true" />
+
+        <activity android:name=".developer.catalog.HAComposeCatalogActivity"
+            android:exported="true" />
+
+        <activity android:name=".developer.DemoExoPlayerActivity"
+            android:supportsPictureInPicture="true"
+            android:resizeableActivity="true"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation"
+            tools:ignore="UnusedAttribute" />
+
+        <!--
+        Host activity for the Compose tests (`createAndroidComposeRule<HiltComponentActivity>()`).
+
+        Robolectric resolves it through the merged manifest, so removing this entry does not
+        fail the build or the lint run — it fails ~128 unit tests at once with
+        "Unable to resolve activity". If you touch this file, run
+        `:app:testFullDebugUnitTest`, not just the compile and lint tasks.
+
+        A no-action-bar theme keeps the bar from overlapping the content under test.
+        -->
+        <activity
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:name="io.homeassistant.companion.android.HiltComponentActivity"
+            />
+    </application>
+
+</manifest>

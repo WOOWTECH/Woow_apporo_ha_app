@@ -1,6 +1,6 @@
 Apporo aiot is the companion app for the Apporo AP-1004S and AP-1005S building controllers. Pair it with a controller that you or your integrator has already commissioned, and the rooms, floors and plant it looks after become reachable from your phone.
 
-The controller does the integration work. It speaks KNX, BACnet, Modbus, DALI and Matter, so lighting circuits, air conditioning, blinds, metering and standalone smart devices end up under one roof — an office floor, a retail unit, a hotel wing, or a private house. This app is the window onto that.
+The controller does the integration work. It speaks KNX, BACnet, Modbus and DALI, so lighting circuits, air conditioning, blinds and metering end up under one roof — an office floor, a retail unit, a hotel wing, or a private house. This app is the window onto that.
 
 WHAT THE APP DOES
 - Dashboards: open the layouts configured on your controller and operate lighting, air conditioning, blinds, scenes and anything else it publishes

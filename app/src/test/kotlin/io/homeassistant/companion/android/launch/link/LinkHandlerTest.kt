@@ -3,6 +3,7 @@ package io.homeassistant.companion.android.launch.link
 import androidx.core.net.toUri
 import io.homeassistant.companion.android.common.data.servers.ServerManager
 import io.homeassistant.companion.android.common.util.FailFast
+import io.homeassistant.companion.android.util.DEEP_LINK_SCHEME
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -77,7 +78,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "apporoaiot://helloworld".toUri()
+        val uri = "$DEEP_LINK_SCHEME://helloworld".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -95,7 +96,7 @@ class LinkHandlerTest {
 
     @Test
     fun `Given valid invite deep link with URL when invoking handleLink then returns Onboarding with provided URL`() = runTest {
-        val uri = "apporoaiot://invite/toto#url=http://homeassistant.local:8123".toUri()
+        val uri = "$DEEP_LINK_SCHEME://invite/toto#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
     }
@@ -180,7 +181,7 @@ class LinkHandlerTest {
     fun `Given navigate deep link with no registered server when invoking handleLink then returns NoDestination`() = runTest {
         coEvery { serverManager.isRegistered() } returns false
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard".toUri()
         val result = handler.handleLink(uri)
 
         assertEquals(LinkDestination.NoDestination, result)
@@ -193,10 +194,10 @@ class LinkHandlerTest {
             coEvery { id } returns 1
         }
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporoaiot://navigate/lovelace/dashboard", 1), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard", 1), result)
     }
 
     @Test
@@ -206,10 +207,10 @@ class LinkHandlerTest {
             coEvery { id } returns 1
         }
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard?server=default".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=default".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporoaiot://navigate/lovelace/dashboard?server=default", 1), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=default", 1), result)
     }
 
     @Test
@@ -219,10 +220,10 @@ class LinkHandlerTest {
             coEvery { id } returns 1
         }
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard?server=".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporoaiot://navigate/lovelace/dashboard?server=", 1), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=", 1), result)
     }
 
     @Test
@@ -239,10 +240,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard?server=Office".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=Office".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporoaiot://navigate/lovelace/dashboard?server=Office", 2), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=Office", 2), result)
     }
 
     @Test
@@ -259,10 +260,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard?server=office".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=office".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporoaiot://navigate/lovelace/dashboard?server=office", 2), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=office", 2), result)
     }
 
     @Test
@@ -275,10 +276,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard?server=NonExisting".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporoaiot://navigate/lovelace/dashboard?server=NonExisting", ServerManager.SERVER_ID_ACTIVE), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting", ServerManager.SERVER_ID_ACTIVE), result)
     }
 
     /*
@@ -321,10 +322,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard?server=NonExisting".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.ServerPicker("apporoaiot://navigate/lovelace/dashboard?server=NonExisting"), result)
+        assertEquals(LinkDestination.ServerPicker("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting"), result)
     }
 
     @Test
@@ -342,9 +343,9 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporoaiot://navigate/lovelace/dashboard".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.ServerPicker("apporoaiot://navigate/lovelace/dashboard"), result)
+        assertEquals(LinkDestination.ServerPicker("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard"), result)
     }
 }

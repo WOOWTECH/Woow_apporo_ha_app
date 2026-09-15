@@ -71,17 +71,34 @@ class IgnoreViolationRulesTest {
     }
 
     @Test
-    fun `Given a MIUI class outside the font package when checking thread rules then violation is not ignored`() {
-        // The miui.util.font. prefix requires the trailing package dot so it does not swallow
-        // unrelated MIUI disk reads from a differently named sibling package.
-        val nearMiss = arrayOf(
+    fun `Given a sibling class under miui util when checking thread rules then violation is ignored`() {
+        // The rule matches the whole `miui.util.` package on purpose, not just `miui.util.font.`:
+        // the disk read is declared by several siblings (FontSettings, MultiLangHelper,
+        // TypefaceHelper, TypefaceUtils) and the frame that declares it varies between them.
+        // See IgnoreMiuiFontDiskRead for the list. A class in a sibling package is therefore
+        // expected to be ignored as well.
+        val sibling = arrayOf(
             StackTraceElement("android.os.StrictMode\$AndroidBlockGuardPolicy", "onReadFromDisk", "StrictMode.java", 1666),
             StackTraceElement("libcore.io.BlockGuardOs", "access", "BlockGuardOs.java", 74),
             StackTraceElement("java.io.File", "exists", "File.java", 829),
             StackTraceElement("miui.util.fontmanager.FontManager", "load", "FontManager.java", 42),
         )
 
-        assertFalse(isIgnoredByThreadPolicy(diskReadViolation(nearMiss)))
+        assertTrue(isIgnoredByThreadPolicy(diskReadViolation(sibling)))
+    }
+
+    @Test
+    fun `Given a MIUI class outside miui util when checking thread rules then violation is not ignored`() {
+        // Outside `miui.util.` the rule must not apply, or it would hide disk reads from MIUI
+        // code that has nothing to do with fonts.
+        val outside = arrayOf(
+            StackTraceElement("android.os.StrictMode\$AndroidBlockGuardPolicy", "onReadFromDisk", "StrictMode.java", 1666),
+            StackTraceElement("libcore.io.BlockGuardOs", "access", "BlockGuardOs.java", 74),
+            StackTraceElement("java.io.File", "exists", "File.java", 829),
+            StackTraceElement("miui.content.res.ThemeResources", "load", "ThemeResources.java", 42),
+        )
+
+        assertFalse(isIgnoredByThreadPolicy(diskReadViolation(outside)))
     }
 
     private fun isIgnoredByThreadPolicy(violation: Violation): Boolean {

@@ -49,7 +49,9 @@ class ManualServerScreenTest {
 
                 onNodeWithText(stringResource(commonR.string.manual_server_wrong_url)).assertIsNotDisplayed()
 
-                onNodeWithText("http://homeassistant.local:8123").assertIsDisplayed()
+                // The placeholder was de-branded during white-labelling: it used to name
+                // homeassistant.local, which is upstream's example host, not ours.
+                onNodeWithText("https://<ipaddress>").assertIsDisplayed()
                 onNodeWithContentDescription(stringResource(commonR.string.clear_text)).assertIsNotDisplayed()
             }
         }

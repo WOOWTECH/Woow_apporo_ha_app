@@ -67,6 +67,7 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import java.net.URL
 import junit.framework.TestCase.assertTrue
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -84,6 +85,16 @@ import org.robolectric.annotation.Config
 
 private const val WEAR_NAME = "super_ha_wear"
 private const val VALID_PASSWORD = "1234"
+
+/**
+ * How long to wait for a discovered server to appear on screen.
+ *
+ * `ServerDiscoveryViewModel.discoveryFlow` holds the first emission back by
+ * [DELAY_BEFORE_DISPLAY_DISCOVERY], so waiting for exactly that long leaves no margin at all and
+ * the wait loses the race on any machine slower than the one the test was written on. Wait for
+ * the delay plus a margin instead.
+ */
+private val DISCOVERY_WAIT_TIMEOUT = DELAY_BEFORE_DISPLAY_DISCOVERY + 5.seconds
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
@@ -221,7 +232,7 @@ internal class WearOnboardingNavigationTest {
             onNodeWithText(stringResource(commonR.string.searching_home_network)).assertIsDisplayed()
 
             instanceChannel.trySend(HomeAssistantInstance("Test", URL(instanceUrl), HomeAssistantVersion(2025, 9, 1)))
-            waitUntilAtLeastOneExists(hasText(instanceUrl), timeoutMillis = DELAY_BEFORE_DISPLAY_DISCOVERY.inWholeMilliseconds)
+            waitUntilAtLeastOneExists(hasText(instanceUrl), timeoutMillis = DISCOVERY_WAIT_TIMEOUT.inWholeMilliseconds)
 
             onNodeWithTag(ONE_SERVER_FOUND_MODAL_TAG).performTouchInput {
                 swipeUp(startY = bottom * 0.9f, endY = centerY, durationMillis = 200)
