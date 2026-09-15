@@ -1,6 +1,7 @@
 package io.homeassistant.companion.android.util
 
 import android.net.Uri
+import io.homeassistant.companion.android.common.BuildConfig
 import io.homeassistant.companion.android.common.data.MalformedHttpUrlException
 import io.homeassistant.companion.android.common.data.authentication.impl.AuthenticationService
 import java.net.InetAddress
@@ -31,10 +32,18 @@ const val BRAND_HOST = "aiot.apporo.ai"
  * two are meant to claim different schemes. Expressing that split needs a generated `BuildConfig`
  * field; until such a field exists this constant is the only place the scheme is spelled out.
  */
-const val DEEP_LINK_SCHEME = "apporoaiot"
+/**
+ * Deep-link / OAuth-callback scheme for this build type.
+ *
+ * Supplied by `BuildConfig` so it always matches the `deepLinkScheme` manifest placeholder that
+ * declares the intent-filters — both come from `apporoDeepLinkScheme` in `gradle.properties`.
+ * Debug builds get a distinct scheme so they do not contend with a release build on the same
+ * device. Not a `const`, because the value is only known at build time.
+ */
+val DEEP_LINK_SCHEME: String = BuildConfig.DEEP_LINK_SCHEME
 
 /** Prefix the frontend puts in front of an in-app navigation target. */
-private const val NAVIGATE_DEEP_LINK_PREFIX = "$DEEP_LINK_SCHEME://navigate/"
+private val NAVIGATE_DEEP_LINK_PREFIX = "$DEEP_LINK_SCHEME://navigate/"
 
 private const val HTTPS_SCHEME = "https"
 

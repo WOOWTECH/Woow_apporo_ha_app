@@ -68,11 +68,21 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     }
                 }
 
+                val deepLinkScheme = providers.gradleProperty("apporoDeepLinkScheme").get()
+                val deepLinkSchemeDebugSuffix =
+                    providers.gradleProperty("apporoDeepLinkSchemeDebugSuffix").get()
+
                 buildTypes {
                     named("debug").configure {
                         applicationIdSuffix = ".debug"
+                        // Must match BuildConfig.DEEP_LINK_SCHEME in :common for the same build
+                        // type, otherwise the manifest advertises one scheme while the OAuth
+                        // callback is generated with another and login silently fails.
+                        manifestPlaceholders["deepLinkScheme"] =
+                            "$deepLinkScheme$deepLinkSchemeDebugSuffix"
                     }
                     named("release").configure {
+                        manifestPlaceholders["deepLinkScheme"] = deepLinkScheme
                         isDebuggable = false
                         isJniDebuggable = false
                         signingConfig = signingConfigs.getByName("release")

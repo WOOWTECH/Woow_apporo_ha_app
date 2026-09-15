@@ -7,6 +7,8 @@ plugins {
 
 val homeAssistantAndroidPushUrl: String by project
 val homeAssistantAndroidRateLimitUrl: String by project
+val apporoDeepLinkScheme: String by project
+val apporoDeepLinkSchemeDebugSuffix: String by project
 
 val versionName = project.version.toString()
 val versionCode = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
@@ -18,6 +20,23 @@ android {
         buildConfigField("String", "PUSH_URL", "\"$homeAssistantAndroidPushUrl\"")
         buildConfigField("String", "RATE_LIMIT_URL", "\"$homeAssistantAndroidRateLimitUrl\"")
         buildConfigField("String", "VERSION_NAME", "\"$versionName-$versionCode\"")
+    }
+
+    buildTypes {
+        // Deep-link scheme is the single source of truth for both the manifest intent-filters
+        // (via the deepLinkScheme manifest placeholder in AndroidApplicationConventionPlugin)
+        // and the Kotlin constants that build OAuth callbacks. Debug gets a distinct scheme so a
+        // debug build and a release build installed side by side never contend for the same link.
+        named("debug") {
+            buildConfigField(
+                "String",
+                "DEEP_LINK_SCHEME",
+                "\"$apporoDeepLinkScheme$apporoDeepLinkSchemeDebugSuffix\"",
+            )
+        }
+        named("release") {
+            buildConfigField("String", "DEEP_LINK_SCHEME", "\"$apporoDeepLinkScheme\"")
+        }
     }
 
     sourceSets {

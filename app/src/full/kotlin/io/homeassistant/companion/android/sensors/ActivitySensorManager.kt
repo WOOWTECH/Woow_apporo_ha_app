@@ -1,6 +1,7 @@
 package io.homeassistant.companion.android.sensors
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -225,6 +226,19 @@ class ActivitySensorManager :
         return !context.isAutomotive()
     }
 
+    /**
+     * 呼叫的 ActivityRecognitionClient API 需要 ACTIVITY_RECOGNITION 權限，而本版的 manifest
+     * 已用 tools:node="remove" 移除該權限（首版排除 Health / Fitness / Steps）。
+     *
+     * 這段程式碼在執行期不可達：SensorReceiver 只在
+     * [io.homeassistant.companion.android.util.SensorReleasePolicy.fitnessSensorsEnabled]
+     * 為 true 時才會建立 ActivitySensorManager，而該旗標在本版是 false。
+     * 實作刻意保留（不刪除），以便日後恢復時只需翻轉旗標並把權限加回 manifest。
+     *
+     * → 因此抑制 MissingPermission 是正確的：權限的缺席與呼叫端的停用是同一個決策的兩面。
+     *   **若日後把 fitnessSensorsEnabled 改回 true，必須同時恢復權限並移除這個抑制。**
+     */
+    @SuppressLint("MissingPermission")
     override suspend fun requestSensorUpdate(context: Context) {
         if (isEnabled(context, activity)) {
             val actReg = ActivityRecognition.getClient(context)

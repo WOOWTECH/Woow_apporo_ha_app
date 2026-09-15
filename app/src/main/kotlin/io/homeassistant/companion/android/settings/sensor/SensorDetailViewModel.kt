@@ -432,6 +432,12 @@ class SensorDetailViewModel @Inject constructor(
                 }
             }
         } else {
+            // QueryPermissionsNeeded is expected and intended here. QUERY_ALL_PACKAGES was
+            // deliberately dropped in favour of a narrow <queries> MAIN/LAUNCHER declaration, so
+            // this returns only launchable apps rather than every installed package. Settings the
+            // user already saved for a package that is now invisible are preserved by the branch
+            // above, which reads them back by name instead of relying on this list.
+            @Suppress("QueryPermissionsNeeded")
             val appInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 packageManager?.getInstalledApplications(
                     PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA.toLong()),

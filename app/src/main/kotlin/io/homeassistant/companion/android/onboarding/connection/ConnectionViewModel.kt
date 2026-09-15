@@ -98,9 +98,9 @@ internal sealed interface ConnectionNavigationEvent {
     data class OpenExternalLink(val url: Uri) : ConnectionNavigationEvent
 }
 
-private const val AUTH_CALLBACK_SCHEME = DEEP_LINK_SCHEME
+private val AUTH_CALLBACK_SCHEME = DEEP_LINK_SCHEME
 private const val AUTH_CALLBACK_HOST = "auth-callback"
-private const val AUTH_CALLBACK = "$AUTH_CALLBACK_SCHEME://$AUTH_CALLBACK_HOST"
+private val AUTH_CALLBACK = "$AUTH_CALLBACK_SCHEME://$AUTH_CALLBACK_HOST"
 
 @HiltViewModel
 internal class ConnectionViewModel @VisibleForTesting constructor(

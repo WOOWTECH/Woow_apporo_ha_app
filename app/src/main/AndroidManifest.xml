@@ -397,7 +397,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="apporoaiot"
+                    android:scheme="${deepLinkScheme}"
                     android:host="invite" />
             </intent-filter>
 
@@ -409,7 +409,7 @@
 
                 <data
                     android:host="navigate"
-                    android:scheme="apporoaiot" />
+                    android:scheme="${deepLinkScheme}" />
             </intent-filter>
         </activity>
 
@@ -425,7 +425,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="apporoaiot"
+                    android:scheme="${deepLinkScheme}"
                     android:host="wear-phone-signin" />
             </intent-filter>
         </activity>
@@ -482,7 +482,17 @@
                     android:scheme="https"
                     android:host="aiot.apporo.ai"
                     android:pathPrefix="/tag/" />
-                <!-- Read compatibility for tags written by the upstream Home Assistant app. -->
+            </intent-filter>
+            <!--
+            Read compatibility for tags written by the upstream Home Assistant app, in its own
+            intent-filter rather than a second <data> in the one above: Android unions the data
+            attributes of every <data> in a filter, so two multi-attribute tags declare the cross
+            product of their hosts and paths, not the two pairs actually intended.
+            -->
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="https"
                     android:host="www.home-assistant.io"
