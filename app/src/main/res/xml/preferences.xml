@@ -211,10 +211,10 @@
             android:key="docs"
             android:icon="@drawable/ic_question"
             android:title="@string/documentation"
-            android:summary="https://aiot.apporo.ai"
+            android:summary="https://www.apporo.ai/help"
             app:enableCopying="true">
             <intent android:action="android.intent.action.VIEW"
-                android:data="https://aiot.apporo.ai" />
+                android:data="https://www.apporo.ai/help" />
         </Preference>
         <Preference
             android:key="developer"

@@ -57,7 +57,7 @@ class TagReaderActivity : BaseActivity() {
     }
 
     private suspend fun handleTag(url: Uri?, isNfcTag: Boolean) {
-        // Example of an address stored on a tag: https://aiot.apporo.ai/tag/5f0ba733-172f-430d-a7f8-e4ad940c88d7
+        // Example of an address stored on a tag: https://www.apporo.ai/tag/5f0ba733-172f-430d-a7f8-e4ad940c88d7
 
         val nfcTagId = UrlUtil.splitNfcTagId(url)
         Timber.d("Tag ID: $nfcTagId")

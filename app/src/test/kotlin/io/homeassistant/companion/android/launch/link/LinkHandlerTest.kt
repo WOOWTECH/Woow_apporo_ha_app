@@ -38,7 +38,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "https://aiot.apporo.ai/unknown".toUri()
+        val uri = "https://www.apporo.ai/unknown".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -51,7 +51,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "http://aiot.apporo.ai/invite#url=http://homeassistant.local:8123".toUri()
+        val uri = "http://www.apporo.ai/invite#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -64,7 +64,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "https://aiot.apporo.aia/invite#url=http://homeassistant.local:8123".toUri()
+        val uri = "https://www.apporo.aia/invite#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -88,7 +88,7 @@ class LinkHandlerTest {
      */
     @Test
     fun `Given valid invite URI with URL when invoking handleLink then returns Onboarding with provided URL`() = runTest {
-        val uri = "https://aiot.apporo.ai/invite/#url=http://homeassistant.local:8123".toUri()
+        val uri = "https://www.apporo.ai/invite/#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
     }
@@ -102,14 +102,14 @@ class LinkHandlerTest {
 
     @Test
     fun `Given valid invite URI with empty URL when invoking handleLink then returns Onboarding with empty URL`() = runTest {
-        val uri = "https://aiot.apporo.ai/invite/#url=".toUri()
+        val uri = "https://www.apporo.ai/invite/#url=".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding(""), result)
     }
 
     @Test
     fun `Given valid invite URI with multiples args when invoking handleLink then returns Onboarding with only the url`() = runTest {
-        val uri = "https://aiot.apporo.ai/invite/#app=1&url=http://homeassistant.local:8123&repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/invite/#app=1&url=http://homeassistant.local:8123&repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
     }
@@ -118,7 +118,7 @@ class LinkHandlerTest {
     fun `Given valid invite URI with URL that contains params when invoking handleLink then returns Onboarding with provided URL with params`() = runTest {
         // To support this case the URL in `url=` is encoded twice, when building the URL the first time and then a second time to be used as a parameter
         // of another URL.
-        val uri = "https://aiot.apporo.ai/invite/#url=http://homeassistant.local:8123?pre-auth=https%253A%252F%252Fgithub.com%252Fhome-assistant%252Fandroid%252F%2526toto=tata&second_param_out_of_url=1".toUri()
+        val uri = "https://www.apporo.ai/invite/#url=http://homeassistant.local:8123?pre-auth=https%253A%252F%252Fgithub.com%252Fhome-assistant%252Fandroid%252F%2526toto=tata&second_param_out_of_url=1".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123?pre-auth=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F%26toto=tata"), result)
     }
@@ -129,7 +129,7 @@ class LinkHandlerTest {
         FailFast.setHandler { exception, additionalMessage ->
             caughtException = exception
         }
-        val uri = "https://aiot.apporo.ai/invite/#".toUri()
+        val uri = "https://www.apporo.ai/invite/#".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -147,7 +147,7 @@ class LinkHandlerTest {
                 coEvery { id } returns 1
             },
         )
-        val uri = "https://aiot.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
 
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Webview("_my_redirect/supervisor_add_addon_repository?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F&mobile=1", ServerManager.SERVER_ID_ACTIVE), result)
@@ -156,7 +156,7 @@ class LinkHandlerTest {
     @Test
     fun `Given redirect URI with no registered server when invoking handleLink then returns NoDestination`() = runTest {
         coEvery { serverManager.isRegistered() } returns false
-        val uri = "https://aiot.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
 
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
@@ -169,7 +169,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
         coEvery { serverManager.isRegistered() } returns true
-        val uri = "https://aiot.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F&mobile=1".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F&mobile=1".toUri()
 
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
@@ -297,7 +297,7 @@ class LinkHandlerTest {
                 coEvery { id } returns 2
             },
         )
-        val uri = "https://aiot.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
 
         val result = handler.handleLink(uri)
 

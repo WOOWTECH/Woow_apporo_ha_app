@@ -22,7 +22,7 @@ import timber.log.Timber
  * Every branded address in the app is built from this single value so that a future change of
  * domain is a one line change instead of a repository wide search.
  */
-const val BRAND_HOST = "aiot.apporo.ai"
+const val BRAND_HOST = "www.apporo.ai"
 
 /**
  * URL scheme the app registers for its own deep links, for example `apporoaiot://navigate/lovelace`.

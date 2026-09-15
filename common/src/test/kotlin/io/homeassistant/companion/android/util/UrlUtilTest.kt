@@ -66,7 +66,7 @@ class UrlUtilTest {
 
     @Test
     fun `Given input with homeassistant navigate prefix and absolute URL when calling handle then treats as relative path without taking care of second host and protocol`() {
-        val input = "apporoaiot://navigate/https://example2.com/path/subpath"
+        val input = "$DEEP_LINK_SCHEME://navigate/https://example2.com/path/subpath"
 
         val result = UrlUtil.handle(baseUrl, input)
 
@@ -76,7 +76,7 @@ class UrlUtilTest {
 
     @Test
     fun `Given input with homeassistant navigate prefix and relative path when calling handle then returns resolved URL`() {
-        val input = "apporoaiot://navigate/lovelace/default"
+        val input = "$DEEP_LINK_SCHEME://navigate/lovelace/default"
 
         val result = UrlUtil.handle(baseUrl, input)
 

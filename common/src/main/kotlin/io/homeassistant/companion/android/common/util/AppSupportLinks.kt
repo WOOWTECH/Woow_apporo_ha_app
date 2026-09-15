@@ -7,16 +7,18 @@ package io.homeassistant.companion.android.common.util
  * such as the invite and redirect endpoints or the privacy policy, are not help links and are kept
  * next to the code that uses them.
  *
- * **These pages are not published yet.** Every address below is a planned path on the new
- * `aiot.apporo.ai` help centre, not a page that has been visited. Before the app is submitted for
- * review, open each one while signed out of the help centre and confirm that it loads for an
- * anonymous reader: a store reviewer follows these links without an account, and a page that is
- * missing or requires a login reads as a broken link in the submission.
+ * These pages are published on the brand site at `https://www.apporo.ai/help`, which is served by
+ * the customer's Odoo website. They are live and anonymously readable.
+ *
+ * The topic pages exist; the per-sensor entries below are anchors into the single `/help/sensors`
+ * page. An anchor with no matching heading is not an error — it drops the reader at the top of the
+ * page instead of at their sensor — so when a sensor is added here, add the matching heading to
+ * that page too. The pages are NOT in this repo: they live in Odoo and are edited there.
  */
 object AppSupportLinks {
 
     /** Root of the help centre. Kept private so every topic is reached through a named constant. */
-    private const val HELP_CENTER_BASE_URL = "https://aiot.apporo.ai/help"
+    private const val HELP_CENTER_BASE_URL = "https://www.apporo.ai/help"
 
     /** First steps after installing the app: creating an account and adding the first home. */
     const val GETTING_STARTED = "$HELP_CENTER_BASE_URL/getting-started"

@@ -62,52 +62,52 @@ class UriExtensionsTest {
 
     @Test
     fun `Given tag address on an accepted host when calling splitNfcTagId then returns the identifier`() {
-        assertTagId("https://aiot.apporo.ai/tag/$TAG_IDENTIFIER", TAG_IDENTIFIER)
+        assertTagId("https://www.apporo.ai/tag/$TAG_IDENTIFIER", TAG_IDENTIFIER)
         assertTagId("https://www.home-assistant.io/tag/$TAG_IDENTIFIER", TAG_IDENTIFIER)
     }
 
     @Test
     fun `Given tag address with a differently cased scheme or host when calling splitNfcTagId then returns the identifier`() {
-        assertTagId("HTTPS://AIOT.APPORO.AI/tag/$TAG_IDENTIFIER", TAG_IDENTIFIER)
+        assertTagId("HTTPS://WWW.APPORO.AI/tag/$TAG_IDENTIFIER", TAG_IDENTIFIER)
     }
 
     @Test
     fun `Given tag address with an escaped character in the identifier when calling splitNfcTagId then returns the decoded identifier`() {
-        assertTagId("https://aiot.apporo.ai/tag/tag%20one", "tag one")
+        assertTagId("https://www.apporo.ai/tag/tag%20one", "tag one")
     }
 
     @Test
     fun `Given address that is not secure when calling splitNfcTagId then returns null`() {
-        assertNotATagAddress("http://aiot.apporo.ai/tag/$TAG_IDENTIFIER")
+        assertNotATagAddress("http://www.apporo.ai/tag/$TAG_IDENTIFIER")
     }
 
     @Test
     fun `Given address on an unexpected host when calling splitNfcTagId then returns null`() {
         assertNotATagAddress("https://aiot.apporo.example/tag/$TAG_IDENTIFIER")
-        assertNotATagAddress("https://aiot.apporo.ai.example.com/tag/$TAG_IDENTIFIER")
+        assertNotATagAddress("https://www.apporo.ai.example.com/tag/$TAG_IDENTIFIER")
         assertNotATagAddress("https://example.com/tag/$TAG_IDENTIFIER")
         assertNotATagAddress("https://home-assistant.io/tag/$TAG_IDENTIFIER")
     }
 
     @Test
     fun `Given tag address carrying a port or user information when calling splitNfcTagId then returns null`() {
-        assertNotATagAddress("https://aiot.apporo.ai:8443/tag/$TAG_IDENTIFIER")
-        assertNotATagAddress("https://someone@aiot.apporo.ai/tag/$TAG_IDENTIFIER")
+        assertNotATagAddress("https://www.apporo.ai:8443/tag/$TAG_IDENTIFIER")
+        assertNotATagAddress("https://someone@www.apporo.ai/tag/$TAG_IDENTIFIER")
     }
 
     @Test
     fun `Given tag address carrying a query or a fragment when calling splitNfcTagId then returns null`() {
-        assertNotATagAddress("https://aiot.apporo.ai/tag/$TAG_IDENTIFIER?server=1")
-        assertNotATagAddress("https://aiot.apporo.ai/tag/$TAG_IDENTIFIER#section")
+        assertNotATagAddress("https://www.apporo.ai/tag/$TAG_IDENTIFIER?server=1")
+        assertNotATagAddress("https://www.apporo.ai/tag/$TAG_IDENTIFIER#section")
     }
 
     @Test
     fun `Given address whose path is not exactly one tag identifier when calling splitNfcTagId then returns null`() {
-        assertNotATagAddress("https://aiot.apporo.ai/tag/$TAG_IDENTIFIER/extra")
-        assertNotATagAddress("https://aiot.apporo.ai/redirect/tag/$TAG_IDENTIFIER")
-        assertNotATagAddress("https://aiot.apporo.ai/tag/")
-        assertNotATagAddress("https://aiot.apporo.ai/tag")
-        assertNotATagAddress("https://aiot.apporo.ai/")
+        assertNotATagAddress("https://www.apporo.ai/tag/$TAG_IDENTIFIER/extra")
+        assertNotATagAddress("https://www.apporo.ai/redirect/tag/$TAG_IDENTIFIER")
+        assertNotATagAddress("https://www.apporo.ai/tag/")
+        assertNotATagAddress("https://www.apporo.ai/tag")
+        assertNotATagAddress("https://www.apporo.ai/")
     }
 
     @Test
@@ -119,7 +119,7 @@ class UriExtensionsTest {
     fun `Given an identifier when calling buildNfcTagUri then returns the address read back by splitNfcTagId`() {
         val uri = UrlUtil.buildNfcTagUri(TAG_IDENTIFIER)
 
-        assertEquals("https://aiot.apporo.ai/tag/$TAG_IDENTIFIER", uri.toString())
+        assertEquals("https://www.apporo.ai/tag/$TAG_IDENTIFIER", uri.toString())
         assertEquals(TAG_IDENTIFIER, UrlUtil.splitNfcTagId(uri))
     }
 

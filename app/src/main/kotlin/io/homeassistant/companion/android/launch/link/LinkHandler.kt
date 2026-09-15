@@ -44,11 +44,11 @@ sealed interface LinkDestination {
 }
 
 /**
- * Handles universal links from `https://aiot.apporo.ai` and some of the deep links from `apporoaiot://`
+ * Handles universal links from `https://www.apporo.ai` and some of the deep links from `apporoaiot://`
  */
 interface LinkHandler {
     /**
-     * Processes the given [uri] from `https://aiot.apporo.ai` or `apporoaiot://` and determines the
+     * Processes the given [uri] from `https://www.apporo.ai` or `apporoaiot://` and determines the
      * intended navigation destination within the application.
      *
      * @param uri The universal link to handle.
@@ -115,11 +115,11 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
      * Attempts to extract the target Home Assistant instance URL from the fragment part of the provided URI.
      *
      * The expected invitation link format is:
-     * Universal Link: `https://aiot.apporo.ai/invite#url=http://homeassistant.local:8123`
+     * Universal Link: `https://www.apporo.ai/invite#url=http://homeassistant.local:8123`
      * Deep Link: `apporoaiot://invite/#url=http://homeassistant.local:8123`
      *
      * The target URL is embedded in the fragment for security reasons,
-     * preventing it from being sent to `aiot.apporo.ai`. This function extracts the
+     * preventing it from being sent to `www.apporo.ai`. This function extracts the
      * `url` parameter from the fragment.
      *
      * @param uri The URI to process containing the invitation link.
@@ -142,7 +142,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
     }
 
     /**
-     * Handles redirect links from `https://aiot.apporo.ai/redirect/...`.
+     * Handles redirect links from `https://www.apporo.ai/redirect/...`.
      *
      * Transforms the universal link into an internal path format and adds the mobile parameter.
      * Requires a registered server to proceed.
@@ -163,7 +163,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
 
         val path = uri.buildUpon()
             // We strip the last / to handle old links created before https://github.com/home-assistant/frontend/pull/25841.
-            // A trailing slash is always added by the static host serving https://aiot.apporo.ai/, but
+            // A trailing slash is always added by the static host serving https://www.apporo.ai/, but
             // the frontend did not support having a trailing slash before https://github.com/home-assistant/frontend/pull/25841.
             // For backward compatibility, we remove the trailing slash here.
             .path(uri.path?.removeSuffix("/"))
