@@ -8,61 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "mobilesdk_app_id",
-        "android_client_info": {
-          "package_name": "com.woowtech.home"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "current_key"
-        }
-      ]
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "mobilesdk_app_id",
-        "android_client_info": {
-          "package_name": "com.woowtech.home.debug"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "current_key"
-        }
-      ]
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "mobilesdk_app_id",
-        "android_client_info": {
-          "package_name": "com.woowtech.home.minimal"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "current_key"
-        }
-      ]
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "mobilesdk_app_id",
-        "android_client_info": {
-          "package_name": "com.woowtech.home.minimal.debug"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "current_key"
-        }
-      ]
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:000000000000:android:00089e48c924b319",
         "android_client_info": {
-          "package_name": "com.apporo.home"
+          "package_name": "com.apporo.aiot"
         }
       },
       "api_key": [
@@ -75,7 +23,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:000000000000:android:00176b5ba35ea07b",
         "android_client_info": {
-          "package_name": "com.apporo.home.debug"
+          "package_name": "com.apporo.aiot.debug"
         }
       },
       "api_key": [
@@ -88,7 +36,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:000000000000:android:00001b0eaadae2c3",
         "android_client_info": {
-          "package_name": "com.apporo.home.minimal"
+          "package_name": "com.apporo.aiot.minimal"
         }
       },
       "api_key": [
@@ -101,7 +49,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:000000000000:android:001d2fc5461a3d2a",
         "android_client_info": {
-          "package_name": "com.apporo.home.minimal.debug"
+          "package_name": "com.apporo.aiot.minimal.debug"
         }
       },
       "api_key": [
