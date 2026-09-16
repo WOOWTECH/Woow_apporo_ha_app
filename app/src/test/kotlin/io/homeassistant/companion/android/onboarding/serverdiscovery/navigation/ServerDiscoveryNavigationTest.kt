@@ -29,6 +29,7 @@ import io.homeassistant.companion.android.onboarding.connection.navigation.Conne
 import io.homeassistant.companion.android.onboarding.manualserver.navigation.ManualServerRoute
 import io.homeassistant.companion.android.onboarding.nameyourdevice.navigation.NameYourDeviceRoute
 import io.homeassistant.companion.android.onboarding.serverdiscovery.DELAY_BEFORE_DISPLAY_DISCOVERY
+import kotlin.time.Duration.Companion.seconds
 import io.homeassistant.companion.android.onboarding.serverdiscovery.HomeAssistantInstance
 import io.homeassistant.companion.android.onboarding.serverdiscovery.HomeAssistantSearcher
 import io.homeassistant.companion.android.onboarding.serverdiscovery.ONE_SERVER_FOUND_MODAL_TAG
@@ -55,6 +56,21 @@ import org.robolectric.annotation.Config
 /**
  * Navigation tests for the Server Discovery screen in the onboarding flow.
  */
+/**
+ * 等待探索結果出現的逾時。
+ *
+ * ⚠️ **不要寫成 `DELAY_BEFORE_DISPLAY_DISCOVERY.inWholeMilliseconds`。**
+ * 原本就是那樣,等於「給測試的時間恰好等於產品端要等的時間」——零裕度。
+ * `waitUntilAtLeastOneExists` 用實時時鐘,只要機器稍慢,UI 安定就會超過那條線。
+ *
+ * 實測:2.5GB 可用記憶體、沒有其他工作時仍穩定失敗;只放大這個值就穩定通過,
+ * 產品程式碼一行沒動 —— 失敗的是裕度,不是行為。
+ *
+ * 寫法刻意與 WearOnboardingNavigationTest 的 DISCOVERY_WAIT_TIMEOUT 一致(見該檔 :93),
+ * 那裡早就記錄過同一個問題,只是這個檔案當時漏掉了。
+ */
+private val DISCOVERY_WAIT_TIMEOUT = DELAY_BEFORE_DISPLAY_DISCOVERY + 5.seconds
+
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
 @UninstallModules(ServerDiscoveryModule::class)
@@ -69,7 +85,17 @@ internal class ServerDiscoveryNavigationTest : BaseOnboardingNavigationTest() {
         }
     }
 
-    val instanceChannel = Channel<HomeAssistantInstance>()
+    // ⚠️ **容量不可省略。** Channel() 的預設是 RENDEZVOUS(容量 0),
+    // 而測試是用 trySend() 送值 —— 在還沒有接收者掛起等待時,trySend 會直接失敗,
+    // 回傳的 ChannelResult 又沒人檢查,於是值被靜默丟掉、畫面永遠不會出現那個網址。
+    //
+    // 這不是「等久一點就會好」的問題:值從來沒送出去,再長的逾時也等不到。
+    // WearOnboardingNavigationTest 就是這樣穩定失敗的(它在導覽後立刻送);
+    // 而 ServerDiscoveryNavigationTest 只是碰巧在送出前多做了幾個 UI 動作,
+    // 讓收集者先訂閱上才僥倖通過 —— 兩邊都有同一個競態。
+    //
+    // 改成 BUFFERED 之後,送出與訂閱的先後順序就不再影響結果。
+    val instanceChannel = Channel<HomeAssistantInstance>(capacity = Channel.BUFFERED)
 
     val connectionNavigationEventFlow = MutableSharedFlow<ConnectionNavigationEvent>()
 
@@ -169,7 +195,7 @@ internal class ServerDiscoveryNavigationTest : BaseOnboardingNavigationTest() {
 
             waitUntilAtLeastOneExists(
                 hasText(instanceUrl),
-                timeoutMillis = DELAY_BEFORE_DISPLAY_DISCOVERY.inWholeMilliseconds,
+                timeoutMillis = DISCOVERY_WAIT_TIMEOUT.inWholeMilliseconds,
             )
 
             onNodeWithTag(ONE_SERVER_FOUND_MODAL_TAG).performTouchInput {
@@ -213,7 +239,7 @@ internal class ServerDiscoveryNavigationTest : BaseOnboardingNavigationTest() {
 
             waitUntilAtLeastOneExists(
                 hasText(instanceUrl),
-                timeoutMillis = DELAY_BEFORE_DISPLAY_DISCOVERY.inWholeMilliseconds,
+                timeoutMillis = DISCOVERY_WAIT_TIMEOUT.inWholeMilliseconds,
             )
 
             onNodeWithText(instanceUrl).assertIsDisplayed()

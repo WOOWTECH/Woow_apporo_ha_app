@@ -147,7 +147,17 @@ internal class WearOnboardingNavigationTest {
         )
     }
 
-    private val instanceChannel = Channel<HomeAssistantInstance>()
+    // ⚠️ **容量不可省略。** Channel() 的預設是 RENDEZVOUS(容量 0),
+    // 而測試是用 trySend() 送值 —— 在還沒有接收者掛起等待時,trySend 會直接失敗,
+    // 回傳的 ChannelResult 又沒人檢查,於是值被靜默丟掉、畫面永遠不會出現那個網址。
+    //
+    // 這不是「等久一點就會好」的問題:值從來沒送出去,再長的逾時也等不到。
+    // WearOnboardingNavigationTest 就是這樣穩定失敗的(它在導覽後立刻送);
+    // 而 ServerDiscoveryNavigationTest 只是碰巧在送出前多做了幾個 UI 動作,
+    // 讓收集者先訂閱上才僥倖通過 —— 兩邊都有同一個競態。
+    //
+    // 改成 BUFFERED 之後,送出與訂閱的先後順序就不再影響結果。
+    private val instanceChannel = Channel<HomeAssistantInstance>(capacity = Channel.BUFFERED)
 
     private lateinit var navController: TestNavHostController
 

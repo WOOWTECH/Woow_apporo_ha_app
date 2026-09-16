@@ -1,5 +1,6 @@
 package io.homeassistant.companion.android.widgets.todo
 
+import android.app.Application
 import androidx.glance.appwidget.testing.unit.GlanceAppWidgetUnitTest
 import androidx.glance.appwidget.testing.unit.assertIsChecked
 import androidx.glance.appwidget.testing.unit.assertIsNotChecked
@@ -16,8 +17,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 
+// 必須指定 application,否則 Robolectric 會實例化 manifest 宣告的
+// HomeAssistantApplication。它的 onCreate 會把 process 層級的 FailFast handler 換成
+// 會呼叫 exitProcess(1) 的版本(debug variant),並開啟 HAStrictMode ——
+// 之後同一個 worker 內的每一個測試都活在「任何 StrictMode violation 就殺 JVM」之下。
+// 這個風險專案自己寫在 CrashSavingFailFastHandlerTest 的註解裡,但沒有機制保證。
 @RunWith(RobolectricTestRunner::class)
+@Config(application = Application::class)
 class TodoGlanceAppWidgetTest {
     private val context = RuntimeEnvironment.getApplication()
 

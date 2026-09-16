@@ -11,8 +11,8 @@ import io.homeassistant.companion.android.common.data.websocket.WebSocketState
 import io.homeassistant.companion.android.common.data.websocket.impl.WebSocketConstants.SUBSCRIBE_TYPE_SUBSCRIBE_EVENTS
 import io.homeassistant.companion.android.common.data.websocket.impl.entities.MessageSocketResponse
 import io.homeassistant.companion.android.common.data.websocket.impl.entities.StateChangedEvent
-import io.homeassistant.companion.android.common.util.DefaultFailFastHandler
 import io.homeassistant.companion.android.common.util.FailFast
+import io.homeassistant.companion.android.common.util.LogOnlyFailFastHandler
 import io.homeassistant.companion.android.common.util.MapAnySerializer
 import io.homeassistant.companion.android.common.util.kotlinJsonMapper
 import io.homeassistant.companion.android.database.server.Server
@@ -84,11 +84,27 @@ class WebSocketCoreImplTest {
 
     @BeforeEach
     fun setup() {
-        FailFast.setHandler(DefaultFailFastHandler)
+        // 原本這裡裝的是 DefaultFailFastHandler。單元測試跑的是 debug variant,
+        // 而 debug 的 DefaultFailFastHandler = CrashFailFastHandler,它會呼叫
+        // exitProcess(1) —— 產品碼裡任何一個 FailFast 成立(例如
+        // WebSocketCoreImpl.kt:702 / :827 的 failWhen)就會直接殺掉 Gradle test worker,
+        // 同一個 worker 內後面的測試類別全部不會執行。
+        //
+        // 更糟的是 FailFast.handler 是 object 的可變 static,而且沒有 getter、
+        // 舊的 tearDown 也沒還原 —— 這顆會殺行程的 handler 會外洩給之後每一個測試類別,
+        // 出事的是誰取決於執行順序。
+        //
+        // 意圖保留(意外的 FailFast 必須很吵),但改成讓「這一個測試」失敗,
+        // 而不是讓整個 JVM 消失。
+        FailFast.setHandler { throwable, additionalMessage ->
+            fail("Unexpected FailFast during test: ${additionalMessage.orEmpty()}", throwable)
+        }
     }
 
     @AfterEach
     fun tearDown() {
+        // 一定要還原:handler 是 process 層級的可變狀態,不還原就會汙染後續的測試類別。
+        FailFast.setHandler(LogOnlyFailFastHandler)
         unmockkAll()
     }
 
