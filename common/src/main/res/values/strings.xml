@@ -318,7 +318,7 @@
     <string name="input_booleans">Input booleans</string>
     <string name="input_buttons">Input buttons</string>
     <string name="input_cloud">Use Nabu Casa Cloud</string>
-    <string name="input_url_hint">https://&lt;ipaddress&gt;:8123</string>
+    <string name="input_url_hint">http://&lt;ipaddress&gt;:8123</string>
     <string name="input_url">Your Apporo aiot URL</string>
     <string name="install">Install</string>
     <string name="install_app">Install app on Wear device</string>

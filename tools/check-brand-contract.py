@@ -413,6 +413,16 @@ class BrandContractTest(unittest.TestCase):
             for key, values in expected.items():
                 with self.subTest(locale=locale, key=key):
                     self.assertEqual(strings[key], values[index])
+        # 位址輸入框的提示。**這一條刻意與 woowtech 不同**：
+        # woowtech 兩個語系都寫 `https://<ipaddress>:8123`，Apporo 用 `http://`。
+        # 理由是功能性的 —— 區網 IP 幾乎不可能有有效憑證，提示寫 https 會把使用者
+        # 導向憑證驗證失敗。Owner 於 2026-09-16 拍板。
+        # 兩個語系必須一字不差（先前 en 與 zh-rTW 曾經各寫各的）。
+        for locale in ("values", "values-zh-rTW"):
+            with self.subTest(locale=locale, key="input_url_hint"):
+                self.assertEqual(localized_strings(locale)["input_url_hint"],
+                                 "http://<ipaddress>:8123")
+
         # Compliance wording the permission screen has to keep saying.
         default = localized_strings("values")
         self.assertIn("Wi-Fi network detection requires location permission on supported Android versions.",
