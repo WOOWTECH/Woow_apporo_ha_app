@@ -423,6 +423,18 @@ class BrandContractTest(unittest.TestCase):
                 self.assertEqual(localized_strings(locale)["input_url_hint"],
                                  "http://<ipaddress>:8123")
 
+        # ⚠️ 上線流程第一個輸入框的提示**曾經被寫死在 Kotlin 裡**
+        # （`ManualServerScreen.kt` 的 placeholder = "https://<ipaddress>"），
+        # 繞過字串資源。後果是改 `input_url_hint` 對那個畫面完全無效 ——
+        # 2026-09-16 在 Pixel 實機跑正式簽章版才發現，而它是使用者看到的第一個欄位。
+        # 這條斷言擋住「把可見文案寫死」這個類別的回歸，不只擋這一個字串。
+        screen = (ROOT / (APP + "onboarding/manualserver/ManualServerScreen.kt")
+                  ).read_text(encoding="utf-8")
+        self.assertNotIn('"https://<ipaddress>"', screen,
+                         "ManualServerScreen 又把位址提示寫死了；請改用 commonR.string.input_url_hint")
+        self.assertIn("stringResource(commonR.string.input_url_hint)", screen,
+                      "ManualServerScreen 的 placeholder 必須讀 input_url_hint")
+
         # Compliance wording the permission screen has to keep saying.
         default = localized_strings("values")
         self.assertIn("Wi-Fi network detection requires location permission on supported Android versions.",

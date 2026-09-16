@@ -51,7 +51,7 @@ class ManualServerScreenTest {
 
                 // The placeholder was de-branded during white-labelling: it used to name
                 // homeassistant.local, which is upstream's example host, not ours.
-                onNodeWithText("https://<ipaddress>").assertIsDisplayed()
+                onNodeWithText("http://<ipaddress>:8123").assertIsDisplayed()
                 onNodeWithContentDescription(stringResource(commonR.string.clear_text)).assertIsNotDisplayed()
             }
         }
