@@ -1376,7 +1376,7 @@
     <string name="location_sharing_no_share">不要分享我的位置</string>
     <string name="location_secure_connection_title">讓我們協助保護您的遠端連線</string>
     <string name="location_secure_connection_content">看起來您的連線未加密（使用 HTTP）。如果應用程式知道您何時離家，它可以選擇更安全的方式連線至您的 Apporo aiot 系統（如果可用）。這需要啟用定位服務。</string>
-    <string name="location_secure_connection_hint">此資料永遠不會與 Apporo 或第三方分享。</string>
+    <string name="location_secure_connection_hint">在適用的 Android 版本上，偵測 Wi-Fi 網路需要定位權限。位置感測器分享需另外設定。</string>
     <string name="location_secure_connection_next">下一個</string>
     <string name="location_secure_connection_save">儲存</string>
     <string name="location_secure_connection_discard_permission">位置權限被拒絕。允許存取或選擇「較不安全」選項。</string>

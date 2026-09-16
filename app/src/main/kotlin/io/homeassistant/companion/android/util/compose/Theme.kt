@@ -22,8 +22,8 @@ import io.homeassistant.companion.android.common.compose.theme.DarkHAColorScheme
 import io.homeassistant.companion.android.common.compose.theme.LightHAColorScheme
 import io.homeassistant.companion.android.common.compose.theme.LocalHAColorScheme
 
-val colorPrimary = Color(0xFF8B6B24) // Apporo Home Brand Color
-val colorPrimaryDark = Color(0xFFBEA368) // Apporo Home Brand Color darker variant
+val colorPrimary = Color(0xFF8B6B24) // Apporo aiot Brand Color
+val colorPrimaryDark = Color(0xFFBEA368) // Apporo aiot Brand Color darker variant
 val darkColorBackground = Color(0xFF1C1C1C)
 
 const val STEP_SCREEN_MAX_WIDTH_DP = 600.0f
