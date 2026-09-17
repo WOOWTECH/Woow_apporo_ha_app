@@ -92,7 +92,14 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
         }
         return when {
             path.startsWith(REDIRECT_URL_PATH) -> handleRedirectLink(uri)
-            path.startsWith(INVITE_URL_PATH) -> handleInviteLink(uri)
+            // ⚠️ 邀請連結有帶斜線與不帶斜線兩種形式,兩種都要收。
+            //    `INVITE_URL_PATH` 是 `/invite/`,所以單用 startsWith 會漏掉 `/invite`——
+            //    而不帶斜線的那種正是 AndroidManifest 的 intent-filter、品牌站的
+            //    apple-app-site-association、iOS 的 IncomingURLHandler 以及本檔 KDoc
+            //    範例都明著支援的形式。漏掉的後果是實機點開 `/invite` 落到
+            //    "Unknown or invalid universal link",使用者被邀請也加不了伺服器。
+            path == INVITE_URL_PATH.removeSuffix("/") || path.startsWith(INVITE_URL_PATH) ->
+                handleInviteLink(uri)
             else -> {
                 FailFast.fail { "Unknown or invalid universal link: $uri" }
                 LinkDestination.NoDestination

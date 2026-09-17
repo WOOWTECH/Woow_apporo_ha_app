@@ -29,7 +29,6 @@ import io.homeassistant.companion.android.onboarding.connection.navigation.Conne
 import io.homeassistant.companion.android.onboarding.manualserver.navigation.ManualServerRoute
 import io.homeassistant.companion.android.onboarding.nameyourdevice.navigation.NameYourDeviceRoute
 import io.homeassistant.companion.android.onboarding.serverdiscovery.DELAY_BEFORE_DISPLAY_DISCOVERY
-import kotlin.time.Duration.Companion.seconds
 import io.homeassistant.companion.android.onboarding.serverdiscovery.HomeAssistantInstance
 import io.homeassistant.companion.android.onboarding.serverdiscovery.HomeAssistantSearcher
 import io.homeassistant.companion.android.onboarding.serverdiscovery.ONE_SERVER_FOUND_MODAL_TAG
@@ -42,6 +41,7 @@ import io.mockk.every
 import io.mockk.mockk
 import java.net.URL
 import junit.framework.TestCase.assertTrue
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow

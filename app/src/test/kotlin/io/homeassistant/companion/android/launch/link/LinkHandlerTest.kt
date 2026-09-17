@@ -95,6 +95,19 @@ class LinkHandlerTest {
     }
 
     @Test
+    fun `Given valid invite URI without trailing slash when invoking handleLink then returns Onboarding with provided URL`() = runTest {
+        // ⚠️ 不帶斜線的 `/invite` 是**三個地方都明著宣告支援**的形式:
+        //    AndroidManifest 的 intent-filter、品牌站的 apple-app-site-association,
+        //    以及 iOS 的 IncomingURLHandler(`["/invite", "/invite/"].contains(...)`)。
+        //    這個檔案自己的 KDoc 範例用的也是不帶斜線的形式。
+        //    在此之前所有 invite 測試都只用 `/invite/`,所以 Android 收不下 `/invite`
+        //    這件事一路沒被抓到——實機打開會落到 "Unknown or invalid universal link"。
+        val uri = "https://www.apporo.ai/invite#url=http://homeassistant.local:8123".toUri()
+        val result = handler.handleLink(uri)
+        assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
+    }
+
+    @Test
     fun `Given valid invite deep link with URL when invoking handleLink then returns Onboarding with provided URL`() = runTest {
         val uri = "$DEEP_LINK_SCHEME://invite/toto#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
