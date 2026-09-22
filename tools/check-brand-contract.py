@@ -297,6 +297,23 @@ class BrandContractTest(unittest.TestCase):
         self.assertIn(BRAND_HOST, hosts)
         self.assertNotIn("aiot.woowtech.io", hosts)
 
+    def test_full_release_drops_the_remote_messaging_foreground_service(self):
+        # Google Play 2026-09-20 以「前景服務」政策退回 19428,三項發現全部指向
+        # Remote Messaging。full flavor 的推播走 FCM(2026-09-16 已實機驗證端到端),
+        # 常駐 websocket 只是備援,所以整條 remoteMessaging FGS 不隨上架版本出貨;
+        # 沒有 GMS 的 minimal flavor 仍然保留,那裡 websocket 是唯一的通知路徑。
+        #
+        # ⚠️ 只讀 app/src/main/AndroidManifest.xml 看不出這件事——移除發生在
+        #    app/src/full/AndroidManifest.xml 的合併階段,所以這裡驗的是合併後的產物。
+        if not MERGED_MANIFEST.exists():
+            self.skipTest("merged fullRelease manifest not built; run the app build to cover this")
+        manifest = ET.parse(MERGED_MANIFEST).getroot()
+        permissions = {e.get(ANDROID + "name") for e in manifest.iter("uses-permission")}
+        self.assertNotIn("android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING", permissions)
+        for service in manifest.iter("service"):
+            declared = service.get(ANDROID + "foregroundServiceType") or ""
+            self.assertNotIn("remoteMessaging", declared, f"{service.get(ANDROID + 'name')} 仍宣告 remoteMessaging")
+
     def test_wear_signin_stays_paired_with_branded_phone(self):
         watch = read("wear/src/main/kotlin/io/homeassistant/companion/android/onboarding/OnboardingActivity.kt")
         self.assertIn('WEAR_PHONE_SIGN_IN_HOST = "wear-phone-signin"', watch)

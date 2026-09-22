@@ -2,6 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--
+      前景服務:full flavor 不提供常駐 websocket 連線。
+
+      Google Play 於 2026-09-20 以「前景服務權限」政策退回 19428,三項發現全部指向
+      `Remote Messaging - Other`:不需要用 FGS、聲明的 FGS 類型有誤、使用者無法察覺。
+
+      這個版本的推播走 FCM(2026-09-16 已在 Pixel 7a 上驗證 HA → relay → FCM → 裝置
+      全鏈路),常駐 websocket 只是「不經 FCM 直接收推播」的備援,拿掉不影響通知。
+
+      沒有 GMS 的 `minimal` flavor **不移除** —— 那裡沒有 FCM,websocket 是唯一的
+      通知路徑,FGS 有正當理由,而且 minimal 不上架 Google Play。
+
+      ⚠️ 權限拿掉之後,程式端絕對不能再走到 setForeground(REMOTE_MESSAGING),
+         否則 Android 14+ 會直接丟 SecurityException。守門在
+         WebsocketManager.PERSISTENT_CONNECTION_SUPPORTED,兩者必須一起改。
+    -->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"
+        tools:node="remove" />
+
     <uses-permission android:name="com.google.android.gms.permission.CAR_FUEL" />
     <uses-permission android:name="com.google.android.gms.permission.CAR_MILEAGE" />
     <uses-permission android:name="com.google.android.gms.permission.CAR_SPEED" />
@@ -16,6 +36,13 @@
 
     <application
         android:name="io.homeassistant.companion.android.HomeAssistantApplication" >
+
+        <!-- 主 manifest 宣告 "dataSync|remoteMessaging";這裡收斂成只剩感測器用的 dataSync。 -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:replace="android:foregroundServiceType"
+            tools:node="merge" />
 
         <receiver android:name=".location.HighAccuracyLocationReceiver"
             android:enabled="true"

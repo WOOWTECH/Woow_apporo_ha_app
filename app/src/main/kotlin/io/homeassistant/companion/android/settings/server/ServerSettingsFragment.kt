@@ -36,6 +36,7 @@ import io.homeassistant.companion.android.settings.SettingsActivity
 import io.homeassistant.companion.android.settings.ssid.SsidFragment
 import io.homeassistant.companion.android.settings.url.ExternalUrlFragment
 import io.homeassistant.companion.android.settings.websocket.WebsocketSettingFragment
+import io.homeassistant.companion.android.websocket.WebsocketManager
 import io.homeassistant.companion.android.util.BRAND_HOST
 import io.homeassistant.companion.android.util.QuestUtil
 import io.homeassistant.companion.android.util.applyBottomSafeDrawingInsets
@@ -195,6 +196,9 @@ class ServerSettingsFragment :
         findPreference<PreferenceCategory>("security_category")?.isVisible = !QuestUtil.isQuest
 
         findPreference<Preference>("websocket")?.let {
+            // full flavor 不提供常駐連線(見 WebsocketManager.PERSISTENT_CONNECTION_SUPPORTED),
+            // 入口一併隱藏,免得留下一個按下去不會有任何效果的設定項。
+            it.isVisible = WebsocketManager.PERSISTENT_CONNECTION_SUPPORTED
             it.setOnPreferenceClickListener {
                 parentFragmentManager.commit {
                     replace(
