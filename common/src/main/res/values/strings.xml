@@ -1185,7 +1185,7 @@
     <string name="thread_export_unavailable">Thread is currently unavailable</string>
     <string name="tile_vibrate">Vibrate when selected</string>
     <string name="tile_auth_required">Requires unlocked device</string>
-    <string name="no_assist_support">You must be at least on Apporo aiot %1$s and have the %2$s integration enabled</string>
+    <string name="no_assist_support">Your Apporo aiot server must be version %1$s or later and have the %2$s integration enabled</string>
     <string name="no_assist_support_conversation">conversation</string>
     <string name="no_assist_support_assist_pipeline">Assist pipeline</string>
     <string name="assist">Assist</string>

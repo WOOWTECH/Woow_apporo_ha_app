@@ -2,6 +2,7 @@
 <changelog xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingDefaultResource">
     <release version="2026.1.7 - Main" versioncode="3">
+        <change>Assist now says which server version it needs instead of naming an app version</change>
         <change>Removed native Matter device commissioning and Thread credential sharing from this release</change>
         <change>Redesigned onboarding experience for easier server setup</change>
         <change>Added connection security level options</change>

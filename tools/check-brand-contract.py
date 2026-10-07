@@ -406,6 +406,15 @@ class BrandContractTest(unittest.TestCase):
                         self.assertNotIn("\n", value)
                         self.assertNotIn(r"\n", value)
 
+    def test_version_requirements_name_the_server_not_the_app(self):
+        # Upstream "at least on Home Assistant 2023.5" is a server version. The name swap made it
+        # read "at least on Apporo aiot 2023.5", a version of this app that does not exist.
+        for locale in ("values", "values-zh-rTW"):
+            for name, value in localized_strings(locale).items():
+                with self.subTest(locale=locale, name=name):
+                    self.assertNotRegex(value, rf"{BRAND_NAME} %\d+\$s")
+                    self.assertNotRegex(value, r"open[- ]source|開源|Home Assistant Green")
+
     def test_shared_ios_copy_for_onboarding_settings_notifications_and_assist(self):
         # Canonical shared meanings from iOS Localizable.strings, not iOS permission instructions.
         expected = {

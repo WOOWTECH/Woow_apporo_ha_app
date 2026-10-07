@@ -1170,7 +1170,7 @@
     <string name="thread_export_unavailable">Thread 目前不可用</string>
     <string name="tile_vibrate">選擇時震動</string>
     <string name="tile_auth_required">需要解鎖裝置</string>
-    <string name="no_assist_support">您必須至少使用 Apporo aiot %1$s 並啟用 %2$s 整合</string>
+    <string name="no_assist_support">您的 Apporo aiot 伺服器必須為 %1$s 以上版本，並啟用 %2$s 整合</string>
     <string name="no_assist_support_conversation">對話</string>
     <string name="no_assist_support_assist_pipeline">Assist 管線</string>
     <string name="assist">助理</string>
