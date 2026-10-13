@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Apporo aiot iOS OAuth client</title>
+<link rel="redirect_uri" href="apporoaiot://auth-callback">
+<link rel="redirect_uri" href="apporoaiot-dev://auth-callback">
+<!--
+  This page IS the OAuth `client_id` for the Apporo aiot iOS app:
+  AppConstants.swift points clientID at https://aiot.apporo.ai/ios.
+
+  Why it must exist and stay anonymously readable:
+  Home Assistant core implements IndieAuth (homeassistant/components/auth/indieauth.py).
+  `verify_redirect_uri()` first accepts a redirect_uri whose scheme+host match the
+  client_id — ours is a private-use scheme, so that never matches. It then checks a short
+  hard-coded allow list covering only the *official* client ids
+  (`https://home-assistant.io/android` and `.../iOS`); a fork's client_id is never on it.
+  Everything else falls through to `fetch_redirect_uris()`, which GETs this URL from the
+  customer's HA server (5 s timeout, first ~10 kB) and collects every
+  `<link rel="redirect_uri">` href. Login succeeds only on an exact string match
+  (`redirect_uri in redirect_uris`). Both schemes are declared because the Debug build
+  ships bundle id `com.apporo.aiot.dev` and scheme `apporoaiot-dev`; extra entries are
+  inert, the comparison is membership, not uniqueness.
+
+  Consistency requirement — this file is the source of truth, but it is NOT what serves
+  the live URL. `aiot.apporo.ai/ios` is intended to be answered by the Cloudflare Worker
+  draft at research/apporo-aiot/cloudflare-worker-apporo.js (`oauthClientPage()`,
+  OAUTH_PATHS `/ios` → "iOS"). Apart from this comment block, the markup above and below
+  is verbatim what that function renders for `/ios`. If either side changes, change both.
+
+  Status (2026-09-14): `aiot.apporo.ai` has no A/CNAME record and the Worker is an
+  unapproved draft, so this client_id does not resolve yet. Before submission, verify by
+  reading back: anonymous GET, HTTP 200 (not 404, not a login page), valid HTTPS cert, and
+  both link tags present in the first 10 kB.
+
+  Not declared on purpose: no https redirect_uri. The app intercepts the callback inside
+  its own sign-in web view.
+-->
+</head><body>
+<h1>Apporo aiot</h1>
+<p>iOS OAuth client metadata endpoint.</p>
+<p>Redirect URI: <code>apporoaiot://auth-callback</code></p>
+<p>This page contains public client metadata only. Do not enter passwords or tokens here.</p>
+</body></html>
