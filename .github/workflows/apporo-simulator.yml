@@ -90,15 +90,7 @@ jobs:
           disk-size: 2G
           heap-size: 1G
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: |
-            for attempt in $(seq 1 60); do
-              if adb shell service check package 2>/dev/null | grep -q found; then
-                break
-              fi
-              sleep 2
-            done
-            adb shell service check package 2>/dev/null | grep -q found
-            ./gradlew :app:connectedFullDebugAndroidTest :app:connectedMinimalDebugAndroidTest :common:connectedDebugAndroidTest
+          script: bash tools/ci/run-emulator-instrumentation.sh
 
       - name: Upload emulator results
         if: always()
