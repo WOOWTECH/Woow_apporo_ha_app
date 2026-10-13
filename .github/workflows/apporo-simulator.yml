@@ -1,0 +1,104 @@
+name: Apporo Android emulator acceptance
+
+on:
+  push:
+    branches:
+      - ci/apporo-aiot-android-sim-20261013
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Java and Gradle
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+        with:
+          cache-disabled: true
+
+      - name: Prepare mock Google services
+        run: |
+          cp .github/mock-google-services.json app/google-services.json
+          cp .github/mock-google-services.json wear/google-services.json
+          cp .github/mock-google-services.json automotive/google-services.json
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest :app:testFullDebugUnitTest :lint:test
+
+      - name: Upload unit test results
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: apporo-android-unit-results
+          path: '**/build/test-results/**/TEST-*.xml'
+          if-no-files-found: ignore
+
+  emulator-instrumentation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [23, 36]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Java and Gradle
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
+        with:
+          cache-disabled: true
+
+      - name: Prepare mock Google services
+        run: |
+          cp .github/mock-google-services.json app/google-services.json
+          cp .github/mock-google-services.json wear/google-services.json
+          cp .github/mock-google-services.json automotive/google-services.json
+
+      - name: Enable KVM
+        if: matrix.api-level == 36
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls /dev/kvm
+
+      - name: Run Android emulator instrumentation tests
+        uses: reactivecircus/android-emulator-runner@b530d96654c385303d652368551fb075bc2f0b6b # v2.35.0
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          profile: ${{ matrix.api-level == 23 && 'Nexus 5' || 'pixel_7' }}
+          target: google_apis
+          force-avd-creation: false
+          disable-animations: true
+          disk-size: 2G
+          heap-size: 1G
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: ./gradlew :app:connectedFullDebugAndroidTest :app:connectedMinimalDebugAndroidTest :common:connectedDebugAndroidTest
+
+      - name: Upload emulator results
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: apporo-android-emulator-api-${{ matrix.api-level }}
+          path: |
+            **/build/reports/**
+            **/build/outputs/**/connected/**
+            **/build/outputs/androidTest-results/**
+          if-no-files-found: ignore
