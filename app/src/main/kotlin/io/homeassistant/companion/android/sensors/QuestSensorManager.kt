@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.sensors.SensorManager
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.util.QuestUtil
 
 class QuestSensorManager : SensorManager {
@@ -22,7 +23,7 @@ class QuestSensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/oculus-quest/"
+        return AppSupportLinks.META_QUEST
     }
 
     override val name: Int

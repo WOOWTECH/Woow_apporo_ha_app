@@ -92,6 +92,12 @@ class SensorDetailFragment : Fragment() {
 
     @SuppressLint("InlinedApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // An old notification or a restored navigation state can name a sensor this build no longer
+        // ships, which would leave the whole screen without a manager to talk to.
+        if (viewModel.sensorManager == null) {
+            dismissUnavailableSensor()
+            return
+        }
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(
             object : MenuProvider {
@@ -184,5 +190,20 @@ class SensorDetailFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         activity?.title = null
+    }
+}
+
+/**
+ * Leaves a sensor detail screen that has nothing to show.
+ *
+ * Returns to the previous screen when the fragment was reached through the settings navigation, and
+ * closes the hosting activity when it was opened directly, for example from a notification, because
+ * there is no screen to fall back to in that case.
+ */
+internal fun Fragment.dismissUnavailableSensor() {
+    if (parentFragmentManager.backStackEntryCount > 0) {
+        parentFragmentManager.popBackStack()
+    } else {
+        requireActivity().finish()
     }
 }

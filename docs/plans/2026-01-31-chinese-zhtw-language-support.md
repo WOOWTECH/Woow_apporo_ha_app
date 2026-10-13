@@ -1,3 +1,14 @@
+> ## ⚠ 歷史文件 —— 已完成，且文中品牌名不可信
+>
+> 本文寫於 2026-01-31，當時的 App 叫 **woowtech Home**。後來 `tools/brand/rebrand.sh`
+> 對所有 `*.md` 做了無差別的 `woowtech` → `Apporo` 取代，所以文中出現的「Apporo Home」
+> 是腳本改出來的，不是當時真實存在的名稱。
+>
+> 現行身分：`com.apporo.aiot` / `Apporo aiot` / `apporoaiot://`，
+> 見 `tools/brand/apporo.conf` 與 [`docs/fork-divergence.md`](../fork-divergence.md) 的身分沿革表。
+
+---
+
 # PRD: 繁體中文 (zh-TW) 語言支援
 
 ## 概述

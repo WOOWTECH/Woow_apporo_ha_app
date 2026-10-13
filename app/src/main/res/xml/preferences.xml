@@ -211,10 +211,10 @@
             android:key="docs"
             android:icon="@drawable/ic_question"
             android:title="@string/documentation"
-            android:summary="https://aiot.apporo.io"
+            android:summary="https://www.apporo.ai/help"
             app:enableCopying="true">
             <intent android:action="android.intent.action.VIEW"
-                android:data="https://aiot.apporo.io" />
+                android:data="https://www.apporo.ai/help" />
         </Preference>
         <Preference
             android:key="developer"
@@ -235,12 +235,6 @@
             android:title="@string/enable_change_log_popup"
             android:summary="@string/enable_change_log_popup_summary" />
         <Preference
-            android:key="changelog_github"
-            android:title="@string/changelog"
-            android:icon="@drawable/ic_github"
-            android:summary="https://aiot.apporo.io/"
-            app:enableCopying="true" />
-        <Preference
             android:key="version"
             android:icon="@drawable/ic_stat_ic_notification_blue"
             android:title="@string/application_version"
@@ -250,12 +244,6 @@
             android:icon="@drawable/ic_incognito"
             android:title="@string/privacy_policy"
             android:summary="@string/privacy_url" />
-        <SwitchPreference
-            android:key="crash_reporting"
-            android:icon="@drawable/ic_android_debug_bridge"
-            app:isPreferenceVisible="false"
-            android:title="@string/crash_reporting"
-            android:summary="@string/crash_reporting_summary" />
     </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

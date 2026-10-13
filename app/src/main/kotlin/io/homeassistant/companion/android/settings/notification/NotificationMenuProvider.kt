@@ -6,6 +6,7 @@ import android.view.MenuInflater
 import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
 import io.homeassistant.companion.android.R
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 
 abstract class NotificationMenuProvider : MenuProvider {
     final override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -14,11 +15,7 @@ abstract class NotificationMenuProvider : MenuProvider {
 
     override fun onPrepareMenu(menu: Menu) {
         menu.findItem(R.id.get_help).apply {
-            intent =
-                Intent(
-                    Intent.ACTION_VIEW,
-                    "https://aiot.apporo.io/docs/notifications/notifications-basic".toUri(),
-                )
+            intent = Intent(Intent.ACTION_VIEW, AppSupportLinks.NOTIFICATIONS.toUri())
         }
     }
 }

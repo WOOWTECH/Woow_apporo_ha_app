@@ -56,11 +56,11 @@ class AndroidApplicationDependenciesConventionPlugin : Plugin<Project> {
                     "implementation"(libs.bundles.coil)
 
                     "fullImplementation"(libs.play.services.location)
-                    "fullImplementation"(libs.play.services.home)
-                    "fullImplementation"(libs.play.services.threadnetwork)
+                    // Matter (play-services-home) and Thread (play-services-threadnetwork) are out
+                    // of scope for the first release; `MatterManagerImpl`/`ThreadManagerImpl` in
+                    // `app/src/main` are flavor-agnostic stubs that need no Google Play Services.
                     "fullImplementation"(platform(libs.firebase.bom))
                     "fullImplementation"(libs.firebase.messaging)
-                    "fullImplementation"(libs.sentry.android.core)
                     "fullImplementation"(libs.play.services.wearable)
                     "fullImplementation"(libs.wear.remote.interactions)
 

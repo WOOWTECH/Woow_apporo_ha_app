@@ -174,7 +174,11 @@ private fun ServerUrlTextField(
         },
         placeholder = {
             Text(
-                text = "https://<ipaddress>",
+                // ⚠️ 這裡原本是一段寫死的 https 位址範例字面值,繞過了字串資源 ——
+                //    同一個畫面的其他文字都走 commonR,只有這一行沒有。
+                //    後果是改 `input_url_hint` 對這個畫面完全無效(實機實測確認),
+                //    而且它是**使用者上線流程第一個要輸入的欄位**。
+                text = stringResource(commonR.string.input_url_hint),
                 style = HATextStyle.UserInput,
                 color = LocalHAColorScheme.current.colorOnNeutralNormal,
             )

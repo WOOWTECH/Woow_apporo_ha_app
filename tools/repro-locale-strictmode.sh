@@ -24,9 +24,10 @@
 set -uo pipefail
 
 ITERATIONS="${1:-20}"
-# NOTE: this fork's applicationId is com.woowtech.home (build-logic .../AndroidApplicationConventionPlugin.kt:8)
-# while the Kotlin namespace is still io.homeassistant.companion.android.
-PKG="${2:-com.woowtech.home.minimal.debug}"
+# NOTE: this fork's applicationId is com.apporo.aiot (build-logic .../AndroidApplicationConventionPlugin.kt:8)
+# while the Kotlin namespace is still io.homeassistant.companion.android -- ACTIVITY below is the
+# namespace, PKG is the applicationId, and they are deliberately different.
+PKG="${2:-com.apporo.aiot.minimal.debug}"
 ACTIVITY="io.homeassistant.companion.android.launch.LaunchActivity"
 # Outside the working tree: these logs are throwaway and must never be committed.
 OUTDIR="${TMPDIR:-/tmp}/repro-locale-strictmode-logs"

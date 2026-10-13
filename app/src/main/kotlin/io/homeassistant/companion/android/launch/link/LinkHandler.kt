@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.core.net.toUri
 import io.homeassistant.companion.android.common.data.servers.ServerManager
 import io.homeassistant.companion.android.common.util.FailFast
+import io.homeassistant.companion.android.util.BRAND_HOST
+import io.homeassistant.companion.android.util.DEEP_LINK_SCHEME
 import javax.inject.Inject
 import timber.log.Timber
 
@@ -11,10 +13,7 @@ private const val REDIRECT_URL_PATH = "/redirect/"
 private const val INVITE_URL_PATH = "/invite/"
 private const val NAVIGATE_URL_PATH = "/navigate/"
 
-private const val MY_BASE_DOMAIN = "aiot.apporo.io"
-private const val BASE_MY_REDIRECT_URL = "https://$MY_BASE_DOMAIN$REDIRECT_URL_PATH"
-
-private const val DEEP_LINK_SCHEME = "apporohome"
+private const val BASE_MY_REDIRECT_URL = "https://$BRAND_HOST$REDIRECT_URL_PATH"
 
 private const val INTERNAL_MY_REDIRECT_PREFIX = "_my_redirect/"
 
@@ -45,11 +44,11 @@ sealed interface LinkDestination {
 }
 
 /**
- * Handles universal links from `https://aiot.apporo.io` and some of the deep links from `apporohome://`
+ * Handles universal links from `https://www.apporo.ai` and some of the deep links from `apporoaiot://`
  */
 interface LinkHandler {
     /**
-     * Processes the given [uri] from `https://aiot.apporo.io` or `apporohome://` and determines the
+     * Processes the given [uri] from `https://www.apporo.ai` or `apporoaiot://` and determines the
      * intended navigation destination within the application.
      *
      * @param uri The universal link to handle.
@@ -85,15 +84,22 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
     private suspend fun handleUniversalLink(uri: Uri): LinkDestination {
         val path = uri.path.orEmpty()
 
-        if (uri.host != MY_BASE_DOMAIN) {
+        if (uri.host != BRAND_HOST) {
             FailFast.fail {
-                "Invalid deep link host: $uri should be $MY_BASE_DOMAIN"
+                "Invalid deep link host: $uri should be $BRAND_HOST"
             }
             return LinkDestination.NoDestination
         }
         return when {
             path.startsWith(REDIRECT_URL_PATH) -> handleRedirectLink(uri)
-            path.startsWith(INVITE_URL_PATH) -> handleInviteLink(uri)
+            // ⚠️ 邀請連結有帶斜線與不帶斜線兩種形式,兩種都要收。
+            //    `INVITE_URL_PATH` 是 `/invite/`,所以單用 startsWith 會漏掉 `/invite`——
+            //    而不帶斜線的那種正是 AndroidManifest 的 intent-filter、品牌站的
+            //    apple-app-site-association、iOS 的 IncomingURLHandler 以及本檔 KDoc
+            //    範例都明著支援的形式。漏掉的後果是實機點開 `/invite` 落到
+            //    "Unknown or invalid universal link",使用者被邀請也加不了伺服器。
+            path == INVITE_URL_PATH.removeSuffix("/") || path.startsWith(INVITE_URL_PATH) ->
+                handleInviteLink(uri)
             else -> {
                 FailFast.fail { "Unknown or invalid universal link: $uri" }
                 LinkDestination.NoDestination
@@ -116,11 +122,11 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
      * Attempts to extract the target Home Assistant instance URL from the fragment part of the provided URI.
      *
      * The expected invitation link format is:
-     * Universal Link: `https://aiot.apporo.io/invite#url=http://homeassistant.local:8123`
-     * Deep Link: `apporohome://invite/#url=http://homeassistant.local:8123`
+     * Universal Link: `https://www.apporo.ai/invite#url=http://homeassistant.local:8123`
+     * Deep Link: `apporoaiot://invite/#url=http://homeassistant.local:8123`
      *
      * The target URL is embedded in the fragment for security reasons,
-     * preventing it from being sent to `aiot.apporo.io`. This function extracts the
+     * preventing it from being sent to `www.apporo.ai`. This function extracts the
      * `url` parameter from the fragment.
      *
      * @param uri The URI to process containing the invitation link.
@@ -143,7 +149,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
     }
 
     /**
-     * Handles redirect links from `https://aiot.apporo.io/redirect/...`.
+     * Handles redirect links from `https://www.apporo.ai/redirect/...`.
      *
      * Transforms the universal link into an internal path format and adds the mobile parameter.
      * Requires a registered server to proceed.
@@ -164,7 +170,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
 
         val path = uri.buildUpon()
             // We strip the last / to handle old links created before https://github.com/home-assistant/frontend/pull/25841.
-            // A trailing slash is always added by Netlify that is used to host https://aiot.apporo.io/, but
+            // A trailing slash is always added by the static host serving https://www.apporo.ai/, but
             // the frontend did not support having a trailing slash before https://github.com/home-assistant/frontend/pull/25841.
             // For backward compatibility, we remove the trailing slash here.
             .path(uri.path?.removeSuffix("/"))
@@ -176,7 +182,7 @@ class LinkHandlerImpl @Inject constructor(private val serverManager: ServerManag
     }
 
     /**
-     * Handles navigate deep links from `apporohome://navigate/...`.
+     * Handles navigate deep links from `apporoaiot://navigate/...`.
      *
      * Supports server selection via the `server` query parameter:
      * - No parameter or `server=default`: Uses the default server

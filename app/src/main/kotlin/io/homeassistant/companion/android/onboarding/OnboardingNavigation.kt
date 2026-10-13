@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.launch.HAStartDestinationRoute
 import io.homeassistant.companion.android.onboarding.connection.navigation.ConnectionRoute
 import io.homeassistant.companion.android.onboarding.connection.navigation.connectionScreen
@@ -44,8 +45,7 @@ import io.homeassistant.companion.android.util.compose.navigateToUri
 import kotlinx.serialization.Serializable
 
 @VisibleForTesting
-const val URL_GETTING_STARTED_DOCUMENTATION =
-    "https://aiot.apporo.io/docs/getting_started/"
+const val URL_GETTING_STARTED_DOCUMENTATION = AppSupportLinks.GETTING_STARTED
 
 /**
  * Navigation route for the main onboarding flow.

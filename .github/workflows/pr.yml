@@ -159,8 +159,10 @@ jobs:
         run: ./gradlew versionFile
 
       - name: Build Debug APK
+        # Wear OS and Android Automotive are excluded from the first release, so they are not part
+        # of the Gradle build (see settings.gradle.kts). Adding their tasks back here would fail.
         run: |
-          ./gradlew :common:assemble :app:assembleDebug :wear:assembleDebug :automotive:assembleDebug -PnoStrictMode
+          ./gradlew :common:assemble :app:assembleDebug -PnoStrictMode
 
       - name: Check for missing/modified DB schemas after build
         run: |
@@ -207,8 +209,10 @@ jobs:
           KEYSTORE_ALIAS_PASSWORD: android
           KEYSTORE_PASSWORD: android
         # Disable lint tasks since we have a dedicated job for this in the workflow
+        # Wear OS and Android Automotive are excluded from the first release, so they are not part
+        # of the Gradle build (see settings.gradle.kts). Adding their tasks back here would fail.
         run: |
-          ./gradlew :common:assemble :app:assembleRelease :wear:assembleRelease :automotive:assembleRelease
+          ./gradlew :common:assemble :app:assembleRelease
 
   unit_tests:
     name: "Unit Tests"
@@ -223,7 +227,8 @@ jobs:
           mock-google-services: "true"
 
       - name: Run test
-        # Run testFullDebugUnitTest at the app level since :automotive shares the same sourceSet than app. Minimal and Full are the same in unit tests for now
+        # Run testFullDebugUnitTest at the app level. :automotive would share the same sourceSet as :app,
+        # but it is excluded from the build for the first release. Minimal and Full are the same in unit tests for now
         run: ./gradlew testDebugUnitTest :app:testFullDebugUnitTest :lint:test
 
       - name: Upload test results
@@ -242,6 +247,10 @@ jobs:
       # We want the result of each device to be reported, so we can't fail-fast
       fail-fast: false
       matrix:
+        # The automotive_1024p_landscape and wearos_* entries were dropped with the first-release
+        # exclusion of Wear OS and Android Automotive: those Gradle projects no longer exist by
+        # default (see settings.gradle.kts), so their connectedAndroidTest tasks cannot resolve.
+        # Restore them together with the modules if either form factor comes back.
         configuration:
           - api-level: 23
             arch: x86_64
@@ -253,27 +262,6 @@ jobs:
             profile: "pixel_7"
             target: "google_apis"
             gradle_target: ":app:connectedFullDebugAndroidTest :app:connectedMinimalDebugAndroidTest :common:connectedDebugAndroidTest"
-          - api-level: 33
-            arch: x86_64
-            profile: "automotive_1024p_landscape"
-            target: "android-automotive"
-            gradle_target: ":automotive:connectedFullDebugAndroidTest :automotive:connectedMinimalDebugAndroidTest :common:connectedDebugAndroidTest"
-          - api-level: "34"
-            system-image-api-level: "34-ext9"
-            arch: x86_64
-            profile: "automotive_1024p_landscape"
-            target: "android-automotive"
-            gradle_target: ":automotive:connectedFullDebugAndroidTest :automotive:connectedMinimalDebugAndroidTest :common:connectedDebugAndroidTest"
-          - api-level: 26
-            arch: x86
-            profile: "wearos_square"
-            target: "android-wear"
-            gradle_target: ":wear:connectedDebugAndroidTest :common:connectedDebugAndroidTest"
-          - api-level: 34
-            arch: x86_64
-            profile: "wearos_small_round"
-            target: "android-wear"
-            gradle_target: ":wear:connectedDebugAndroidTest :common:connectedDebugAndroidTest"
     steps:
       - name: Delete unnecessary tools 🔧
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1

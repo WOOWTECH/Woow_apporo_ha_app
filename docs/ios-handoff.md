@@ -1,8 +1,21 @@
-# iOS 版 App 開發交接文件（Apporo / Simon SmartHome）
+# iOS 版 App 開發交接文件（Apporo aiot / Simon SmartHome）
 
-**版本**：2026-08-10
+**版本**：2026-08-10，2026-09-14 更新 apporo 身分
 **Android 版對照**：v2026.8.3-alpha7（已完成部署與功能驗收）
 **交接對象**：iOS 工程師 / Xcode 建置者
+
+> **2026-09-14 身分變更**：apporo 的 App 名稱、Bundle ID、URL scheme、伺服器網域全部換過，
+> 本文已就地更新。若你手上有更早的副本，對照表在
+> [`docs/fork-divergence.md`](fork-divergence.md) 的「Identity history」。
+> 摘要：`Apporo SmartHome` → **`Apporo aiot`**、`com.apporo.home` → **`com.apporo.aiot`**、
+> `apporohome://` → **`apporoaiot://`**、`aiot.apporo.io` → **`aiot.apporo.ai`**。
+> simon 的值沒有變動。
+>
+> **`aiot.apporo.ai` 目前沒有 DNS 紀錄，站台尚未架設。** 任何依賴這個網域的東西
+> （Universal Links、OAuth client_id）都還不能用，見下方第 4 節與「已產出的 artifacts」第 2 節。
+>
+> 首版排除 Watch/Wear、Android Auto/Automotive、Health/Fitness/Steps，Matter/Thread 也不保留 ——
+> iOS 版請對齊同一個範圍，不要主動把 Apple Watch target 加回來。
 
 ---
 
@@ -19,16 +32,16 @@
 
 | # | 項目 | apporo | simon |
 |---|---|---|---|
-| 1 | App 顯示名稱 | `Apporo SmartHome` | `Simon SmartHome` |
+| 1 | App 顯示名稱 | `Apporo aiot` | `Simon SmartHome` |
 | 2 | 品牌主色 | `#8B6B24`（深褐金，白字對比 4.88:1 過 AA）**不是**品牌方 `#C49E53`—— 見 ADR-0001 | `#0060A6`（藍，與 icon 內建色一致） |
-| 3 | 品牌 HA 伺服器網域 | `aiot.apporo.io` | `aiot.simon.io` |
-| 4 | URL scheme | `apporohome://` | `simonhome://` |
+| 3 | 品牌 HA 伺服器網域 | `aiot.apporo.ai` | `aiot.simon.io` |
+| 4 | URL scheme | `apporoaiot://` | `simonhome://` |
 | 5 | 主 logo 檔 | 在 [tools/brand/assets/apporo-logo-full.png](../tools/brand/assets/apporo-logo-full.png) （鳥形 + wordmark） | 在 simon repo 的 [tools/brand/assets/simon-icon.png](https://github.com/WOOWTECH/Woow_simon_ha_app/blob/main/tools/brand/assets/simon-icon.png)（藍底 SmnI） |
 | 6 | Launcher icon 底色 | 白 | 藍（`#0060A6`，與 SVG 內建色一致） |
 | 7 | Firebase Push | **不做**（Android minimal 版關 FCM；iOS 對應是 APNs，先不設） | 同 |
 | 8 | 後端資源準備狀態 | Keystore / assetlinks / 真 HA server 都**未準備** | 同 |
 
-**「Home Assistant」→ 品牌 SmartHome 全文替換** 已在 Android strings.xml 完成 85 處替換；iOS `Localizable.strings` 需做同樣替換。
+**「Home Assistant」→ 品牌名全文替換** 已在 Android strings.xml 完成 85 處替換；iOS `Localizable.strings` 需做同樣替換。
 
 ---
 
@@ -37,11 +50,11 @@
 ### 1. Bundle Identifier（永久性決定，等同 Android APPLICATION_ID）
 
 Android 已用：
-- `com.apporo.home.minimal.debug`（debug 有 `.debug` 尾碼；release 會是 `com.apporo.home`）
+- `com.apporo.aiot.minimal.debug`（debug 有 `.debug` 尾碼；release 會是 `com.apporo.aiot`）
 - `com.simon.home.minimal.debug` / `com.simon.home`
 
 iOS 建議與 Android release 版對齊：
-- **apporo** iOS Bundle ID → 建議 `com.apporo.home` 或 `io.apporo.home`
+- **apporo** iOS Bundle ID → 建議 `com.apporo.aiot` 或 `io.apporo.aiot`
 - **simon** iOS Bundle ID → 建議 `com.simon.home` 或 `io.simon.home`
 
 **⚠ 上架 App Store 後永遠不能改**。跟需求方確認 domain 慣例：apporo/simon 官網用 `.io` 或 `.com`。
@@ -68,12 +81,12 @@ iOS 有兩種 deep link 機制，兩個都要設定：
 
 - **Custom URL Scheme**（跟 Android URL scheme 對應）：
   - 定義在 `Info.plist` → `CFBundleURLTypes`
-  - apporo: `apporohome://` / simon: `simonhome://`
+  - apporo: `apporoaiot://` / simon: `simonhome://`
   - 這是**必備**，App 內部 OAuth callback 依賴它
 - **Universal Links**（跟 Android App Links 對應）：
   - 在品牌網域根目錄放 `/.well-known/apple-app-site-association` JSON 檔（跟 Android assetlinks.json 對照）
-  - iOS 從 Safari 點 `https://aiot.apporo.io/xxx` 會直接開 App（不跳 Safari）
-  - **暫緩**：需要 aiot.apporo.io 網域先架起來，跟 Android assetlinks 是同樣的延後項
+  - iOS 從 Safari 點 `https://aiot.apporo.ai/xxx` 會直接開 App（不跳 Safari）
+  - **暫緩**：需要 aiot.apporo.ai 網域先架起來，跟 Android assetlinks 是同樣的延後項
 
 ### 5. Xcode 建置環境
 
@@ -111,7 +124,7 @@ WOOWTECH/Woow_simon_ha_ios               (simon 版)
 | `mipmap-*/ic_launcher.png` | `Assets.xcassets/AppIcon.appiconset/*` | App icon（20pt ~ 1024pt 共 15 種尺寸） |
 | `drawable/app_icon_launch.png` + `themes.xml` splash | `LaunchScreen.storyboard` 或 `Assets.xcassets/LaunchImage.imageset/` | 啟動畫面 |
 | `drawable/ic_<brand>_branding.png` | `Assets.xcassets/BrandLogo.imageset/*` | 品牌大 logo（onboarding 用） |
-| `AndroidManifest.xml` `<data android:scheme="apporohome"/>` | `Info.plist` → `CFBundleURLTypes` → `CFBundleURLSchemes: [apporohome]` | URL scheme |
+| `AndroidManifest.xml` `<data android:scheme="apporoaiot"/>` | `Info.plist` → `CFBundleURLTypes` → `CFBundleURLSchemes: [apporoaiot]` | URL scheme |
 | `manifest applicationId ".provider"` FileProvider | iOS 沒有直接對應（用 UIDocumentPicker） | — |
 | `AndroidManifest.xml` `<meta-data android:name="firebase_..."/>` | `GoogleService-Info.plist`（如果啟 FCM），或不用（純 APNs） | 推播設定 |
 | `mock-google-services.json` for CI | 用 XCode Auto-signing debug provisioning | 建置環境 |
@@ -138,35 +151,46 @@ Android 已為 OAuth 建 GitHub Pages 頁面：
 **iOS 需要另外建 iOS 版**（因為 redirect_uri scheme 不同）：
 - 在同一個 repo 加 `docs/ios/index.html`，裡面：
   ```html
-  <link rel="redirect_uri" href="apporohome://auth-callback">
+  <link rel="redirect_uri" href="apporoaiot://auth-callback">
   ```
 - 給 iOS 版 App 的 OAuth CLIENT_ID 用 `https://woowtech.github.io/Woow_apporo_ha_app/ios`
 
-⚠ 若 iOS App 走跟 Android **同樣的 URL scheme**（`apporohome://`），可以直接用 Android 版那頁：
+⚠ 若 iOS App 走跟 Android **同樣的 URL scheme**（`apporoaiot://`），可以直接用 Android 版那頁：
 `https://woowtech.github.io/Woow_apporo_ha_app/android`
 
 **建議走同 scheme**（省一頁維護），iOS/Android 只是 platform 不同，URL scheme 用同一組沒衝突。
+
+補充（2026-09-14 實際查證 HA 原始碼 `homeassistant/components/auth/indieauth.py`）：
+
+- 同一頁可以宣告**多個** `<link rel="redirect_uri">`，`LinkTagParser` 會把每一個都收進 list，
+  比對方式是「redirect_uri 必須完全等於其中一個」。所以 iOS 要共用那頁的話，直接在
+  `docs/android/index.html` 再加一行自己的 scheme 即可，不必另開一頁。
+- 該頁目前已宣告 `apporoaiot://auth-callback` 與 `apporoaiot-dev://auth-callback`（debug 版）。
+- HA 只對**官方** client_id（`https://home-assistant.io/iOS`、`.../android`）有硬編白名單；
+  白牌 client_id 一律要真的抓得到那一頁，抓不到就整個登入失敗。
+- HA 是**從伺服器端**抓，逾時 5 秒、只讀前 10 KB。所以 client_id 網址必須匿名可讀。
+- GitHub Pages 從預設分支發布：改了 `docs/android/index.html` 要**合進 `main`** 才會生效。
 
 ### 3. 品牌參數設定檔（可以照抄結構）
 
 Android 用 `.conf` 檔記錄品牌參數（[apporo.conf](../tools/brand/apporo.conf)）：
 ```
 BRAND_ID="apporo"
-APP_NAME="Apporo SmartHome"
-APPLICATION_ID="com.apporo.home"
-BRAND_HOST="aiot.apporo.io"
+APP_NAME="Apporo aiot"
+APPLICATION_ID="com.apporo.aiot"
+BRAND_HOST="aiot.apporo.ai"
 PRIMARY_COLOR="#8B6B24"
-URL_SCHEME="apporohome"
+URL_SCHEME="apporoaiot"
 ```
 
 iOS 建議做等效的 `.xcconfig` 檔（Xcode 原生機制）：
 ```
 // apporo.xcconfig
-PRODUCT_BUNDLE_IDENTIFIER = com.apporo.home
-PRODUCT_NAME = Apporo SmartHome
-BRAND_HOST = aiot.apporo.io
+PRODUCT_BUNDLE_IDENTIFIER = com.apporo.aiot
+PRODUCT_NAME = Apporo aiot
+BRAND_HOST = aiot.apporo.ai
 PRIMARY_COLOR_HEX = 8B6B24
-URL_SCHEME = apporohome
+URL_SCHEME = apporoaiot
 ```
 在 target 的 Build Settings 引用即可。
 
@@ -197,8 +221,8 @@ URL_SCHEME = apporohome
 - iOS 上游有沒有類似 asset-mismatch bug 未知，建議 iOS dev 用 Xcode Analyze + 完整 UI 冒煙測試找一輪
 
 ### 5. Bundle 首字母大小寫
-- iOS Bundle ID **大小寫敏感**，全部小寫（`com.apporo.home` 不是 `com.Apporo.Home`）
-- Bundle Display Name 是**顯示用**，大小寫隨意（`Apporo SmartHome`）
+- iOS Bundle ID **大小寫敏感**，全部小寫（`com.apporo.aiot` 不是 `com.Apporo.Aiot`）
+- Bundle Display Name 是**顯示用**，大小寫隨意（`Apporo aiot`）
 
 ---
 

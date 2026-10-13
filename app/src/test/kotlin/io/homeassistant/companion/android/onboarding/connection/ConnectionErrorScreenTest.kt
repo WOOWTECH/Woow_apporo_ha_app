@@ -17,6 +17,7 @@ import io.homeassistant.companion.android.HiltComponentActivity
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.data.connectivity.ConnectivityCheckResult
 import io.homeassistant.companion.android.common.data.connectivity.ConnectivityCheckState
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.testing.unit.ConsoleLogRule
 import io.homeassistant.companion.android.testing.unit.stringResource
 import io.mockk.Runs
@@ -100,19 +101,11 @@ class ConnectionErrorScreenTest {
 
             onNodeWithContentDescription(stringResource(commonR.string.connection_error_documentation_content_description))
                 .performScrollTo().assertIsDisplayed().performClick()
-            assertEquals("https://aiot.apporo.io/docs/troubleshooting/faqs/", urlClicked)
+            assertEquals(AppSupportLinks.CONNECTION, urlClicked)
 
-            onNodeWithContentDescription(stringResource(commonR.string.connection_error_forum_content_description))
+            onNodeWithContentDescription(stringResource(commonR.string.connection_error_support_content_description))
                 .performScrollTo().assertIsDisplayed().performClick()
-            assertEquals("https://aiot.apporo.io/c/mobile-apps/android-companion/42", urlClicked)
-
-            onNodeWithContentDescription(stringResource(commonR.string.connection_error_github_content_description))
-                .performScrollTo().assertIsDisplayed().performClick()
-            assertEquals("https://github.com/home-assistant/android/issues", urlClicked)
-
-            onNodeWithContentDescription(stringResource(commonR.string.connection_error_discord_content_description))
-                .performScrollTo().assertIsDisplayed().performClick()
-            assertEquals("https://discord.com/channels/330944238910963714/1284965926336335993", urlClicked)
+            assertEquals(AppSupportLinks.SUPPORT, urlClicked)
 
             onNodeWithText(stringResource(commonR.string.back)).performScrollTo().assertIsDisplayed().performClick()
             assertTrue(onCloseClicked)

@@ -455,7 +455,7 @@ fun NavGraphBuilder.featureNavGraph() {
 
 ## Deep Linking
 
-The app supports `apporohome://` URLs for navigation. See user documentation at https://companion.home-assistant.io/docs/integrations/url-handler/
+The app supports `apporoaiot://` URLs for navigation (debug builds use `apporoaiot-dev://`). See user documentation at https://companion.home-assistant.io/docs/integrations/url-handler/
 
 ## Wear OS Communication
 

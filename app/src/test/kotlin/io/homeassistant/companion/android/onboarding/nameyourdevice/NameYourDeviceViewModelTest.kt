@@ -237,7 +237,7 @@ class NameYourDeviceViewModelTest {
 
     @Test
     fun `Given public secure url when onSaveClick then emits DeviceNameSaved with hasPlainTextAccess to false and isPubliclyAccessible true and enforces secure connection`() = runTest {
-        val secureRoute = NameYourDeviceRoute("https://aiot.apporo.io", "auth_code")
+        val secureRoute = NameYourDeviceRoute("https://home.example.com", "auth_code")
         viewModel = NameYourDeviceViewModel(
             secureRoute,
             serverManager,
@@ -245,6 +245,9 @@ class NameYourDeviceViewModelTest {
             appVersionProvider,
             messagingTokenProvider,
             defaultName = DEFAULT_DEVICE_NAME,
+            // The real check resolves the host over DNS; home.example.com does not resolve, so
+            // leaving it in made this assertion depend on the machine's network.
+            isUrlPubliclyAccessible = { true },
         )
 
         val testServerId = 1

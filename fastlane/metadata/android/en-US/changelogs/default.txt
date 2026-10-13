@@ -1,1 +1,8 @@
-Full release change log: https://github.com/home-assistant/android/releases/latest
+First release of Apporo aiot.
+
+- Connect to an Apporo AP-1004S or AP-1005S controller commissioned by your integrator
+- Open the dashboards configured on the controller and operate lighting, air conditioning, blinds and scenes
+- Receive the alerts the controller raises
+- Put a scene, switch or sensor reading on your home screen as a widget
+- Tap an NFC tag to trigger a controller action
+- Optionally report phone battery and connectivity back to the controller

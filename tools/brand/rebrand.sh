@@ -64,6 +64,51 @@ src_files() {
       done
 }
 
+# ---------------------------------------------------------------------------
+# 守門：這個腳本只對「尚未換裝的 upstream 程式碼」有效，而且只能跑一次。
+#
+# 它靠比對 woowtech 關鍵字做取代。程式碼一旦換過裝，關鍵字就不在了：sed 全部
+# 靜靜地取代 0 處，只有第 3 步的 applicationId 會 exit 1 —— 但那時第 1、2 步
+# 已經改寫了 icon 與整組色階，留下一棵改了一半、沒人看得懂的工作樹。
+#
+# 所以在動任何檔案之前先擋下來。判斷依據是 applicationId：它是全 repo 唯一
+# 一處「非換裝不可、且一定只有一個值」的身分欄位。
+# ---------------------------------------------------------------------------
+APPID_FILE="build-logic/convention/src/main/kotlin/AndroidApplicationConventionPlugin.kt"
+CURRENT_APPID="$(sed -n 's/^private const val APPLICATION_ID = "\(.*\)"$/\1/p' "$APPID_FILE" | head -1)"
+
+if [[ -z "$CURRENT_APPID" ]]; then
+  cat >&2 <<EOF
+
+✗ 讀不到目前的 applicationId（$APPID_FILE）。
+  腳本假設那一行長成 private const val APPLICATION_ID = "…"。
+  檔案結構變了就不要硬跑，先確認上游改了什麼。
+EOF
+  exit 2
+fi
+
+if [[ "$CURRENT_APPID" != "$OLD_APPID" ]]; then
+  cat >&2 <<EOF
+
+✗ 拒絕執行：這份程式碼已經換過裝了。
+
+  目前 applicationId : $CURRENT_APPID
+  腳本預期的起點     : $OLD_APPID（未換裝的 upstream woowtech 版本）
+
+  換裝是一次性動作，不是可以反覆套用的設定。硬跑下去只會把已經正確的品牌值
+  當成「殘留關鍵字」再改一次，或者什麼都沒改卻留下半套 icon 與色階。
+
+  要改這個 repo 的品牌值：直接改對應的原始檔，並用
+      python3 tools/brand/preflight.py --verify-repo tools/brand/<brand>.conf
+  確認改全了。
+
+  要從 upstream 種一個新品牌：拿一份未換裝的 upstream 乾淨 checkout 再跑本腳本。
+
+  背景說明見 tools/brand/README.md。
+EOF
+  exit 2
+fi
+
 say "品牌換裝：$OLD_APP_NAME → $APP_NAME"
 echo "  applicationId : $OLD_APPID → $APPLICATION_ID"
 echo "  伺服器網域    : $OLD_HOST → $BRAND_HOST"
@@ -295,7 +340,7 @@ git checkout -b brand/${BRAND_ID} main
 bash tools/brand/rebrand.sh tools/brand/${BRAND_ID}.conf
 \`\`\`
 
-See \`docs/brand/WHITE_LABEL_SOP.md\`.
+See \`tools/brand/README.md\`.
 
 ## License
 

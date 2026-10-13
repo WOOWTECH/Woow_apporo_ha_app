@@ -36,8 +36,10 @@ import io.homeassistant.companion.android.settings.SettingsActivity
 import io.homeassistant.companion.android.settings.ssid.SsidFragment
 import io.homeassistant.companion.android.settings.url.ExternalUrlFragment
 import io.homeassistant.companion.android.settings.websocket.WebsocketSettingFragment
+import io.homeassistant.companion.android.util.BRAND_HOST
 import io.homeassistant.companion.android.util.QuestUtil
 import io.homeassistant.companion.android.util.applyBottomSafeDrawingInsets
+import io.homeassistant.companion.android.websocket.WebsocketManager
 import io.homeassistant.companion.android.webview.WebViewActivity
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -45,7 +47,7 @@ import kotlinx.coroutines.launch
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import timber.log.Timber
 
-private const val BASE_INVITE_URL = "https://aiot.apporo.io/invite/#"
+private const val BASE_INVITE_URL = "https://$BRAND_HOST/invite/#"
 
 @AndroidEntryPoint
 class ServerSettingsFragment :
@@ -194,6 +196,9 @@ class ServerSettingsFragment :
         findPreference<PreferenceCategory>("security_category")?.isVisible = !QuestUtil.isQuest
 
         findPreference<Preference>("websocket")?.let {
+            // full flavor 不提供常駐連線(見 WebsocketManager.PERSISTENT_CONNECTION_SUPPORTED),
+            // 入口一併隱藏,免得留下一個按下去不會有任何效果的設定項。
+            it.isVisible = WebsocketManager.PERSISTENT_CONNECTION_SUPPORTED
             it.setOnPreferenceClickListener {
                 parentFragmentManager.commit {
                     replace(

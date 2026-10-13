@@ -67,6 +67,7 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import java.net.URL
 import junit.framework.TestCase.assertTrue
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -84,6 +85,16 @@ import org.robolectric.annotation.Config
 
 private const val WEAR_NAME = "super_ha_wear"
 private const val VALID_PASSWORD = "1234"
+
+/**
+ * How long to wait for a discovered server to appear on screen.
+ *
+ * `ServerDiscoveryViewModel.discoveryFlow` holds the first emission back by
+ * [DELAY_BEFORE_DISPLAY_DISCOVERY], so waiting for exactly that long leaves no margin at all and
+ * the wait loses the race on any machine slower than the one the test was written on. Wait for
+ * the delay plus a margin instead.
+ */
+private val DISCOVERY_WAIT_TIMEOUT = DELAY_BEFORE_DISPLAY_DISCOVERY + 5.seconds
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
@@ -136,7 +147,17 @@ internal class WearOnboardingNavigationTest {
         )
     }
 
-    private val instanceChannel = Channel<HomeAssistantInstance>()
+    // ⚠️ **容量不可省略。** Channel() 的預設是 RENDEZVOUS(容量 0),
+    // 而測試是用 trySend() 送值 —— 在還沒有接收者掛起等待時,trySend 會直接失敗,
+    // 回傳的 ChannelResult 又沒人檢查,於是值被靜默丟掉、畫面永遠不會出現那個網址。
+    //
+    // 這不是「等久一點就會好」的問題:值從來沒送出去,再長的逾時也等不到。
+    // WearOnboardingNavigationTest 就是這樣穩定失敗的(它在導覽後立刻送);
+    // 而 ServerDiscoveryNavigationTest 只是碰巧在送出前多做了幾個 UI 動作,
+    // 讓收集者先訂閱上才僥倖通過 —— 兩邊都有同一個競態。
+    //
+    // 改成 BUFFERED 之後,送出與訂閱的先後順序就不再影響結果。
+    private val instanceChannel = Channel<HomeAssistantInstance>(capacity = Channel.BUFFERED)
 
     private lateinit var navController: TestNavHostController
 
@@ -221,7 +242,7 @@ internal class WearOnboardingNavigationTest {
             onNodeWithText(stringResource(commonR.string.searching_home_network)).assertIsDisplayed()
 
             instanceChannel.trySend(HomeAssistantInstance("Test", URL(instanceUrl), HomeAssistantVersion(2025, 9, 1)))
-            waitUntilAtLeastOneExists(hasText(instanceUrl), timeoutMillis = DELAY_BEFORE_DISPLAY_DISCOVERY.inWholeMilliseconds)
+            waitUntilAtLeastOneExists(hasText(instanceUrl), timeoutMillis = DISCOVERY_WAIT_TIMEOUT.inWholeMilliseconds)
 
             onNodeWithTag(ONE_SERVER_FOUND_MODAL_TAG).performTouchInput {
                 swipeUp(startY = bottom * 0.9f, endY = centerY, durationMillis = 200)

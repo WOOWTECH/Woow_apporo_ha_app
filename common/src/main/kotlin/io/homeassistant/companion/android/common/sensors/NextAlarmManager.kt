@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.content.Context
 import androidx.core.content.getSystemService
 import io.homeassistant.companion.android.common.R as commonR
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.common.util.STATE_UNAVAILABLE
 import io.homeassistant.companion.android.common.util.STATE_UNKNOWN
 import io.homeassistant.companion.android.common.util.isAutomotive
@@ -33,7 +34,7 @@ class NextAlarmManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/core/sensors#next-alarm-sensor"
+        return AppSupportLinks.Sensors.NEXT_ALARM
     }
     override val name: Int
         get() = commonR.string.sensor_name_alarm

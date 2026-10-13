@@ -16,7 +16,7 @@ assignees: ''
 -->
 
 <!-- If you are reporting an issue for Wear OS please list both devices for the below 3 fields -->
-**Home Assistant Android app version(s):**
+**Apporo aiot app version(s):**
 
 **Android version(s):**
 

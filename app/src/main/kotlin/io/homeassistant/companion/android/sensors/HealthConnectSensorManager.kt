@@ -43,6 +43,7 @@ import androidx.health.connect.client.response.ReadRecordsResponse
 import androidx.health.connect.client.time.TimeRangeFilter
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.sensors.SensorManager
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.common.util.FailFast
 import io.homeassistant.companion.android.common.util.STATE_UNKNOWN
 import java.math.BigDecimal
@@ -945,7 +946,7 @@ class HealthConnectSensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/core/sensors#health-connect-sensors"
+        return AppSupportLinks.Sensors.HEALTH_CONNECT
     }
 
     override suspend fun getAvailableSensors(context: Context): List<SensorManager.BasicSensor> {

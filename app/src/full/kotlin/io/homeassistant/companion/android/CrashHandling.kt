@@ -1,113 +1,25 @@
 package io.homeassistant.companion.android
 
 import android.content.Context
-import io.sentry.Hint
-import io.sentry.SentryEvent
-import io.sentry.SentryOptions
-import io.sentry.SentryOptions.BeforeSendCallback
-import io.sentry.android.core.SentryAndroid
-import io.sentry.protocol.User
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import javax.net.ssl.SSLException
-import javax.net.ssl.SSLHandshakeException
-import javax.net.ssl.SSLPeerUnverifiedException
-import javax.net.ssl.SSLProtocolException
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.jvm.isAccessible
-import timber.log.Timber
-
-fun initCrashReporting(context: Context, enabled: Boolean) {
-    // Don't init on debug builds or when disabled
-    if (!shouldEnableCrashHandling(enabled)) {
-        Timber.i("Sentry crash reporting disabled")
-        return
-    }
-
-    SentryAndroid.init(context) { options ->
-        options.isEnableAutoSessionTracking = true
-
-        // We are using Sentry Android core library that doesn't come with the support for NDK.
-        options.isEnableNdk = false
-
-        val ignoredEvents = arrayOf(
-            ConnectException::class.java,
-            SocketTimeoutException::class.java,
-            SSLException::class.java,
-            SSLHandshakeException::class.java,
-            SSLPeerUnverifiedException::class.java,
-            SSLProtocolException::class.java,
-            UnknownHostException::class.java,
-        )
-
-        options.ignoredExceptionsForType.addAll(ignoredEvents)
-
-        options.beforeSend = object : BeforeSendCallback {
-            override fun execute(event: SentryEvent, p1: Hint): SentryEvent? {
-                if (event.user != null) {
-                    event.user = User().apply {
-                        // The only information we want to keep about the user is his ID
-                        id = event.user?.id
-                    }
-                }
-                return event
-            }
-        }
-        options.logObjectDetails()
-    }
-}
 
 /**
- * This extension is a simple helper that logs all the properties of a given object.
- * In the context of Sentry it is useful to have a better visibility of the options set.
+ * Crash telemetry is intentionally disabled for the Apporo aiot production app.
  *
- * We should avoid running this in production since it uses reflection and it is expensive.
+ * The upstream app ships Sentry here. It was removed by owner decision on 2026-09-15, matching
+ * what woowtech aiot already does: this is a white-label app whose users are the customer's
+ * customers, so every outbound data flow is one more thing to disclose and defend. Both store
+ * privacy questionnaires can now answer "no data collected".
  *
- * Currently:
+ * Local crash saving is a separate mechanism and still runs — see `initCrashSaving`. A user
+ * reporting a problem can still export the log from Settings → Troubleshooting, which covers
+ * the case this was mostly wanted for.
  *
- * anrEnabled: true
- * anrReportInDebug: false
- * anrTimeoutIntervalMillis: 5000
- * attachAnrThreadDump: false
- * attachScreenshot: false
- * attachViewHierarchy: false
- * beforeScreenshotCaptureCallback: null
- * beforeViewHierarchyCaptureCallback: null
- * collectAdditionalContext: true
- * debugImagesLoader: io.sentry.android.core.NoOpDebugImagesLoader@OBJECT_REF
- * enableActivityLifecycleBreadcrumbs: true
- * enableActivityLifecycleTracingAutoFinish: true
- * enableAppComponentBreadcrumbs: true
- * enableAppLifecycleBreadcrumbs: true
- * enableAutoActivityLifecycleTracing: true
- * enableAutoTraceIdGeneration: true
- * enableFramesTracking: true
- * enableNdk: false
- * enableNetworkEventBreadcrumbs: true
- * enablePerformanceV2: true
- * enableRootCheck: true
- * enableScopeSync: true
- * enableSystemEventBreadcrumbs: true
- * frameMetricsCollector: io.sentry.android.core.internal.util.SentryFrameMetricsCollector@OBJECT_REF
- * nativeSdkName: null
- * ndkHandlerStrategy: SENTRY_HANDLER_STRATEGY_DEFAULT
- * reportHistoricalAnrs: false
- * startupCrashDurationThresholdMillis: 2000
- * startupCrashFlushTimeoutMillis: 5000
+ * Re-enabling means more than restoring this function: add the dependency back, restore the
+ * three `io.sentry.*` meta-data entries in the full manifest and the `sentryDsn` /
+ * `sentryRelease` placeholders, set a DSN that belongs to Apporo (never WOOW's), and declare
+ * crash/diagnostic data in both store questionnaires and on https://www.apporo.ai/privacy.
  */
-private fun SentryOptions.logObjectDetails() {
-    if (!BuildConfig.DEBUG) return
-    val kClass = this::class
-    val objectDetail = buildString {
-        appendLine("Class: ${kClass.simpleName}")
-        kClass.declaredMemberProperties.forEach { property ->
-            property.isAccessible = true // Make private properties accessible
-            val value = property.getter.call(this@logObjectDetails)
-            appendLine("${property.name}: $value")
-        }
-    }
-    Timber.i("Current value of options: $objectDetail")
+@Suppress("UNUSED_PARAMETER")
+fun initCrashReporting(context: Context, enabled: Boolean) {
+    // No-op by owner decision.
 }
-
-private fun shouldEnableCrashHandling(enabled: Boolean) = !BuildConfig.DEBUG && enabled

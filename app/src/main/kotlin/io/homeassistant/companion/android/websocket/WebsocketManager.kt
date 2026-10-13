@@ -61,7 +61,27 @@ class WebsocketManager(appContext: Context, workerParams: WorkerParameters) :
             WebsocketSetting.ALWAYS
         }
 
+        /**
+         * 常駐 websocket 連線需要 `FOREGROUND_SERVICE_REMOTE_MESSAGING`,而 full flavor 的
+         * manifest 已經移除該權限(Google Play 2026-09-20 以前景服務政策退回 19428),
+         * 所以這個功能在 full 上整個關閉;推播改由 FCM 負責,已實機驗證。
+         *
+         * ⚠️ 這個旗標必須與 app/src/full/AndroidManifest.xml 的權限移除保持一致。
+         *    若這裡是 true 而權限不在,Android 14+ 會在 setForeground 丟 SecurityException。
+         */
+        val PERSISTENT_CONNECTION_SUPPORTED = BuildConfig.FLAVOR != "full"
+
         suspend fun start(context: Context) {
+            if (!PERSISTENT_CONNECTION_SUPPORTED) {
+                // 也取消舊版本可能已排定的工作,否則從舊版升上來的裝置會留著一個
+                // 永遠只會立刻結束的週期性 worker。
+                WorkManager.getInstance(context).run {
+                    cancelUniqueWork(OLD_UNIQUE_WORK_NAME)
+                    cancelUniqueWork(UNIQUE_WORK_NAME)
+                }
+                return
+            }
+
             val websocketNotifications =
                 PeriodicWorkRequestBuilder<WebsocketManager>(15, TimeUnit.MINUTES)
                     .build()
@@ -135,7 +155,8 @@ class WebsocketManager(appContext: Context, workerParams: WorkerParameters) :
         return@withContext Result.success()
     }
 
-    private suspend fun shouldWeRun(): Boolean = serverManager.servers().any { shouldRunForServer(it.id) }
+    private suspend fun shouldWeRun(): Boolean =
+        PERSISTENT_CONNECTION_SUPPORTED && serverManager.servers().any { shouldRunForServer(it.id) }
 
     private suspend fun shouldRunForServer(serverId: Int): Boolean {
         val setting = settingsDao.get(serverId)?.websocketSetting ?: DEFAULT_WEBSOCKET_SETTING

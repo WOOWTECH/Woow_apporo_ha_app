@@ -311,7 +311,7 @@ fun SensorDetailView(
                                     val noneSelected = stringResource(commonR.string.none_selected)
                                     val summary by produceState(
                                         initialValue = "",
-                                        key1 = setting,
+                                        key1 = setting.value,
                                         key2 = summaryValues,
                                     ) {
                                         value = if (summaryValues.any()) {
@@ -569,6 +569,18 @@ fun SensorDetailRow(
     }
 }
 
+/**
+ * Returns a copy of this dialog state whose setting carries [newValue].
+ *
+ * The returned state always holds a brand new [SensorSetting] instance. Writing the value into the
+ * existing instance instead would change the very object that the settings list is currently drawn
+ * from, so the instance Room emits afterwards would compare equal to the one already on screen and
+ * Compose would skip the recomposition, leaving the summary showing the value from before the save.
+ */
+internal fun SensorDetailViewModel.Companion.SettingDialogState.withSettingValue(
+    newValue: String,
+): SensorDetailViewModel.Companion.SettingDialogState = copy(setting = setting.copy(value = newValue))
+
 @Composable
 fun SensorDetailSettingDialog(
     viewModel: SensorDetailViewModel,
@@ -611,7 +623,7 @@ fun SensorDetailSettingDialog(
                             onClick = { isChecked ->
                                 if (state.setting.valueType == SensorSettingType.LIST) {
                                     inputValue.value = id
-                                    onSubmit(state.copy().apply { setting.value = inputValue.value })
+                                    onSubmit(state.withSettingValue(newValue = inputValue.value))
                                 } else {
                                     if (checkedValue.contains(id) && !isChecked) {
                                         checkedValue.remove(id)
@@ -649,7 +661,7 @@ fun SensorDetailSettingDialog(
                 if (listSettingDialog) {
                     inputValue.value = checkedValue.joinToString().replace("[", "").replace("]", "")
                 }
-                onSubmit(state.copy().apply { setting.value = inputValue.value })
+                onSubmit(state.withSettingValue(newValue = inputValue.value))
             }
         } else { // list is saved when selecting a value
             null

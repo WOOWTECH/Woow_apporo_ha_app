@@ -3,6 +3,7 @@ package io.homeassistant.companion.android.launch.link
 import androidx.core.net.toUri
 import io.homeassistant.companion.android.common.data.servers.ServerManager
 import io.homeassistant.companion.android.common.util.FailFast
+import io.homeassistant.companion.android.util.DEEP_LINK_SCHEME
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -38,7 +39,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "https://aiot.apporo.io/unknown".toUri()
+        val uri = "https://www.apporo.ai/unknown".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -51,7 +52,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "http://aiot.apporo.io/invite#url=http://homeassistant.local:8123".toUri()
+        val uri = "http://www.apporo.ai/invite#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -64,7 +65,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "https://aiot.apporo.ioa/invite#url=http://homeassistant.local:8123".toUri()
+        val uri = "https://www.apporo.aia/invite#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -77,7 +78,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
 
-        val uri = "apporohome://helloworld".toUri()
+        val uri = "$DEEP_LINK_SCHEME://helloworld".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -88,28 +89,41 @@ class LinkHandlerTest {
      */
     @Test
     fun `Given valid invite URI with URL when invoking handleLink then returns Onboarding with provided URL`() = runTest {
-        val uri = "https://aiot.apporo.io/invite/#url=http://homeassistant.local:8123".toUri()
+        val uri = "https://www.apporo.ai/invite/#url=http://homeassistant.local:8123".toUri()
+        val result = handler.handleLink(uri)
+        assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
+    }
+
+    @Test
+    fun `Given valid invite URI without trailing slash when invoking handleLink then returns Onboarding with provided URL`() = runTest {
+        // ⚠️ 不帶斜線的 `/invite` 是**三個地方都明著宣告支援**的形式:
+        //    AndroidManifest 的 intent-filter、品牌站的 apple-app-site-association,
+        //    以及 iOS 的 IncomingURLHandler(`["/invite", "/invite/"].contains(...)`)。
+        //    這個檔案自己的 KDoc 範例用的也是不帶斜線的形式。
+        //    在此之前所有 invite 測試都只用 `/invite/`,所以 Android 收不下 `/invite`
+        //    這件事一路沒被抓到——實機打開會落到 "Unknown or invalid universal link"。
+        val uri = "https://www.apporo.ai/invite#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
     }
 
     @Test
     fun `Given valid invite deep link with URL when invoking handleLink then returns Onboarding with provided URL`() = runTest {
-        val uri = "apporohome://invite/toto#url=http://homeassistant.local:8123".toUri()
+        val uri = "$DEEP_LINK_SCHEME://invite/toto#url=http://homeassistant.local:8123".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
     }
 
     @Test
     fun `Given valid invite URI with empty URL when invoking handleLink then returns Onboarding with empty URL`() = runTest {
-        val uri = "https://aiot.apporo.io/invite/#url=".toUri()
+        val uri = "https://www.apporo.ai/invite/#url=".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding(""), result)
     }
 
     @Test
     fun `Given valid invite URI with multiples args when invoking handleLink then returns Onboarding with only the url`() = runTest {
-        val uri = "https://aiot.apporo.io/invite/#app=1&url=http://homeassistant.local:8123&repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/invite/#app=1&url=http://homeassistant.local:8123&repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123"), result)
     }
@@ -118,7 +132,7 @@ class LinkHandlerTest {
     fun `Given valid invite URI with URL that contains params when invoking handleLink then returns Onboarding with provided URL with params`() = runTest {
         // To support this case the URL in `url=` is encoded twice, when building the URL the first time and then a second time to be used as a parameter
         // of another URL.
-        val uri = "https://aiot.apporo.io/invite/#url=http://homeassistant.local:8123?pre-auth=https%253A%252F%252Fgithub.com%252Fhome-assistant%252Fandroid%252F%2526toto=tata&second_param_out_of_url=1".toUri()
+        val uri = "https://www.apporo.ai/invite/#url=http://homeassistant.local:8123?pre-auth=https%253A%252F%252Fgithub.com%252Fhome-assistant%252Fandroid%252F%2526toto=tata&second_param_out_of_url=1".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Onboarding("http://homeassistant.local:8123?pre-auth=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F%26toto=tata"), result)
     }
@@ -129,7 +143,7 @@ class LinkHandlerTest {
         FailFast.setHandler { exception, additionalMessage ->
             caughtException = exception
         }
-        val uri = "https://aiot.apporo.io/invite/#".toUri()
+        val uri = "https://www.apporo.ai/invite/#".toUri()
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
         assertNotNull(caughtException)
@@ -147,7 +161,7 @@ class LinkHandlerTest {
                 coEvery { id } returns 1
             },
         )
-        val uri = "https://aiot.apporo.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
 
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.Webview("_my_redirect/supervisor_add_addon_repository?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F&mobile=1", ServerManager.SERVER_ID_ACTIVE), result)
@@ -156,7 +170,7 @@ class LinkHandlerTest {
     @Test
     fun `Given redirect URI with no registered server when invoking handleLink then returns NoDestination`() = runTest {
         coEvery { serverManager.isRegistered() } returns false
-        val uri = "https://aiot.apporo.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
 
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
@@ -169,7 +183,7 @@ class LinkHandlerTest {
             caughtException = exception
         }
         coEvery { serverManager.isRegistered() } returns true
-        val uri = "https://aiot.apporo.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F&mobile=1".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F&mobile=1".toUri()
 
         val result = handler.handleLink(uri)
         assertEquals(LinkDestination.NoDestination, result)
@@ -180,7 +194,7 @@ class LinkHandlerTest {
     fun `Given navigate deep link with no registered server when invoking handleLink then returns NoDestination`() = runTest {
         coEvery { serverManager.isRegistered() } returns false
 
-        val uri = "apporohome://navigate/lovelace/dashboard".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard".toUri()
         val result = handler.handleLink(uri)
 
         assertEquals(LinkDestination.NoDestination, result)
@@ -193,10 +207,10 @@ class LinkHandlerTest {
             coEvery { id } returns 1
         }
 
-        val uri = "apporohome://navigate/lovelace/dashboard".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporohome://navigate/lovelace/dashboard", 1), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard", 1), result)
     }
 
     @Test
@@ -206,10 +220,10 @@ class LinkHandlerTest {
             coEvery { id } returns 1
         }
 
-        val uri = "apporohome://navigate/lovelace/dashboard?server=default".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=default".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporohome://navigate/lovelace/dashboard?server=default", 1), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=default", 1), result)
     }
 
     @Test
@@ -219,10 +233,10 @@ class LinkHandlerTest {
             coEvery { id } returns 1
         }
 
-        val uri = "apporohome://navigate/lovelace/dashboard?server=".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporohome://navigate/lovelace/dashboard?server=", 1), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=", 1), result)
     }
 
     @Test
@@ -239,10 +253,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporohome://navigate/lovelace/dashboard?server=Office".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=Office".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporohome://navigate/lovelace/dashboard?server=Office", 2), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=Office", 2), result)
     }
 
     @Test
@@ -259,10 +273,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporohome://navigate/lovelace/dashboard?server=office".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=office".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporohome://navigate/lovelace/dashboard?server=office", 2), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=office", 2), result)
     }
 
     @Test
@@ -275,10 +289,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporohome://navigate/lovelace/dashboard?server=NonExisting".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.Webview("apporohome://navigate/lovelace/dashboard?server=NonExisting", ServerManager.SERVER_ID_ACTIVE), result)
+        assertEquals(LinkDestination.Webview("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting", ServerManager.SERVER_ID_ACTIVE), result)
     }
 
     /*
@@ -297,7 +311,7 @@ class LinkHandlerTest {
                 coEvery { id } returns 2
             },
         )
-        val uri = "https://aiot.apporo.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
+        val uri = "https://www.apporo.ai/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fhome-assistant%2Fandroid%2F".toUri()
 
         val result = handler.handleLink(uri)
 
@@ -321,10 +335,10 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporohome://navigate/lovelace/dashboard?server=NonExisting".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.ServerPicker("apporohome://navigate/lovelace/dashboard?server=NonExisting"), result)
+        assertEquals(LinkDestination.ServerPicker("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard?server=NonExisting"), result)
     }
 
     @Test
@@ -342,9 +356,9 @@ class LinkHandlerTest {
             },
         )
 
-        val uri = "apporohome://navigate/lovelace/dashboard".toUri()
+        val uri = "$DEEP_LINK_SCHEME://navigate/lovelace/dashboard".toUri()
         val result = handler.handleLink(uri)
 
-        assertEquals(LinkDestination.ServerPicker("apporohome://navigate/lovelace/dashboard"), result)
+        assertEquals(LinkDestination.ServerPicker("$DEEP_LINK_SCHEME://navigate/lovelace/dashboard"), result)
     }
 }

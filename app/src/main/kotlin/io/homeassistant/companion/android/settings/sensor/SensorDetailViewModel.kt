@@ -266,8 +266,10 @@ class SensorDetailViewModel @Inject constructor(
             )
         }
 
-        val listKeys = getSettingKeys(setting)
-        val listEntries = getSettingEntries(setting, null)
+        // Keep package keys and labels from the same snapshot, including saved invisible packages.
+        val appEntries = if (setting.valueType == SensorSettingType.LIST_APPS) getAppSettingEntries(setting) else null
+        val listKeys = appEntries?.map { it.first } ?: getSettingKeys(setting)
+        val listEntries = appEntries?.map { it.second } ?: getSettingEntries(setting, null)
         val state = SettingDialogState(
             setting = setting,
             loading = false,
@@ -411,10 +413,10 @@ class SensorDetailViewModel @Inject constructor(
         return stringVars.toTypedArray()
     }
 
-    /** @return list of [ApplicationInfo] for the [entries] or all applications if `null`*/
+    /** @return list of [ApplicationInfo] for the [entries] or all visible applications if `null` */
     private fun getApplicationInfoForEntries(entries: List<String>?): List<ApplicationInfo?> {
         val packageManager = getApplication<Application>().packageManager
-        return if (entries?.isNotEmpty() == true) {
+        return if (entries != null) {
             entries.map {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -424,10 +426,18 @@ class SensorDetailViewModel @Inject constructor(
                         packageManager.getApplicationInfo(it, 0)
                     }
                 } catch (e: NameNotFoundException) {
+                    // The package name itself is user data, so it is deliberately not logged.
+                    Timber.w("Application information unavailable for a saved sensor setting")
                     null
                 }
             }
         } else {
+            // QueryPermissionsNeeded is expected and intended here. QUERY_ALL_PACKAGES was
+            // deliberately dropped in favour of a narrow <queries> MAIN/LAUNCHER declaration, so
+            // this returns only launchable apps rather than every installed package. Settings the
+            // user already saved for a package that is now invisible are preserved by the branch
+            // above, which reads them back by name instead of relying on this list.
+            @Suppress("QueryPermissionsNeeded")
             val appInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 packageManager?.getInstalledApplications(
                     PackageManager.ApplicationInfoFlags.of(PackageManager.GET_META_DATA.toLong()),
@@ -440,25 +450,35 @@ class SensorDetailViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Builds the selectable entries of a [SensorSettingType.LIST_APPS] setting from a single
+     * package manager snapshot, so that the keys the dialog saves and the labels it shows can never
+     * come from two different package lists.
+     *
+     * A package that the user already allowed may be uninstalled, or hidden from this app by
+     * Android package visibility filtering. Such a package is kept in the list, identified by its
+     * package name, so that saving the dialog does not silently drop the existing selection.
+     *
+     * @return pairs of package name to the label shown for it, ordered by that label.
+     */
+    private fun getAppSettingEntries(setting: SensorSetting): List<Pair<String, String>> {
+        val packageManager = getApplication<Application>().packageManager
+        val visibleApps = getApplicationInfoForEntries(null).filterNotNull().associateBy { it.packageName }
+        val savedPackageNames = setting.value.split(", ").filter { it.isNotBlank() }
+        return (visibleApps.keys + savedPackageNames).map { packageName ->
+            val label = visibleApps[packageName]?.let { packageManager.getApplicationLabel(it) }
+            val entry = when {
+                label.isNullOrBlank() || label == packageName -> packageName
+                else -> "$label\n($packageName)"
+            }
+            packageName to entry
+        }.sortedBy { it.second.lowercase() }
+    }
+
     private suspend fun getSettingKeys(setting: SensorSetting): List<String> {
         return when (setting.valueType) {
             SensorSettingType.LIST ->
                 setting.entries
-            SensorSettingType.LIST_APPS -> {
-                val packageManager = getApplication<Application>().packageManager
-                getApplicationInfoForEntries(null)
-                    .filterNotNull()
-                    .sortedBy {
-                        packageManager.getApplicationLabel(it).let { label ->
-                            when {
-                                label.isBlank() -> it.packageName
-                                label != it.packageName -> "$label\n(${it.packageName}"
-                                else -> label.toString()
-                            }
-                        }.lowercase()
-                    }
-                    .map { it.packageName }
-            }
             SensorSettingType.LIST_BLUETOOTH ->
                 BluetoothUtils.getBluetoothDevices(getApplication()).map { it.address }
             SensorSettingType.LIST_ZONES ->
@@ -480,20 +500,14 @@ class SensorDetailViewModel @Inject constructor(
             SensorSettingType.LIST ->
                 getSettingTranslatedEntries(setting.name, entries ?: setting.entries)
             SensorSettingType.LIST_APPS -> {
+                if (entries == null) return getAppSettingEntries(setting).map { it.second }
                 val packageManager = getApplication<Application>().packageManager
                 val apps = getApplicationInfoForEntries(entries)
                 apps
                     .mapIndexed { index, info ->
-                        if (info == null) return@mapIndexed entries?.get(index) ?: ""
+                        if (info == null) return@mapIndexed entries[index]
                         val label = packageManager.getApplicationLabel(info)
-                        when {
-                            label.isBlank() ->
-                                info.packageName
-                            label != info.packageName ->
-                                if (entries?.isNotEmpty() == true) label.toString() else "$label\n(${info.packageName})"
-                            else ->
-                                label.toString()
-                        }
+                        if (label.isBlank()) info.packageName else label.toString()
                     }
                     .sortedBy { it.lowercase() }
             }

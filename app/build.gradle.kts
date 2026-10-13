@@ -11,8 +11,6 @@ android {
     useLibrary("android.car")
 
     defaultConfig {
-        manifestPlaceholders["sentryRelease"] = "$applicationId@$versionName"
-        manifestPlaceholders["sentryDsn"] = System.getenv("SENTRY_DSN") ?: ""
 
         bundle {
             language {
@@ -42,4 +40,15 @@ dependencies {
 // Disable to fix memory leak and be compatible with the configuration cache.
 googleServices {
     disableVersionCheck = true
+}
+
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        // 首版對外版號固定 1.0,與 Reckon 由 git tag 推導出的
+        // 2026.9.x 內部版號及 flavor 尾碼脫鉤。
+        // versionCode 仍由 CI 的 VERSION_CODE 環境變數決定,不受影響。
+        variant.outputs.forEach { output ->
+            output.versionName.set("1.0")
+        }
+    }
 }

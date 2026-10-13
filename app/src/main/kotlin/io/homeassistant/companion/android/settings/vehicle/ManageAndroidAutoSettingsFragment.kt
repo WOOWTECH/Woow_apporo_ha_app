@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import io.homeassistant.companion.android.common.R as commonR
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.common.util.isAutomotive
 import io.homeassistant.companion.android.settings.addHelpMenuProvider
 import io.homeassistant.companion.android.settings.vehicle.views.AndroidAutoFavoritesSettings
@@ -37,7 +38,7 @@ class ManageAndroidAutoSettingsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        addHelpMenuProvider("https://aiot.apporo.io/docs/android-auto")
+        addHelpMenuProvider(AppSupportLinks.ANDROID_AUTO)
     }
 
     override fun onResume() {

@@ -3,6 +3,11 @@ name: On Push
 on: # yamllint disable-line rule:truthy
   workflow_dispatch:
     inputs:
+      publish:
+        description: "Explicitly upload signed builds to Firebase and Play Internal"
+        type: boolean
+        required: true
+        default: false
       beta:
         description: "true if this is a beta release"
         required: false
@@ -16,7 +21,8 @@ env:
 
 jobs:
   app_build:
-    name: Github, Firebase, and Sentry Release
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish }}
+    name: Github and Firebase Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -52,11 +58,20 @@ jobs:
           tag-name: ${{ steps.rel_number.outputs.version }}
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: ./.github/actions/download-translations
-        name: Download Translations
-        with:
-          lokalise-project: ${{ secrets.LOKALISE_PROJECT }}
-          lokalise-token: ${{ secrets.LOKALISE_TOKEN }}
+      # Download Translations 已移除（首版）。三個理由,任一個都足夠:
+      #
+      # 1. 它會讓這個 job 直接掛掉。密鑰未設定時 `jq -r '.bundle_url'` 會印出 "null",
+      #    接著 `curl null` 以退出碼 6 失敗;composite action 跑在 `bash -eo pipefail`
+      #    之下,所以整個 job 在 gradle 還沒開始前就結束。
+      # 2. 它會覆蓋語系清單。那支腳本把產生的 locales_config.xml 寫到
+      #    app/src/main/res/xml/ 與 wear/src/main/res/xml/,但本 repo 的檔案在
+      #    common/src/main/res/xml/。app 模組的資源優先序高於 common,所以產生出來的
+      #    那份會蓋掉我們刻意維持的「en + zh-TW」兩語系設定。
+      # 3. 上游的翻譯裡 app_name 是 "Home Assistant"。多拉進來的語系會讓 App 在那些
+      #    語言下顯示上游品牌名 —— 那是商標問題,不是體驗瑕疵。
+      #
+      # 要恢復多語系時,要先有自己的 Lokalise 專案(不是上游的),並且先修好上面第 2 點
+      # 的路徑問題,否則語系清單仍會被蓋掉。決策紀錄見 RELEASE-CHECKLIST 6-2。
 
       - name: Build Release
         env:
@@ -64,9 +79,10 @@ jobs:
           KEYSTORE_ALIAS: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS }}
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        # Wear OS and Android Automotive are excluded from the first release, so they are not part
+        # of the Gradle build (see settings.gradle.kts). Adding their tasks back here would fail.
         run: |
-          ./gradlew :common:assemble :app:assembleRelease :wear:assembleRelease :automotive:assembleRelease
+          ./gradlew :common:assemble :app:assembleRelease
 
       - name: Archive Build
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -94,9 +110,6 @@ jobs:
             ./app/build/outputs/apk/full/release/app-full-release.apk
             ./app/build/outputs/apk/minimal/release/app-minimal-release.apk
             ./app/build/outputs/version_code.txt
-            ./wear/build/outputs/apk/release/wear-release.apk
-            ./automotive/build/outputs/apk/full/release/automotive-full-release.apk
-            ./automotive/build/outputs/apk/minimal/release/automotive-minimal-release.apk
             ./strings.zip
             ./app/src/main/res/xml/locales_config.xml
 
@@ -106,7 +119,6 @@ jobs:
           KEYSTORE_ALIAS: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS }}
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.ORIGINAL_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: ./gradlew appDistributionUploadFullRelease
 
       - name: Prepare Amazon Listing
@@ -124,6 +136,7 @@ jobs:
         run: git status
 
   play_publish:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish }}
     name: Play Publish
     runs-on: ubuntu-latest
     concurrency:
@@ -162,11 +175,20 @@ jobs:
           tag-name: ${{ steps.rel_number.outputs.version }}
           gh-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: ./.github/actions/download-translations
-        name: Download Translations
-        with:
-          lokalise-project: ${{ secrets.LOKALISE_PROJECT }}
-          lokalise-token: ${{ secrets.LOKALISE_TOKEN }}
+      # Download Translations 已移除（首版）。三個理由,任一個都足夠:
+      #
+      # 1. 它會讓這個 job 直接掛掉。密鑰未設定時 `jq -r '.bundle_url'` 會印出 "null",
+      #    接著 `curl null` 以退出碼 6 失敗;composite action 跑在 `bash -eo pipefail`
+      #    之下,所以整個 job 在 gradle 還沒開始前就結束。
+      # 2. 它會覆蓋語系清單。那支腳本把產生的 locales_config.xml 寫到
+      #    app/src/main/res/xml/ 與 wear/src/main/res/xml/,但本 repo 的檔案在
+      #    common/src/main/res/xml/。app 模組的資源優先序高於 common,所以產生出來的
+      #    那份會蓋掉我們刻意維持的「en + zh-TW」兩語系設定。
+      # 3. 上游的翻譯裡 app_name 是 "Home Assistant"。多拉進來的語系會讓 App 在那些
+      #    語言下顯示上游品牌名 —— 那是商標問題,不是體驗瑕疵。
+      #
+      # 要恢復多語系時,要先有自己的 Lokalise 專案(不是上游的),並且先修好上面第 2 點
+      # 的路徑問題,否則語系清單仍會被蓋掉。決策紀錄見 RELEASE-CHECKLIST 6-2。
 
       - name: Build Release
         env:
@@ -174,9 +196,10 @@ jobs:
           KEYSTORE_ALIAS: ${{ secrets.UPLOAD_KEYSTORE_ALIAS }}
           KEYSTORE_ALIAS_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_ALIAS_PASSWORD }}
           VERSION_CODE: ${{ steps.rel_number.outputs.version-code }}
-          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        # Only the phone bundle is published for the first release. `fastlane deploy_internal` must
+        # not reference wear/ or automotive/ AAB paths, because they are no longer built here.
         run: |
-          ./gradlew :common:assemble :app:bundleFullRelease :wear:bundleRelease :automotive:bundleFullRelease
+          ./gradlew :common:assemble :app:bundleFullRelease
 
       - name: Archive Build
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

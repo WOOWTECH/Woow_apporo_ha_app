@@ -2,7 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-sdk tools:overrideLibrary="com.google.android.gms.threadnetwork" />
+    <!--
+      前景服務:full flavor 不提供常駐 websocket 連線。
+
+      Google Play 於 2026-09-20 以「前景服務權限」政策退回 19428,三項發現全部指向
+      `Remote Messaging - Other`:不需要用 FGS、聲明的 FGS 類型有誤、使用者無法察覺。
+
+      這個版本的推播走 FCM(2026-09-16 已在 Pixel 7a 上驗證 HA → relay → FCM → 裝置
+      全鏈路),常駐 websocket 只是「不經 FCM 直接收推播」的備援,拿掉不影響通知。
+
+      沒有 GMS 的 `minimal` flavor **不移除** —— 那裡沒有 FCM,websocket 是唯一的
+      通知路徑,FGS 有正當理由,而且 minimal 不上架 Google Play。
+
+      ⚠️ 權限拿掉之後,程式端絕對不能再走到 setForeground(REMOTE_MESSAGING),
+         否則 Android 14+ 會直接丟 SecurityException。守門在
+         WebsocketManager.PERSISTENT_CONNECTION_SUPPORTED,兩者必須一起改。
+    -->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING"
+        tools:node="remove" />
+
     <uses-permission android:name="com.google.android.gms.permission.CAR_FUEL" />
     <uses-permission android:name="com.google.android.gms.permission.CAR_MILEAGE" />
     <uses-permission android:name="com.google.android.gms.permission.CAR_SPEED" />
@@ -17,21 +36,13 @@
 
     <application
         android:name="io.homeassistant.companion.android.HomeAssistantApplication" >
-        <meta-data android:name="io.sentry.auto-init" android:value="false" />
-        <meta-data android:name="io.sentry.release" android:value="${sentryRelease}" />
-        <meta-data android:name="io.sentry.dsn" android:value="${sentryDsn}" />
 
-        <activity
-            android:name=".matter.MatterCommissioningActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true"
-            android:theme="@style/Theme.HomeAssistant.Config"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="com.google.android.gms.home.matter.ACTION_COMMISSION_DEVICE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
+        <!-- 主 manifest 宣告 "dataSync|remoteMessaging";這裡收斂成只剩感測器用的 dataSync。 -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync"
+            tools:replace="android:foregroundServiceType"
+            tools:node="merge" />
 
         <receiver android:name=".location.HighAccuracyLocationReceiver"
             android:enabled="true"
@@ -50,18 +61,6 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location"/>
-
-        <service
-            android:name=".matter.MatterCommissioningService"
-            android:exported="true"
-            tools:ignore="ExportedService">
-            <!--This service is used by Google to commission devices; it needs to be exposed so that
-            Google Home Matter commissioning can forward us the commissioning request.
-            This is not described by Google documentation, but it seems that GMS is doing
-            some signature verification to avoid malicious intent coming from any other app.
-            https://github.com/home-assistant/android/pull/5509#discussion_r2214145170
-            -->
-        </service>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -89,18 +88,6 @@
                 <category android:name="androidx.car.app.category.IOT"/>
             </intent-filter>
         </service>
-        <service
-            android:name="com.google.android.gms.metadata.ModuleDependencies"
-            android:enabled="false"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
-            </intent-filter>
-            <meta-data
-                android:name="home:0:preferred"
-                android:value=""/>
-        </service>
-
         <service android:name=".data.wear.WearDnsRequestListener" android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>

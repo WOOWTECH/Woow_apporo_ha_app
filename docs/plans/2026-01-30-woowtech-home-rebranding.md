@@ -1,3 +1,25 @@
+> ## ⚠ Historical document — do not execute, do not copy values out of it
+>
+> This plan was written on 2026-01-30 for the **woowtech Home** rebrand and was carried out then.
+> It is kept for the rationale it records, not as instructions.
+>
+> **Its text has since been corrupted.** A later run of `tools/brand/rebrand.sh` did a blind
+> `woowtech` → `Apporo` substitution across every tracked `*.md`, which rewrote things that were
+> never brand names — author home directories (`/home/Apporo-ai-coder/…`, originally
+> `/home/woowtech-ai-coder/…`) and package identifiers (`com.Apporo.home`, which is not even a
+> legal Android package name — segments must be lowercase). There are about 74 such hits.
+>
+> They are deliberately **not** being corrected one by one: line-editing a finished historical plan
+> produces a document that is neither the original record nor a usable instruction set. Read it as
+> an artefact of January 2026 and mentally substitute `woowtech` wherever `Apporo` looks wrong.
+>
+> For values that are actually current, see `tools/brand/apporo.conf` and the identity history
+> table in [`docs/fork-divergence.md`](../fork-divergence.md). The short version: the app is now
+> `com.apporo.aiot` / `Apporo aiot` / `apporoaiot://`, and `tools/brand/rebrand.sh` refuses to run
+> against this repository at all.
+
+---
+
 # Apporo Home Android App Rebranding Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.

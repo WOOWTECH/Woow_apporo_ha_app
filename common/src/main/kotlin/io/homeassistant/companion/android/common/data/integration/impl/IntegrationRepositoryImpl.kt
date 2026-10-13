@@ -79,8 +79,8 @@ class IntegrationRepositoryImpl @AssistedInject constructor(
 ) : IntegrationRepository {
 
     companion object {
-        private const val APP_ID = "com.apporo.home"
-        private const val APP_NAME = "Apporo Home"
+        private const val APP_ID = "com.apporo.aiot"
+        private const val APP_NAME = "Apporo aiot"
         private const val OS_NAME = "Android"
 
         // Note: _not_ server-specific

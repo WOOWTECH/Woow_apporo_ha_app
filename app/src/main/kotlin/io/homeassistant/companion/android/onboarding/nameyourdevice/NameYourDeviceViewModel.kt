@@ -60,6 +60,16 @@ internal class NameYourDeviceViewModel @VisibleForTesting constructor(
     private val appVersionProvider: AppVersionProvider,
     private val messagingTokenProvider: MessagingTokenProvider,
     defaultName: String = Build.MODEL,
+    /**
+     * Whether a server address can be reached from outside the building.
+     *
+     * Injected so tests can decide the answer. The real implementation resolves the host over
+     * DNS, which made the test suite depend on the machine's network: a hostname that does not
+     * resolve — `home.example.com`, say — comes back as "not public", so the same test passed or
+     * failed depending on where it ran. Nothing about that behaviour changes in the app; the
+     * default below is the real check.
+     */
+    private val isUrlPubliclyAccessible: suspend (URL) -> Boolean = { it.isPubliclyAccessible() },
 ) : ViewModel() {
 
     @Inject
@@ -108,7 +118,7 @@ internal class NameYourDeviceViewModel @VisibleForTesting constructor(
                     NameYourDeviceNavigationEvent.DeviceNameSaved(
                         serverId,
                         hasPlainTextAccess = hasPlainTextAccess,
-                        isPubliclyAccessible = runCatching { URL(url).isPubliclyAccessible() }.getOrDefault(false),
+                        isPubliclyAccessible = runCatching { isUrlPubliclyAccessible(URL(url)) }.getOrDefault(false),
                     ),
                 )
             } catch (e: Exception) {

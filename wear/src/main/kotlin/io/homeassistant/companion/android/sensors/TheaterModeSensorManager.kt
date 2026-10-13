@@ -5,6 +5,7 @@ import android.os.Build
 import android.provider.Settings
 import io.homeassistant.companion.android.common.R as commonR
 import io.homeassistant.companion.android.common.sensors.SensorManager
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import timber.log.Timber
 
 class TheaterModeSensorManager : SensorManager {
@@ -21,7 +22,7 @@ class TheaterModeSensorManager : SensorManager {
     }
 
     override fun docsLink(): String {
-        return "https://aiot.apporo.io/docs/wear-os/sensors"
+        return AppSupportLinks.WEAR_OS_SENSORS
     }
     override val name: Int
         get() = commonR.string.sensor_name_theater_mode

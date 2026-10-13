@@ -132,6 +132,7 @@ import io.homeassistant.companion.android.settings.ConnectionSecurityLevelFragme
 import io.homeassistant.companion.android.settings.SettingsActivity
 import io.homeassistant.companion.android.settings.server.ServerChooserFragment
 import io.homeassistant.companion.android.themes.NightModeManager
+import io.homeassistant.companion.android.util.BRAND_HOST
 import io.homeassistant.companion.android.util.ChangeLog
 import io.homeassistant.companion.android.util.DataUriDownloadManager
 import io.homeassistant.companion.android.util.LifecycleHandler
@@ -1742,7 +1743,7 @@ class WebViewActivity :
                 alert.setMessage(commonR.string.security_vulnerably_message)
                 alert.setPositiveButton(commonR.string.security_vulnerably_view) { _, _ ->
                     val intent = Intent(Intent.ACTION_VIEW)
-                    intent.data = "https://aiot.apporo.io/latest-security-alert/".toUri()
+                    intent.data = "https://$BRAND_HOST/latest-security-alert/".toUri()
                     startActivity(intent)
                 }
                 alert.setNegativeButton(commonR.string.security_vulnerably_understand) { _, _ ->

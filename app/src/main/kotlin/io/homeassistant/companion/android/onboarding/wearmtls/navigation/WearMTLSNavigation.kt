@@ -7,11 +7,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import io.homeassistant.companion.android.common.util.AppSupportLinks
 import io.homeassistant.companion.android.onboarding.wearmtls.WearMTLSScreen
 import kotlinx.serialization.Serializable
 
-internal const val URL_MTLS_DOCUMENTATION =
-    "https://aiot.apporo.io/docs/getting_started/#tls-client-authentication"
+internal const val URL_MTLS_DOCUMENTATION = AppSupportLinks.CONNECTION_CLIENT_CERTIFICATE
 
 @Serializable
 internal class WearMTLSRoute(val deviceName: String, val serverUrl: String, val authCode: String)

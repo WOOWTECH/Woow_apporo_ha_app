@@ -37,6 +37,7 @@ import io.homeassistant.companion.android.common.sensors.StorageSensorManager
 import io.homeassistant.companion.android.common.sensors.TimeZoneManager
 import io.homeassistant.companion.android.common.sensors.TrafficStatsManager
 import io.homeassistant.companion.android.settings.SettingsActivity
+import io.homeassistant.companion.android.util.SensorReleasePolicy
 
 @AndroidEntryPoint
 class SensorReceiver : SensorReceiverBase() {
@@ -48,8 +49,16 @@ class SensorReceiver : SensorReceiverBase() {
         get() = MANAGERS
 
     companion object {
-        val MANAGERS = listOf(
-            ActivitySensorManager(),
+        /**
+         * Every consumer of the sensor subsystem reads this list: the collection and upload loop in
+         * [io.homeassistant.companion.android.common.sensors.SensorReceiverBase], the sensor
+         * settings list, the sensor detail screen, and the WebView bridge. A manager that is not in
+         * the list is therefore disabled everywhere, regardless of any value stored in the sensor
+         * database, which is what [SensorReleasePolicy] relies on to keep a release scope from being
+         * re-opened by a stored opt-in.
+         */
+        val MANAGERS: List<SensorManager> = listOfNotNull(
+            if (SensorReleasePolicy.fitnessSensorsEnabled) ActivitySensorManager() else null,
             AndroidAutoSensorManager(),
             AndroidOsSensorManager(),
             AppSensorManager(),
@@ -62,7 +71,7 @@ class SensorReceiver : SensorReceiverBase() {
             DynamicColorSensorManager(),
             DevicePolicyManager(),
             GeocodeSensorManager(),
-            HealthConnectSensorManager(),
+            if (SensorReleasePolicy.healthConnectEnabled) HealthConnectSensorManager() else null,
             KeyguardSensorManager(),
             LastAppSensorManager(),
             LastRebootSensorManager(),
@@ -79,7 +88,7 @@ class SensorReceiver : SensorReceiverBase() {
             PressureSensorManager(),
             ProximitySensorManager(),
             QuestSensorManager(),
-            StepsSensorManager(),
+            if (SensorReleasePolicy.fitnessSensorsEnabled) StepsSensorManager() else null,
             StorageSensorManager(),
             TimeZoneManager(),
             TrafficStatsManager(),
