@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingDefaultResource">
-    <release version="2026.1.7 - Main" versioncode="3">
+    <release version="2026.10.5 - Main" versioncode="3">
         <change>Assist now says which server version it needs instead of naming an app version</change>
         <change>Removed native Matter device commissioning and Thread credential sharing from this release</change>
         <change>Redesigned onboarding experience for easier server setup</change>
@@ -11,12 +11,12 @@
         <change>Fixed a crash when opening a sensor that is no longer available</change>
         <change>Bug fixes and dependency updates</change>
     </release>
-    <release version="2026.1.7 - Wear" versioncode="2">
+    <release version="2026.10.5 - Wear" versioncode="2">
         <change>Support streaming text-to-speech in Assist</change>
         <change>Fixed a crash when opening a sensor manager that is no longer available</change>
         <change>Bug fixes and dependency updates</change>
     </release>
-    <release version="2026.1.7 - Automotive" versioncode="1">
+    <release version="2026.10.5 - Automotive" versioncode="1">
         <change>Removed native Matter device commissioning and Thread credential sharing from this release</change>
         <change>Redesigned onboarding experience for easier server setup</change>
         <change>Added connection security level options</change>
